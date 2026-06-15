@@ -4,8 +4,8 @@ import tsPlugin from "@typescript-eslint/eslint-plugin"
 export default [
   {
     ignores: [
-      "packages/contracts/**",
-      "packages/circuits/build/**",
+      "contracts/**",
+      "circuits/build/**",
       "node_modules/**",
       "dist/**",
     ],

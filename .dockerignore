@@ -31,20 +31,19 @@ eslint.config.mjs
 .prettierrc
 .nvmrc
 
-# Solidity contracts (not needed for backend or frontend images)
-packages/contracts/
-packages/contracts/
+# Soroban contracts (Rust, not needed in JS images)
+contracts/
 
 # Circuit source (only build artifacts are needed)
-packages/circuits/credential.circom
-packages/circuits/input.example.json
-packages/circuits/scripts/
+circuits/credential.circom
+circuits/input.example.json
+circuits/scripts/
 
 # Backend test files
-packages/backend/src/test/
-packages/backend/vitest.config.ts
-packages/backend/deploy-*.ts
-packages/backend/simulate-workflow.ts
+backend/src/test/
+backend/vitest.config.ts
+backend/deploy-*.ts
+backend/simulate-workflow.ts
 
 # Templates
 templates/

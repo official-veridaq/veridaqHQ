@@ -1,2 +1,4 @@
 packages:
-  - "packages/*"
+  - "backend"
+  - "frontend"
+  - "circuits"

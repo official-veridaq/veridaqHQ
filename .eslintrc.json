@@ -14,5 +14,5 @@
     "no-console": ["warn", { "allow": ["warn", "error", "info"] }],
     "security/detect-object-injection": "off"
   },
-  "ignorePatterns": ["packages/contracts/**", "packages/circuits/build/**", "node_modules/**"]
+  "ignorePatterns": ["contracts/**", "circuits/build/**", "node_modules/**"]
 }

@@ -8,37 +8,31 @@ node_modules/
 .env.local
 .env.production
 .env.staging
+.env.test
 
 # build outputs
 dist/
 build/
-!packages/circuits/build/
 .next/
 out/
 *.tsbuildinfo
 coverage/
 
-# foundry
-packages/contracts/out/
-packages/contracts/cache/
-packages/contracts/broadcast/
-!packages/contracts/broadcast/dry-run/
+# soroban
+contracts/target/
 
 # circuits — build artifacts for proof generation
-# These files are needed at runtime (included via !packages/circuits/build/ above):
-#   credential_final.zkey, credential_js/credential.wasm, verification_key.json
-# Large intermediates and setup files remain excluded below:
-packages/circuits/build/powersOfTau28_hez_final_13.ptau
-packages/circuits/build/credential_0000.zkey
-packages/circuits/build/credential.r1cs
-packages/circuits/build/credential.sym
-packages/circuits/*.ptau
-packages/circuits/*.zkey
-packages/circuits/*.r1cs
-packages/circuits/*.sym
-packages/circuits/*.wasm
-packages/circuits/*.json
-!packages/circuits/input.example.json
+circuits/build/powersOfTau28_hez_final_13.ptau
+circuits/build/credential_0000.zkey
+circuits/build/credential.r1cs
+circuits/build/credential.sym
+circuits/*.ptau
+circuits/*.zkey
+circuits/*.r1cs
+circuits/*.sym
+circuits/*.wasm
+circuits/*.json
+!circuits/input.example.json
 
 # docker volumes
 .docker-data/
@@ -62,13 +56,13 @@ cookies.txt
 finish-report.md
 
 # ── Backend development artifacts ─────────────────────────────────────────────
-packages/backend/deploy-core.ts
-packages/backend/deploy-ethers.ts
-packages/backend/fix-simulate.js
-packages/backend/simulate-workflow.ts
-packages/backend/output.txt
-packages/backend/output-final.txt
-packages/backend/sys.log
+backend/deploy-core.ts
+backend/deploy-ethers.ts
+backend/fix-simulate.js
+backend/simulate-workflow.ts
+backend/output.txt
+backend/output-final.txt
+backend/sys.log
 
 
 

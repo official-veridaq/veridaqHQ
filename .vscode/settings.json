@@ -12,13 +12,11 @@
   "eslint.workingDirectories": [{ "mode": "auto" }],
   "files.exclude": {
     "**/node_modules": true,
-    "packages/contracts/out": true,
-    "packages/contracts/cache": true,
-    "packages/circuits/build": true
+    "circuits/build": true
   },
   "search.exclude": {
     "**/node_modules": true,
-    "packages/contracts/out": true,
+    "contracts/target": true,
     "pnpm-lock.yaml": true
   },
   "solidity.compileUsingRemoteVersion": "v0.8.28",

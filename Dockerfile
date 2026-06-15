@@ -10,8 +10,8 @@ WORKDIR /app
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json tsconfig.base.json ./
 
 # Source code
-COPY packages/backend ./packages/backend/
-COPY packages/circuits/build ./packages/circuits/build/
+COPY backend ./backend/
+COPY circuits/build ./circuits/build/
 
 # Install all dependencies, generate Prisma client, compile
 RUN pnpm install --frozen-lockfile && \
@@ -33,7 +33,7 @@ COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 RUN sed -i '/"prepare"/d' package.json && pnpm install --frozen-lockfile --prod
 
 # Prisma schema and migrations
-COPY --from=builder /app/packages/backend/prisma ./packages/backend/prisma
+COPY --from=builder /app/backend/prisma ./backend/prisma
 
 # Regenerate Prisma client for production target
 RUN pnpm db:generate
@@ -42,7 +42,7 @@ RUN pnpm db:generate
 COPY --from=builder /app/dist ./dist
 
 # Circuit build files (zkey, wasm, verification key)
-COPY --from=builder /app/packages/circuits/build ./packages/circuits/build
+COPY --from=builder /app/circuits/build ./circuits/build
 
 EXPOSE 4000
 
@@ -50,4 +50,4 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
   CMD curl -f http://localhost:4000/health || exit 1
 
 # Apply pending migrations, seed database, then start the server
-CMD ["sh", "-c", "pnpm exec prisma migrate deploy --schema=packages/backend/prisma/schema.prisma && node dist/backend/prisma/seed.js && node dist/backend/src/server.js"]
+CMD ["sh", "-c", "pnpm exec prisma migrate deploy --schema=backend/prisma/schema.prisma && node dist/backend/prisma/seed.js && node dist/backend/src/server.js"]

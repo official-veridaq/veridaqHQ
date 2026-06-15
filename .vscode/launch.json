@@ -6,7 +6,7 @@
       "type": "node",
       "request": "launch",
       "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["tsx", "packages/backend/src/server.ts"],
+      "runtimeArgs": ["tsx", "backend/src/server.ts"],
       "env": { "NODE_ENV": "development" },
       "sourceMaps": true,
       "console": "integratedTerminal",
@@ -17,7 +17,7 @@
       "type": "node",
       "request": "launch",
       "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["exec", "vitest", "--config", "packages/backend/vitest.config.ts"],
+      "runtimeArgs": ["exec", "vitest", "--config", "backend/vitest.config.ts"],
       "console": "integratedTerminal",
       "skipFiles": ["<node_internals>/**"]
     }

@@ -1,0 +1,17 @@
+[package]
+name = "veridaq-core"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+doctest = false
+
+[dependencies]
+soroban-sdk.workspace = true
+
+[dev-dependencies]
+soroban-sdk = { workspace = true, features = ["testutils"] }
+institution-registry = { path = "../institution-registry" }
+groth16-verifier = { path = "../groth16-verifier" }
