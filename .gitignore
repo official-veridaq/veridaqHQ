@@ -64,7 +64,8 @@ backend/output.txt
 backend/output-final.txt
 backend/sys.log
 
-
+# Demo script — not committed
+DEMO.md
 
 COMPLETE.md
 implementation.md

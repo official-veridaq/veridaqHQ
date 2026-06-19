@@ -78,7 +78,7 @@ export default function InstitutionRegisterPage() {
             <div>
               <h1 className="text-lg font-semibold text-foreground">Institution Registration</h1>
               <p className="text-xs text-muted">
-                Register to issue Zero-Knowledge credentials on Base
+                Register to issue Zero-Knowledge credentials on Stellar
               </p>
             </div>
           </div>

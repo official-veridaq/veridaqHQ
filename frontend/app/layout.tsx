@@ -7,9 +7,9 @@ import type { Metadata, Viewport } from "next"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "VERIDAQ",
+  title: "VERIDAQ — Privacy-First Academic Credential Verification",
   description:
-    "Censor-Resistant Academic Truth. Zero-Knowledge Proofs for academic truth.",
+    "Issue and verify academic credentials without exposing student identity. Zero-knowledge proofs on Stellar Soroban.",
   icons: {
     icon: "/logo-white.png",
   },

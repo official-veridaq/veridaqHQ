@@ -9,13 +9,13 @@ export default function TechnicalResourcesPage() {
   const stacks = [
     {
       category: "Blockchain Layer",
-      tech: "Base Sepolia (OP Stack)",
+      tech: "Stellar Soroban",
       desc: "An EVM-equivalent Layer-2 network by Coinbase prioritizing extreme scale, low latency, and deterministic cryptography execution overhead.",
     },
     {
       category: "Smart Contracts",
-      tech: "Solidity 0.8.28 & Foundry",
-      desc: "Rigid, fuzz-tested compilation modules leveraging OpenZeppelin 5 architectures and ERC-4337 Paymaster Vault constructs.",
+      tech: "Rust & Soroban SDK",
+      desc: "Type-safe Soroban smart contracts with comprehensive unit testing and audit-ready architecture.",
     },
     {
       category: "ZKP Compilation",
@@ -123,7 +123,7 @@ export default function TechnicalResourcesPage() {
                 </span>
               </h3>
               <p className="text-sm">
-                The Foundry-based Solidity repository covering Subscriptions, Credential Registries,
+                The Soroban-based smart contract repository covering Credential Registries,
                 and Paymaster Vaults.
               </p>
             </div>
@@ -140,7 +140,7 @@ export default function TechnicalResourcesPage() {
             </div>
             <div>
               <h3 className="group-hover:text-accent mb-1 flex items-center gap-2 font-bold text-foreground transition-colors">
-                Base Sepolia Scanner{" "}
+                Stellar Expert Explorer{" "}
                 <span className="bg-surface-border rounded px-2 py-0.5 font-mono text-[10px] text-foreground">
                   EXTERNAL
                 </span>

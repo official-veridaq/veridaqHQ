@@ -366,7 +366,7 @@ export function UploadModal({ onDismiss, onSuccess }: UploadModalProps) {
         <div className="border-surface-border flex shrink-0 items-center justify-between border-b px-6 py-4">
           <div>
             <h2 className="text-base font-semibold text-foreground">Batch Upload</h2>
-            <p className="mt-0.5 text-xs text-muted">Commit student credentials to Base Sepolia</p>
+            <p className="mt-0.5 text-xs text-muted">Commit student credentials to Stellar</p>
           </div>
           <button
             onClick={handleDismiss}
@@ -630,7 +630,7 @@ export function UploadModal({ onDismiss, onSuccess }: UploadModalProps) {
               <Alert variant="warn">
                 <p className="font-medium">This action is irreversible</p>
                 <p className="mt-1 text-xs">
-                  You are about to commit {validation?.totalRecords} student records to the Base
+                  You are about to commit {validation?.totalRecords} student records to Stellar
                   blockchain. Commitments cannot be altered once mined.
                 </p>
               </Alert>
@@ -717,7 +717,7 @@ export function UploadModal({ onDismiss, onSuccess }: UploadModalProps) {
                     rel="noopener noreferrer"
                     className="text-accent mt-2 inline-block font-mono text-xs hover:underline"
                   >
-                    View on Basescan
+                    View on Stellar Expert
                   </a>
                 )}
               </div>

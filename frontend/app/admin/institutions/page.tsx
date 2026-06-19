@@ -85,7 +85,7 @@ export default function InstitutionsPage() {
     <AdminLayout title="Institution Management">
       <p className="text-muted mb-6 max-w-2xl text-sm">
         Review pending KYC requests. Approving an institution triggers the backend to submit their
-        public key to the on-chain InstitutionRegistry contract on Base Sepolia.
+        public key to the InstitutionRegistry smart contract on Stellar.
       </p>
 
       {loading ? (

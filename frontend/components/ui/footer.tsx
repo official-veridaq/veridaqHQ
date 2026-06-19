@@ -110,7 +110,7 @@ export function Footer() {
             &copy; {new Date().getFullYear()} Veridaq Foundation. All rights reserved.
           </span>
           <div className="flex items-center gap-3 text-[10px] text-muted/40">
-            <span className="font-mono">Base Sepolia</span>
+            <span className="font-mono">Stellar Testnet</span>
             <span>·</span>
             <span className="font-mono">Protocol v1.0.0</span>
             <span>·</span>

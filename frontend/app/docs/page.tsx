@@ -15,7 +15,7 @@ export default function DocumentationPage() {
   const tabs = [
     { id: "overview", label: "Executive Overview", icon: <ShieldCheck className="w-4 h-4" />, desc: "Protocol manifest & cryptographic principles" },
     { id: "architecture", label: "Architecture & Flow", icon: <Workflow className="w-4 h-4" />, desc: "End-to-end data movement & Event sequences" },
-    { id: "contracts", label: "Smart Contracts", icon: <FileCode2 className="w-4 h-4" />, desc: "L2 Ledger, Account Abstraction & Solidity" },
+    { id: "contracts", label: "Smart Contracts", icon: <FileCode2 className="w-4 h-4" />, desc: "Stellar Soroban & Rust smart contracts" },
     { id: "zkp", label: "Zero-Knowledge Circom", icon: <Layers className="w-4 h-4" />, desc: "Groth16 SnarkJS logic & Polynomial constraints" },
     { id: "backend", label: "Fastify API & DB", icon: <Database className="w-4 h-4" />, desc: "Redis queues, Prisma schemas & Node clusters" }
   ]
@@ -134,7 +134,7 @@ export default function DocumentationPage() {
               <Terminal className="w-4 h-4" /> Open Source Codebase
             </Link>
             <Link href="#" className="w-full flex items-center gap-3 px-4 py-2 text-sm font-medium text-muted hover:text-foreground transition-colors">
-              <Database className="w-4 h-4" /> Base Subnet Explorer
+              <Database className="w-4 h-4" /> Stellar Testnet Explorer
             </Link>
           </div>
         </aside>
@@ -173,7 +173,7 @@ export default function DocumentationPage() {
                     <div className="text-accent font-mono text-xs mb-3 border-b border-surface-border pb-2 inline-block">01 // HASH COMMITMENTS</div>
                     <h3 className="text-xl font-bold mb-3 text-foreground">No Public Data</h3>
                     <p className="text-muted text-sm leading-relaxed break-words">
-                      Instead of uploading transcripts, universities upload deterministic mathematically irreversible hashes. `Poseidon(Name, GPA, Matric_Number, Blinding_Salt)`. The L2 Ledger only sees a randomized `bytes32` string. No human or AI can ever reverse this string back to a name or GPA.
+                      Instead of uploading transcripts, universities upload deterministic mathematically irreversible hashes. `Poseidon(Name, GPA, Matric_Number, Blinding_Salt)`. The Stellar ledger only sees a randomized `bytes32` string. No human or AI can ever reverse this string back to a name or GPA.
                     </p>
                   </div>
                   <div className="p-6 border border-surface-border bg-surface w-full max-w-full overflow-hidden">
@@ -189,8 +189,8 @@ export default function DocumentationPage() {
               <div className="border border-red-500/20 bg-red-500/5 p-6 md:p-8 w-full overflow-hidden">
                 <h3 className="text-lg font-bold text-red-400 mb-2">Absolute Architectural Directives</h3>
                 <ul className="space-y-4 mt-4 text-sm text-muted">
-                  <li className="flex gap-4 items-start"><span className="text-accent shrink-0 opacity-70">→</span> <span className="break-words w-full"><strong>Zero PII Exposure:</strong> No student name, grade, or matriculation number ever hits the Base public mempool.</span></li>
-                  <li className="flex gap-4 items-start"><span className="text-accent shrink-0 opacity-70">→</span> <span className="break-words w-full"><strong>Gasless Web2 UX:</strong> Using Account Abstraction (ERC-4337), institutions do not manage wallets or ETH. Gas is implicitly funded by the PaymasterVault.</span></li>
+                  <li className="flex gap-4 items-start"><span className="text-accent shrink-0 opacity-70">→</span> <span className="break-words w-full"><strong>Zero PII Exposure:</strong> No student name, grade, or matriculation number ever hits the Stellar network.</span></li>
+                  <li className="flex gap-4 items-start"><span className="text-accent shrink-0 opacity-70">→</span> <span className="break-words w-full"><strong>Gasless Web2 UX:</strong> Using Soroban's built-in fee sponsorship, institutions do not manage wallets or XLM. Gas is implicitly funded by the platform admin.</span></li>
                   <li className="flex gap-4 items-start"><span className="text-accent shrink-0 opacity-70">→</span> <span className="break-words w-full"><strong>Asynchronous Computations:</strong> Mass institution uploads are processed via Redis/BullMQ to prevent Fastify event-loop blocking.</span></li>
                 </ul>
               </div>
@@ -204,7 +204,7 @@ export default function DocumentationPage() {
                 <div className="inline-flex items-center gap-2 px-2 py-1 rounded-sm bg-accent/10 text-accent text-xs font-mono mb-6 border border-accent/20">DOCUMENTATION // SECTION 02</div>
                 <h1 className="text-4xl md:text-6xl font-black mb-6 text-foreground tracking-tight break-words">System Architecture.</h1>
                 <p className="text-lg text-muted font-light leading-relaxed">
-                  Veridaq operates across three distinct domains: Web2 Next.js Enclaves, Fastify API Gateways routing via Redis Queues, and the Base Layer-2 EVM Contracts executing verification.
+                  Veridaq operates across three distinct domains: Web2 Next.js Enclaves, Fastify API Gateways routing via Redis Queues, and the Stellar Soroban smart contracts executing verification.
                 </p>
               </header>
 
@@ -233,8 +233,8 @@ export default function DocumentationPage() {
                     </div>
                     <div className="hidden md:flex items-center justify-center text-surface-border">{"=====>"}</div>
                     <div className="flex-1 w-full border border-surface-border bg-blue-900/10 border-blue-500/30 p-3 overflow-hidden">
-                      <div className="text-accent mb-2">3. L2 On-Chain Anchor</div>
-                      Lands on Base via <span className="text-foreground break-words">InstitutionRegistry.sol</span> logic.
+                      <div className="text-accent mb-2">3. On-Chain Anchor</div>
+                      Lands on Stellar via <span className="text-foreground break-words">InstitutionRegistry</span> smart contract.
                     </div>
                   </div>
                 </div>
@@ -287,7 +287,7 @@ export default function DocumentationPage() {
 
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 bg-yellow-500/10 border border-yellow-500/20 text-yellow-200 text-sm mt-4 w-full">
                   <Activity className="w-5 h-5 shrink-0" />
-                  <span className="break-words w-full">Wrapped via <strong>ERC-4337 Account Abstraction</strong>. Fastify calls `PaymasterVault.sol` which implicitly provides ETH for gas padding, returning a successful `UserOperation`.</span>
+                  <span className="break-words w-full">The transaction is signed using the <strong>platform admin's Stellar keypair</strong>. Fastify calls the Soroban contract directly, with gas implicitly funded by the admin account.</span>
                 </div>
               </div>
 
@@ -321,8 +321,8 @@ export default function DocumentationPage() {
                       <span className="text-muted break-words">`delete inputs;` (Clears Private RAM).</span>
                     </div>
                     <div className="flex flex-col md:flex-row md:items-center justify-between text-[11px] sm:text-xs font-mono p-2 gap-2">
-                      <span className="text-accent shrink-0">E. Base L2 EVM</span>
-                      <span className="text-muted break-all md:break-normal">getContract("ZKVerifier").verifyProof(a,b,c)</span>
+                      <span className="text-accent shrink-0">E. Stellar Soroban</span>
+                      <span className="text-muted break-all md:break-normal">contract.verify_raw(publicSignals, proof)</span>
                     </div>
                   </div>
                 </div>
@@ -340,7 +340,7 @@ export default function DocumentationPage() {
                 <div className="inline-flex items-center gap-2 px-2 py-1 rounded-sm bg-accent/10 text-accent text-xs font-mono mb-6 border border-accent/20">DOCUMENTATION // SECTION 03</div>
                 <h1 className="text-4xl md:text-6xl font-black mb-6 text-foreground tracking-tight break-words">Smart Contracts Ledger.</h1>
                 <p className="text-lg text-muted font-light leading-relaxed">
-                  Five active Solidity state contracts natively compiled using Foundry (`pragma solidity 0.8.28`). Highly optimized. Reverts implemented strictly as Custom Errors.
+                  Eight Soroban smart contracts written in Rust, compiled with the Stellar SDK and deployed on Stellar testnet. Each contract handles a specific domain: institution registry, credential management, revocation, and verification.
                 </p>
               </header>
 
@@ -348,23 +348,23 @@ export default function DocumentationPage() {
 
                 <div className="col-span-1 lg:col-span-5 space-y-4">
                   <div className="w-full">
-                    <h3 className="text-xl font-bold bg-surface-card p-4 border border-surface-border text-accent break-words">1. PaymasterVault.sol</h3>
+                    <h3 className="text-xl font-bold bg-surface-card p-4 border border-surface-border text-accent break-words">1. InstitutionRegistry</h3>
                     <p className="text-sm text-muted leading-relaxed p-4 border border-surface-border bg-surface break-words">
-                      Veridaq inherently utilizes ERC-4337 (Account Abstraction) for gas operations. When an institution requests a credential batch anchor, `PaymasterVault` intercepts the execution parameters via `validatePaymasterUserOp()`.
+                      Maps institution bytes32 IDs to names and admin wallet addresses. Emits `InstitutionRegistered` events. Only the platform admin can register new institutions on-chain.
                     </p>
                   </div>
 
                   <div className="w-full mt-8">
-                    <h3 className="text-xl font-bold bg-surface-card p-4 border border-surface-border text-accent break-words">2. CredentialRegistry.sol</h3>
+                    <h3 className="text-xl font-bold bg-surface-card p-4 border border-surface-border text-accent break-words">2. CredentialRegistry</h3>
                     <p className="text-sm text-muted leading-relaxed p-4 border border-surface-border bg-surface break-words">
-                      The physical database equivalent on the EVM. It receives mass inputs mapping parallel arrays of `commitments[]` and `nullifiers[]`. Exposes native view function `isCommitmentValid(uint256)`.
+                      Stores (commitment, nullifier) pairs for each batch. Exposes functions for batch registration, existence checks, and credential record retrieval. The core data store of the system.
                     </p>
                   </div>
 
                   <div className="w-full mt-8">
-                    <h3 className="text-xl font-bold bg-surface-card p-4 border border-surface-border text-accent break-words">3. InstitutionRegistry.sol</h3>
+                    <h3 className="text-xl font-bold bg-surface-card p-4 border border-surface-border text-accent break-words">3. ZKVerifier</h3>
                     <p className="text-sm text-muted leading-relaxed p-4 border border-surface-border bg-surface break-words">
-                      The identity authority. Maps physical `bytes32` identifier constants to deployed external wallets via mappings ensuring rogue addresses cannot arbitrarily register payloads.
+                      The auto-generated Groth16 verifier contract. Generated by SnarkJS during the trusted setup ceremony. Accepts proof points and public signals, returns a boolean verification result.
                     </p>
                   </div>
                 </div>
@@ -388,7 +388,7 @@ export default function DocumentationPage() {
                     </div>
 
                     <p className="text-sm text-muted leading-relaxed mb-6 break-words w-full">
-                      This specific contract inherently houses highly optimized elliptic curve pair matching mappings logic targeting EVM mathematically precompiled opcodes `<span className="text-foreground font-mono break-words">0x06, 0x07, 0x08</span>`.
+                      The generated verifier performs BN254 pairing checks to validate Groth16 proofs. It is deployed as a Soroban contract on Stellar testnet and called during each verification request.
                     </p>
                   </div>
                 </div>

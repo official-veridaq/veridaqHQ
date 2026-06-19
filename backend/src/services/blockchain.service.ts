@@ -26,6 +26,8 @@ import pino from "pino"
 
 const log = pino({ name: "blockchain-service" })
 
+const USE_MOCK = process.env.USE_MOCK_BLOCKCHAIN === "true"
+
 const POLL_INTERVAL_MS = 1000
 const POLL_MAX_ATTEMPTS = 60
 
@@ -69,11 +71,15 @@ function scvVec(items: xdr.ScVal[]): xdr.ScVal {
 }
 
 export class BlockchainService {
-  private server: rpc.Server
-  private keypair: Keypair
-  private source: string
+  private server: rpc.Server | null = null
+  private keypair: Keypair | null = null
+  private source: string | null = null
 
   constructor() {
+    if (USE_MOCK) {
+      log.warn("BlockchainService running in MOCK mode — no real Stellar calls")
+      return
+    }
     const secretKey = config.PLATFORM_ADMIN_SECRET_KEY
     if (!secretKey) {
       throw new Error("PLATFORM_ADMIN_SECRET_KEY is not set")
@@ -86,7 +92,7 @@ export class BlockchainService {
   // ── Generic helpers ───────────────────────────────────────────────────────
 
   private async getAccount() {
-    return this.server.getAccount(this.source)
+    return this.server!.getAccount(this.source!)
   }
 
   private async buildTx(
@@ -112,7 +118,7 @@ export class BlockchainService {
     args: xdr.ScVal[],
   ) {
     const tx = await this.buildTx(contractId, method, args)
-    return this.server.simulateTransaction(tx)
+    return this.server!.simulateTransaction(tx)
   }
 
   private async read<T>(
@@ -140,7 +146,7 @@ export class BlockchainService {
     args: xdr.ScVal[],
   ): Promise<string> {
     const tx = await this.buildTx(contractId, method, args)
-    const sim = await this.server.simulateTransaction(tx)
+    const sim = await this.server!.simulateTransaction(tx)
     if (rpc.Api.isSimulationError(sim)) {
       throw new Error(
         `Soroban simulation error for ${method}: ${JSON.stringify(sim.error)}`,
@@ -149,12 +155,12 @@ export class BlockchainService {
 
     const preparedBuilder = rpc.assembleTransaction(tx, sim)
     const builtTx = preparedBuilder.build()
-    const sig = this.keypair.signDecorated(builtTx.signatureBase())
+    const sig = this.keypair!.signDecorated(builtTx.signatureBase())
     const envelope = builtTx.toEnvelope()
     envelope.v1().signatures().push(sig)
     const signedTx = new Transaction(envelope, config.STELLAR_NETWORK_PASSPHRASE)
 
-    const sendResult = await this.server.sendTransaction(signedTx)
+    const sendResult = await this.server!.sendTransaction(signedTx)
     if (sendResult.status === "ERROR") {
       const errMsg = sendResult.errorResult
         ? JSON.stringify(sendResult.errorResult)
@@ -167,7 +173,7 @@ export class BlockchainService {
 
     const txHash = sendResult.hash
     for (let i = 0; i < POLL_MAX_ATTEMPTS; i++) {
-      const txResult = await this.server.getTransaction(txHash)
+      const txResult = await this.server!.getTransaction(txHash)
       if (txResult.status === "SUCCESS") {
         return txHash
       }
@@ -190,7 +196,7 @@ export class BlockchainService {
     args: xdr.ScVal[],
   ): Promise<{ txHash: string; result: T }> {
     const tx = await this.buildTx(contractId, method, args)
-    const sim = await this.server.simulateTransaction(tx)
+    const sim = await this.server!.simulateTransaction(tx)
     if (rpc.Api.isSimulationError(sim)) {
       throw new Error(
         `Soroban simulation error for ${method}: ${JSON.stringify(sim.error)}`,
@@ -199,12 +205,12 @@ export class BlockchainService {
 
     const preparedBuilder = rpc.assembleTransaction(tx, sim)
     const builtTx = preparedBuilder.build()
-    const sig = this.keypair.signDecorated(builtTx.signatureBase())
+    const sig = this.keypair!.signDecorated(builtTx.signatureBase())
     const envelope = builtTx.toEnvelope()
     envelope.v1().signatures().push(sig)
     const signedTx = new Transaction(envelope, config.STELLAR_NETWORK_PASSPHRASE)
 
-    const sendResult = await this.server.sendTransaction(signedTx)
+    const sendResult = await this.server!.sendTransaction(signedTx)
     if (sendResult.status === "ERROR") {
       const errMsg = sendResult.errorResult
         ? JSON.stringify(sendResult.errorResult)
@@ -217,7 +223,7 @@ export class BlockchainService {
 
     const txHash = sendResult.hash
     for (let i = 0; i < POLL_MAX_ATTEMPTS; i++) {
-      const txResult = await this.server.getTransaction(txHash)
+      const txResult = await this.server!.getTransaction(txHash)
       if (txResult.status === "SUCCESS") {
         const returnVal = (txResult as rpc.Api.GetSuccessfulTransactionResponse).returnValue
         const result = returnVal
@@ -240,16 +246,25 @@ export class BlockchainService {
 
   // ── Institution Registry ──────────────────────────────────────────────────
 
+  private guard<T>(mockValue: T): T | undefined {
+    if (USE_MOCK) return mockValue
+    return undefined
+  }
+
+  // ── Institution Registry ──────────────────────────────────────────────────
+
   async registerInstitution(
     institutionId: string,
     name: string,
     adminWallet: string,
   ): Promise<string> {
+    const m = this.guard("mock-tx-hash-register-institution")
+    if (m !== undefined) return m
     return this.write(
       config.INSTITUTION_REGISTRY_ID!,
       "register",
       [
-        scvAddress(this.source),
+        scvAddress(this.source!),
         scvBytes32(institutionId),
         nativeToScVal(name, { type: "string" }),
         scvAddress(adminWallet),
@@ -258,6 +273,8 @@ export class BlockchainService {
   }
 
   async isInstitutionRegistered(institutionId: string): Promise<boolean> {
+    const m = this.guard(true)
+    if (m !== undefined) return m
     return this.read<boolean>(
       config.INSTITUTION_REGISTRY_ID!,
       "is_active",
@@ -275,6 +292,8 @@ export class BlockchainService {
     degreeTypeCode: number,
     _txRef?: string,
   ): Promise<{ txHash: string }> {
+    const m = this.guard<{ txHash: string }>({ txHash: "mock-tx-hash-register-batch" })
+    if (m !== undefined) return m
     if (commitments.length !== nullifiers.length) {
       throw new Error("Commitments and nullifiers length mismatch")
     }
@@ -286,7 +305,7 @@ export class BlockchainService {
       config.CREDENTIAL_REGISTRY_ID!,
       "register_batch",
       [
-        scvAddress(this.source),
+        scvAddress(this.source!),
         scvBytes32(institutionId),
         scvVec(commitScVals),
         scvVec(nullifierScVals),
@@ -298,12 +317,16 @@ export class BlockchainService {
   }
 
   async commitmentExists(_commitment: string): Promise<boolean> {
+    const m = this.guard(false)
+    if (m !== undefined) return m
     throw new Error(
       "commitmentExists is not supported on Soroban — use nullifierExists instead",
     )
   }
 
   async nullifierExists(nullifier: string): Promise<boolean> {
+    const m = this.guard(false)
+    if (m !== undefined) return m
     return this.read<boolean>(
       config.CREDENTIAL_REGISTRY_ID!,
       "exists",
@@ -319,6 +342,15 @@ export class BlockchainService {
     degree_type_code: number
     registered_at: number
   }> {
+    const m = this.guard({
+      commitment: "0x" + "0".repeat(64),
+      nullifier: "0x" + "0".repeat(64),
+      institution_id: "0x" + "0".repeat(64),
+      graduation_year: 2024,
+      degree_type_code: 1,
+      registered_at: Math.floor(Date.now() / 1000),
+    })
+    if (m !== undefined) return m
     const raw = await this.read<{
       commitment: Uint8Array
       nullifier: Uint8Array
@@ -347,11 +379,13 @@ export class BlockchainService {
     nullifier: string,
     reasonCode: number,
   ): Promise<string> {
+    const m = this.guard("mock-tx-hash-revoke")
+    if (m !== undefined) return m
     return this.write(
       config.REVOCATION_REGISTRY_ID!,
       "revoke",
       [
-        scvAddress(this.source),
+        scvAddress(this.source!),
         scvBytes32(nullifier),
         scvU32(reasonCode),
       ],
@@ -359,6 +393,8 @@ export class BlockchainService {
   }
 
   async isRevoked(nullifier: string): Promise<boolean> {
+    const m = this.guard(false)
+    if (m !== undefined) return m
     return this.read<boolean>(
       config.REVOCATION_REGISTRY_ID!,
       "is_revoked",
@@ -369,11 +405,13 @@ export class BlockchainService {
   // ── Veridaq Core — Employers ──────────────────────────────────────────────
 
   async initialiseEmployer(employerAddress: string): Promise<string> {
+    const m = this.guard("mock-tx-hash-init-employer")
+    if (m !== undefined) return m
     return this.write(
       config.CREDENTIAL_REGISTRY_ID!,
       "init_employer",
       [
-        scvAddress(this.source),
+        scvAddress(this.source!),
         scvAddress(employerAddress),
       ],
     )
@@ -382,6 +420,8 @@ export class BlockchainService {
   async getEmployer(
     employerAddress: string,
   ): Promise<{ free_remaining: number; total: number } | null> {
+    const m = this.guard({ free_remaining: 3, total: 0 })
+    if (m !== undefined) return m
     return this.read<{ free_remaining: number; total: number } | null>(
       config.CREDENTIAL_REGISTRY_ID!,
       "get_employer",
@@ -390,6 +430,8 @@ export class BlockchainService {
   }
 
   async isEmployerInitialised(employerAddress: string): Promise<boolean> {
+    const m = this.guard(true)
+    if (m !== undefined) return m
     const emp = await this.getEmployer(employerAddress)
     return emp !== null
   }
@@ -397,6 +439,8 @@ export class BlockchainService {
   async getRemainingFreeVerifications(
     employerAddress: string,
   ): Promise<number> {
+    const m = this.guard(3)
+    if (m !== undefined) return m
     const emp = await this.getEmployer(employerAddress)
     return emp?.free_remaining ?? 0
   }
@@ -416,6 +460,8 @@ export class BlockchainService {
     sigClaimType: string,
     sigThreshold: string,
   ): Promise<{ txHash: string; verified: boolean }> {
+    const m = this.guard<{ txHash: string; verified: boolean }>({ txHash: "mock-tx-hash-verify", verified: true })
+    if (m !== undefined) return m
     const scvBytes = (hex: string): xdr.ScVal =>
       xdr.ScVal.scvBytes(hexToBytes(hex))
 
@@ -423,7 +469,7 @@ export class BlockchainService {
       config.CREDENTIAL_REGISTRY_ID!,
       "request_verification",
       [
-        scvAddress(this.source),
+        scvAddress(this.source!),
         scvBytes32(institutionId),
         scvBytes32(nullifier),
         scvU32(claimType),
@@ -449,6 +495,8 @@ export class BlockchainService {
     c: [bigint, bigint],
     publicInputs: [bigint, bigint, bigint, bigint],
   ): Promise<boolean> {
+    const m = this.guard(true)
+    if (m !== undefined) return m
     const proofABytes = Buffer.concat([
       bigintToBytesBE(a[0], 32),
       bigintToBytesBE(a[1], 32),
@@ -495,11 +543,13 @@ export class BlockchainService {
 
   // ── XLM balance ───────────────────────────────────────────────────────────
 
-  async getBalance(address: string): Promise<bigint> {
+  async getBalance(_address: string): Promise<bigint> {
+    const m = this.guard(100_000_000_000n)
+    if (m !== undefined) return m
     try {
       const url = new URL(config.STELLAR_RPC_URL)
       const horizonUrl = `${url.protocol}//horizon${url.hostname.replace(/^[^.]*/, "")}`
-      const response = await fetch(`${horizonUrl}/accounts/${address}`, {
+      const response = await fetch(`${horizonUrl}/accounts/${_address}`, {
         signal: AbortSignal.timeout(5000),
       })
       if (!response.ok) return 0n

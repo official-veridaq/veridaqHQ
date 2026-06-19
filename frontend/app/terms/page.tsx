@@ -35,7 +35,7 @@ export default function TermsOfServicePage() {
             </h2>
             <p>
               By accessing the Veridaq platform ("Protocol"), which includes the Institution
-              (Registrar) Node, Employer (Verifier) Node, and the underlying Base Sepolia smart
+              (Registrar) Node, Employer (Verifier) Node, and the underlying Stellar Soroban smart
               contracts, you agree to be bound by these Terms of Service. If you do not agree to all
               terms, do not interact with the Protocol's interfaces.
             </p>
@@ -59,7 +59,7 @@ export default function TermsOfServicePage() {
               3. Data Non-Reversibility
             </h2>
             <p>
-              When a Registrar node commits a batch of student records to the Base network, it is
+              When a Registrar node commits a batch of student records to the Stellar network, it is
               strictly appending a Poseidon hash. Veridaq Foundation cannot reverse, alter, or
               directly decode these on-chain bytes. Institutions are solely responsible for ensuring
               the accuracy of the credential attributes prior to hashing and signature generation.

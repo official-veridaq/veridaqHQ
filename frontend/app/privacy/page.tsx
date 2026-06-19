@@ -40,7 +40,7 @@ export default function PrivacyPolicyPage() {
                 (PII) on the public blockchain.
               </strong>{" "}
               All records are synthesized into non-reversible, cryptographic Poseidon hashes prior
-              to execution on Base Sepolia.
+              to execution on Stellar.
             </p>
           </section>
 
@@ -99,7 +99,7 @@ export default function PrivacyPolicyPage() {
             </h2>
             <p>
               Registered entities can issue a tear-down request across the support endpoint.
-              However, cryptographic hashes submitted via the Paymaster Vault onto the immutable L2
+              However, cryptographic hashes submitted onto the immutable Stellar
               ledger are permanent, even though they represent unintelligible mathematical dust to
               observers.
             </p>

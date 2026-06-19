@@ -65,14 +65,14 @@ any subdirectory. Run `pnpm install` once at the root.
 | Layer             | Technology                      | Version       |
 | ----------------- | ------------------------------- | ------------- |
 | Blockchain        | Base Sepolia (EVM L2, OP Stack) |               |
-| Smart contracts   | Solidity, Foundry, OpenZeppelin | 0.8.28 / 5.x  |
+| Smart contracts   | Rust, Soroban SDK               |               |
 | ZKP               | Circom, SnarkJS, Groth16        | 2.0.8 / 0.7.x |
 | Commitment hash   | Poseidon (circomlib)            |               |
 | Backend           | Node.js, Fastify, TypeScript    | 22 / 5 / 5.8  |
 | ORM               | Prisma                          | 6             |
 | Database          | PostgreSQL                      | 16            |
 | Queue             | Redis, BullMQ                   | 7 / 5         |
-| Blockchain client | viem                            | 2             |
+| Blockchain client | @stellar/stellar-sdk            | 15            |
 | Frontend          | Next.js, React                  | 15 / 19       |
 | Styling           | Tailwind CSS, shadcn/ui         | 3.4           |
 | Package manager   | pnpm                            | 9             |
@@ -544,6 +544,18 @@ contract Groth16Verifier {
     }
 }
 ```
+
+## Mock BlockchainService for local development without Stellar RPC
+
+Set `USE_MOCK_BLOCKCHAIN=true` in `.env` to make every Stellar blockchain method
+return a safe default without connecting to a real RPC endpoint. This is enabled
+by default for local development.
+
+The mock is in `backend/src/services/blockchain-mock.service.ts`. It is activated
+via a guard in `backend/src/services/blockchain.service.ts` that checks
+`process.env.USE_MOCK_BLOCKCHAIN === "true"` at module load time.
+
+**Never enable this in production.**
 
 ---
 

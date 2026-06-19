@@ -1,7 +1,37 @@
 services:
+  # ── Database ──────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: veridaq
+      POSTGRES_USER: veridaq
+      POSTGRES_PASSWORD: veridaq_dev
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: pg_isready -U veridaq -d veridaq
+      interval: 5s
+      timeout: 5s
+      start_period: 15s
+      retries: 10
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: always
+
+  # ── Cache ─────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: redis-cli ping
+      interval: 5s
+      timeout: 5s
+      start_period: 10s
+      retries: 10
+    restart: always
+
   # ── Backend (API + BullMQ Worker) ─────────────────────────
-  # Database: use Neon (PostgreSQL)   — set DATABASE_URL in .env
-  # Cache:    use Upstash (Redis)     — set REDIS_URL in .env
   backend:
     build:
       context: .
@@ -11,8 +41,15 @@ services:
     env_file: .env
     environment:
       - NODE_ENV=production
+      - DATABASE_URL=postgresql://veridaq:veridaq_dev@postgres:5432/veridaq
+      - REDIS_URL=redis://redis:6379
       - FRONTEND_URL=http://localhost:3000
       - BACKEND_URL=http://localhost:4000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     restart: always
     healthcheck:
       test: curl -f http://localhost:4000/health || exit 1
@@ -37,7 +74,5 @@ services:
         condition: service_healthy
     restart: always
 
-# All data is stored externally:
-#   PostgreSQL → Neon (cloud)
-#   Redis      → Upstash (cloud)
-# No local volumes needed.
+volumes:
+  pgdata:

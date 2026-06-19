@@ -147,7 +147,7 @@ export default function AdminDashboard() {
                 </div>
               </div>
               <p className="text-muted relative text-xs">
-                Sponsors gas fees for Institution transactions via ERC-4337.
+                Sponsors transaction fees for Institution credential submissions.
               </p>
             </div>
           </div>

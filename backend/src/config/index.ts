@@ -5,7 +5,11 @@
  */
 
 import "dotenv/config"
+import { resolve } from "path"
 import { z } from "zod"
+
+// Workspace root — resolves .env-relative paths (circuits, etc.)
+const ROOT = resolve(process.cwd())
 
 const envSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
@@ -33,8 +37,8 @@ const envSchema = z.object({
   PLATFORM_ADMIN_SECRET_KEY: z.string().min(56).optional(),
   PLATFORM_ADMIN_PUBLIC_KEY: z.string().optional(),
 
-  CIRCUIT_ZKEY_PATH: z.string().min(1),
-  CIRCUIT_WASM_PATH: z.string().min(1),
+  CIRCUIT_ZKEY_PATH: z.string().min(1).transform(p => resolve(ROOT, p)),
+  CIRCUIT_WASM_PATH: z.string().min(1).transform(p => resolve(ROOT, p)),
 
   // Must be exactly 64 hex characters (32 bytes)
   ENCRYPTION_KEY: z.string().regex(/^[0-9a-fA-F]{64}$/, "ENCRYPTION_KEY must be 64 hex chars"),
@@ -51,6 +55,11 @@ const envSchema = z.object({
 
   CROSSMINT_SERVER_API_KEY: z.string().optional(),
   CROSSMINT_WEBHOOK_SECRET: z.string().optional(),
+
+  USE_MOCK_BLOCKCHAIN: z
+    .enum(["true", "false"])
+    .default("false")
+    .transform((v) => v === "true"),
 })
 
 const parsed = envSchema.safeParse(process.env)

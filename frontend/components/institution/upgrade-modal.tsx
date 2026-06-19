@@ -165,7 +165,7 @@ export function UpgradeModal({ open, onClose, onSuccess }: UpgradeModalProps) {
                   <p className="text-foreground font-medium">Transaction Confirmed</p>
                   {txHash && (
                     <a href={`https://sepolia.basescan.org/tx/${txHash}`} target="_blank" rel="noopener noreferrer" className="text-accent flex items-center gap-1 text-xs hover:underline">
-                      View on Basescan <ExternalLink className="h-3 w-3" />
+                      View on Stellar Expert <ExternalLink className="h-3 w-3" />
                     </a>
                   )}
                 </div>

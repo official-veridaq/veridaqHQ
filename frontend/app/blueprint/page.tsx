@@ -122,7 +122,7 @@ function AnimatedProofFlow() {
     { label: "BullMQ processes batch", icon: "Cpu", color: "bg-info" },
     { label: "Poseidon commitments computed", icon: "Fingerprint", color: "bg-accent" },
     { label: "AES 256 GCM encrypts plaintext", icon: "Lock", color: "bg-info" },
-    { label: "AA UserOp sent to Base Sepolia", icon: "Globe", color: "bg-accent" },
+    { label: "AA UserOp sent to Stellar Testnet", icon: "Globe", color: "bg-accent" },
     { label: "CredentialRegistry stores commitment", icon: "Database", color: "bg-success" },
     { label: "Employer submits verification request", icon: "UserCheck", color: "bg-warning" },
     { label: "SnarkJS fullProve generates proof", icon: "CircuitBoard", color: "bg-accent" },
@@ -253,7 +253,7 @@ function AaFlowDiagram() {
     },
     {
       id: 7,
-      label: "Base Sepolia",
+      label: "Stellar Testnet",
       x: 70,
       y: 25,
       icon: <Database className="h-4 w-4" />,
@@ -387,7 +387,7 @@ function TopologyDiagram() {
       name: "Blockchain Layer",
       color: "success",
       items: [
-        { icon: <Hexagon className="h-4 w-4" />, label: "Base Sepolia L2" },
+        { icon: <Hexagon className="h-4 w-4" />, label: "Stellar Testnet L2" },
         { icon: <Wallet className="h-4 w-4" />, label: "8 Smart Contracts" },
         { icon: <ShieldCheck className="h-4 w-4" />, label: "ZKVerifier" },
         { icon: <Coins className="h-4 w-4" />, label: "PaymasterVault" },
@@ -611,7 +611,7 @@ export default function BlueprintPage() {
               Every contract, every circuit, every queue, every route, every rule.
               <br />
               This document defines the complete architecture of privacy preserving academic
-              credential verification on Base L2.
+              credential verification on Stellar.
             </p>
 
             <div className="text-muted flex flex-wrap items-center justify-center gap-3 text-xs">
@@ -657,7 +657,7 @@ export default function BlueprintPage() {
                 </p>
                 <p>
                   The answer is a cryptographic sandwich. On one side, universities commit Poseidon
-                  hashes of student credentials to Base L2. On the other side, employers generate
+                  hashes of student credentials to Stellar. On the other side, employers generate
                   Groth16 Zero Knowledge Proofs that verify specific claims against those
                   commitments. The student data never appears in plaintext on any public medium.
                 </p>
@@ -759,7 +759,7 @@ export default function BlueprintPage() {
         <section id="contracts" className="container mx-auto max-w-6xl px-4 md:px-6">
           <div className="mb-8 space-y-4">
             <p className="text-muted text-sm leading-relaxed">
-              Eight Solidity contracts deployed on Base Sepolia, compiled with Foundry 0.8.28 and
+              Eight Solidity contracts deployed on Stellar Testnet, compiled with Foundry 0.8.28 and
               tested with forge. The contracts implement a layered architecture with clear
               dependency boundaries. Every public function is protected by OpenZeppelin
               AccessControl or custom modifiers that validate caller identity against
@@ -1594,7 +1594,7 @@ export default function BlueprintPage() {
               <p className="text-muted text-sm leading-relaxed">
                 Veridaq runs on Docker Compose for local development with PostgreSQL 16 and Redis 7
                 as backing services. The backend and frontend run outside Docker on the host
-                machine. Base Sepolia serves as the L2 settlement layer.
+                machine. Stellar Testnet serves as the L2 settlement layer.
               </p>
               <div className="border-surface-border bg-surface-card rounded-xl border p-5">
                 <h3 className="mb-4 text-sm font-bold">Local Development Stack</h3>
@@ -1621,7 +1621,7 @@ export default function BlueprintPage() {
                       purpose: "Next.js 15 App Router with Tailwind CSS",
                     },
                     {
-                      service: "Base Sepolia",
+                      service: "Stellar Testnet",
                       port: "RPC",
                       purpose: "L2 EVM with 8 deployed contracts",
                     },
@@ -1679,7 +1679,7 @@ export default function BlueprintPage() {
                   </li>
                   <li className="flex items-start gap-2">
                     <div className="bg-accent/20 mt-1 h-1.5 w-1.5 shrink-0 rounded-full" />
-                    <span>Alchemy RPC URL configured for Base Sepolia access</span>
+                    <span>Alchemy RPC URL configured for Stellar Testnet access</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <div className="bg-accent/20 mt-1 h-1.5 w-1.5 shrink-0 rounded-full" />
@@ -1754,7 +1754,7 @@ export default function BlueprintPage() {
                 {
                   rule: "No PII on the public ledger",
                   detail:
-                    "No student name, matric number, CGPA, course, or any personally identifiable information may ever appear in a transaction calldata or event log on Base Sepolia. Only Poseidon commitments and nullifiers are recorded on chain.",
+                    "No student name, matric number, CGPA, course, or any personally identifiable information may ever appear in a transaction calldata or event log on Stellar Testnet. Only Poseidon commitments and nullifiers are recorded on chain.",
                 },
                 {
                   rule: "Proofs are boolean only",

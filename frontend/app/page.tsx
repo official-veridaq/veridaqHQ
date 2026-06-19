@@ -227,7 +227,7 @@ export default function LandingPage() {
                   <span className="bg-accent absolute inline-flex h-full w-full animate-ping rounded-full opacity-75" />
                   <span className="bg-accent relative inline-flex h-1.5 w-1.5 rounded-full" />
                 </span>
-                Live on Base Sepolia
+                Live on Stellar Testnet
               </div>
             </ScrollReveal>
 
@@ -242,7 +242,7 @@ export default function LandingPage() {
             <ScrollReveal direction="up" delay={0.35}>
               <p className="text-muted mx-auto mb-10 max-w-2xl text-lg leading-relaxed md:mb-12 md:text-xl">
                 Issue and cryptographically verify academic qualifications without exposing student
-                identity. Powered by Zero-Knowledge Proofs and Layer-2 rollups.
+                identity. Powered by Zero-Knowledge Proofs on the Stellar network.
               </p>
             </ScrollReveal>
 
@@ -265,7 +265,7 @@ export default function LandingPage() {
               <div className="border-surface-border relative mt-16 grid grid-cols-2 gap-4 border-t pt-8 md:mt-24 md:grid-cols-4 md:gap-8">
                 {[
                   { value: "0.7s", label: "Proof Generation" },
-                  { value: "~$0.01", label: "Base Gas Fee" },
+                  { value: "~0.001 XLM", label: "Per Verification" },
                   { value: "100%", label: "On-Chain Verified" },
                   { value: "0", label: "PII Exposed" },
                 ].map(({ value, label }) => (
@@ -346,7 +346,7 @@ export default function LandingPage() {
                   <h3 className="font-display mb-2 text-xl font-semibold">ZK Commitment</h3>
                   <p className="text-muted text-sm leading-relaxed">
                     Circom-powered Groth16 circuit constructs Poseidon hashes of metadata inputs.
-                    Committed via ERC-4337 Paymaster.
+                    Committed on-chain via Soroban smart contracts.
                   </p>
                 </div>
               </div>
@@ -363,9 +363,9 @@ export default function LandingPage() {
                     Immutable Verification
                   </h3>
                   <p className="text-muted max-w-md text-sm leading-relaxed">
-                    External entities request proof executions, receiving strictly boolean
-                    assertions without exposing any mapping seeds. Powered by BN254 elliptic curve
-                    precompiles.
+                    Employers request proof executions, receiving strictly boolean
+                    assertions without exposing any raw student data. Powered by Groth16
+                    zero-knowledge proofs on Stellar.
                   </p>
                 </div>
               </div>
@@ -402,8 +402,8 @@ export default function LandingPage() {
                   },
                   {
                     icon: <Globe className="h-4 w-4" />,
-                    title: "L2 Precompiled Verification",
-                    desc: "Deployed on Base Sepolia leveraging BN254 elliptic curve precompiles for gas-efficient proof verification.",
+                    title: "Soroban Smart Contracts",
+                    desc: "Deployed on Stellar testnet leveraging Soroban for gas-efficient proof verification and batch credential registration.",
                   },
                   {
                     icon: <Key className="h-4 w-4" />,
@@ -494,7 +494,7 @@ template CredentialVerifier() {
                 Protocol Operations
               </h2>
               <p className="text-muted mx-auto max-w-2xl text-base md:text-lg">
-                End-to-end operational flow from API ingest to L2 finality.
+                End-to-end operational flow from API ingest to on-chain finality.
               </p>
             </div>
           </ScrollReveal>
@@ -508,25 +508,25 @@ template CredentialVerifier() {
                 step: "01",
                 icon: <FileJson className="h-5 w-5" />,
                 title: "Hash Injection",
-                desc: "Academic records stripped of PII, transformed into Poseidon commitment bundles via SNARK-compatible field elements.",
+                desc: "Academic records stripped of PII, transformed into Poseidon commitment hashes via SNARK-compatible field elements.",
               },
               {
                 step: "02",
                 icon: <Database className="h-5 w-5" />,
-                title: "L2 Commitment",
-                desc: "Commitment bundles transmitted to Base Sepolia using ERC-4337 sponsored Paymaster for gasless institution operations.",
+                title: "On-Chain Commitment",
+                desc: "Commitment bundles transmitted to Stellar Soroban smart contracts for permanent, tamper-proof storage.",
               },
               {
                 step: "03",
                 icon: <Cpu className="h-5 w-5" />,
                 title: "ZK Proof Generation",
-                desc: "Employer inputs mathematical constraints. Groth16 proof generated locally in ~0.7s via compiled WASM circuit.",
+                desc: "Employer submits verification criteria. Groth16 proof generated locally in ~0.7s via compiled WASM circuit.",
               },
               {
                 step: "04",
                 icon: <Shield className="h-5 w-5" />,
                 title: "Immutable Verification",
-                desc: "Non-reversible boolean executed on-chain via BN254 pairing precompiles. Result stored in VerificationRegistry.",
+                desc: "Non-reversible boolean executed on-chain via Soroban. Result permanently stored and auditable.",
               },
             ].map(({ step, icon, title, desc }, i) => (
               <ScrollReveal key={step} direction="up" delay={i * 0.1}>
@@ -567,17 +567,17 @@ template CredentialVerifier() {
                     Cryptographic Finality
                   </h3>
                   <p className="text-muted mb-6 text-sm leading-relaxed md:text-base">
-                    The verification loop on the smart contract ensures zero tolerance for
-                    mathematical fabrications. Verification logic executes deterministically on the
-                    OP Stack resulting in absolute, publicly viewable verification assertions while
-                    retaining state anonymity.
+                    The smart contract's verification logic guarantees zero tolerance for
+                    mathematical forgery. Every proof is verified deterministically on Stellar
+                    Soroban, producing publicly auditable verification results while preserving
+                    absolute credential anonymity.
                   </p>
                   <ul className="text-muted space-y-3 text-sm">
                     {[
-                      "Deterministic execution on Base L2",
+                      "Deterministic execution on Stellar Soroban",
                       "Non-interactive succinct zero-knowledge proofs",
-                      "Absolute decoupling via Poseidon hashing",
-                      "ERC-4337 Account Abstraction for gas sponsorship",
+                      "Complete data anonymity via Poseidon hashing",
+                      "Gas sponsorship for institutions via Soroban",
                     ].map((item) => (
                       <li key={item} className="flex items-center gap-3">
                         <div className="bg-accent/10 text-accent rounded p-1">
@@ -595,27 +595,29 @@ template CredentialVerifier() {
               <div className="border-surface-border bg-surface hover:shadow-glow-sm group relative w-full overflow-x-auto border p-4 font-mono text-sm transition-shadow duration-300 md:p-6">
                 <div className="border-surface-border text-muted mb-4 flex min-w-max justify-between border-b pb-3 text-xs">
                   <span className="flex items-center gap-2">
-                    <Lock className="h-3 w-3" /> Solidity // ZKVerifier.sol
+                    <Lock className="h-3 w-3" /> Soroban // ZKVerifier
                   </span>
-                  <span className="text-accent">~236k Gas</span>
+                  <span className="text-accent">~500k Gas</span>
                 </div>
                 <pre className="text-muted min-w-max overflow-visible text-xs leading-relaxed sm:text-sm">
-                  {`function verifyProof(
-  uint256[2] calldata _pA,
-  uint256[2][2] calldata _pB,
-  uint256[2] calldata _pC,
-  uint256[4] calldata _pubSignals
-) public view returns (bool) {
-  require(
-    verifier.verifyProof(
-      _pA, _pB, _pC, _pubSignals
-    ),
-    "Invalid ZK proof"
+                  {`fn verify_raw(
+  env: Env,
+  nullifier: BytesN<32>,
+  proof_a: Bytes,
+  proof_b: Bytes,
+  proof_c: Bytes,
+  public_inputs: Vec<BytesN<32>>,
+) -> bool {
+  let verified = verify_groth16(
+    &env, proof_a, proof_b, proof_c, public_inputs
   );
-  emit VerificationLogged(
-    _pubSignals[0]  // commitment
+  if !verified {
+    panic_with_error!(&env, Error::InvalidProof);
+  }
+  env.events().publish(
+    ("verified", nullifier), ()
   );
-  return true;
+  true
 }`}
                 </pre>
               </div>
@@ -725,7 +727,7 @@ template CredentialVerifier() {
               <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
                 {[
                   { title: "GDPR", desc: "No PII processed" },
-                  { title: "SOC2", desc: "Hardened perimeter" },
+                  { title: "SOC 2", desc: "Hardened perimeter" },
                   { title: "ISO 27001", desc: "Security first" },
                   { title: "FERPA", desc: "Student privacy" },
                 ].map(({ title, desc }, i) => (
