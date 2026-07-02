@@ -5,11 +5,13 @@
  */
 
 import "dotenv/config"
-import { resolve } from "path"
+import { resolve, dirname } from "path"
+import { fileURLToPath } from "url"
 import { z } from "zod"
 
 // Workspace root — resolves .env-relative paths (circuits, etc.)
-const ROOT = resolve(process.cwd())
+// This file is at backend/src/config/index.ts, so we go up 3 levels to reach root.
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../../..")
 
 const envSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),

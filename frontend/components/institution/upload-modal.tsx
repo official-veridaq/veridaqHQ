@@ -712,7 +712,7 @@ export function UploadModal({ onDismiss, onSuccess }: UploadModalProps) {
                 </p>
                 {pollData?.txHash && pollData.status !== "FAILED" && (
                   <a
-                    href={`https://sepolia.basescan.org/tx/${pollData.txHash}`}
+                    href={`https://stellar.expert/explorer/testnet/tx/${pollData.txHash}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-accent mt-2 inline-block font-mono text-xs hover:underline"

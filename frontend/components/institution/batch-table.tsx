@@ -76,7 +76,7 @@ export function BatchTable({ batches, onDismiss }: { batches: Batch[]; onDismiss
               <td className="text-muted hidden py-3 font-mono text-xs lg:table-cell">
                 {b.txHash ? (
                   <a
-                    href={`https://sepolia.basescan.org/tx/${b.txHash}`}
+                    href={`https://stellar.expert/explorer/testnet/tx/${b.txHash}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-accent hover:underline"

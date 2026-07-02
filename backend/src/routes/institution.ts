@@ -54,6 +54,47 @@ export const institutionRoutes: FastifyPluginAsync = async (app) => {
     return rep.send(buffer)
   })
 
+  app.post("/batch/validate", async (req, rep) => {
+    const data = await req.file()
+    if (!data) return rep.code(400).send({ error: "No file uploaded" })
+
+    const ext = data.filename.split(".").pop()?.toLowerCase()
+    if (ext !== "xlsx") return rep.code(400).send({ error: "Only .xlsx files are accepted" })
+
+    const raw = await data.toBuffer()
+    const workbook = new ExcelJS.Workbook()
+    // Buffer type mismatch between @fastify/multipart and exceljs 4.x
+    await (workbook.xlsx.load as (...args: unknown[]) => Promise<ExcelJS.Workbook>)(new Uint8Array(raw.buffer, raw.byteOffset, raw.byteLength))
+    const sheet = workbook.worksheets[0]
+    if (!sheet) return rep.code(400).send({ error: "Workbook is empty" })
+
+    const errors: { row: number; error: string }[] = []
+    let totalRecords = 0
+
+    sheet.eachRow((row, rowIndex) => {
+      if (rowIndex === 1) return // skip header
+      totalRecords++
+      const matric = String(row.getCell(1).value ?? "").trim()
+      const name = String(row.getCell(2).value ?? "").trim()
+      const cgpa = Number(row.getCell(3).value)
+      const gradYear = Number(row.getCell(6).value)
+
+      if (!matric) errors.push({ row: rowIndex, error: "MatricNumber is required" })
+      if (!name) errors.push({ row: rowIndex, error: "StudentName is required" })
+      if (!cgpa || cgpa < 0 || cgpa > 5) errors.push({ row: rowIndex, error: "CGPA must be between 0 and 5" })
+      if (!gradYear || gradYear < 1950 || gradYear > 2030) errors.push({ row: rowIndex, error: "GraduationYear must be between 1950 and 2030" })
+    })
+
+    return {
+      valid: errors.length === 0,
+      totalRecords,
+      gasSponsored: true,
+      simulation: null,
+      simulationError: null,
+      errors: errors.length > 0 ? errors : undefined,
+    }
+  })
+
   app.post("/batch/upload", async (req, rep) => {
     const institutionId = req.jwtPayload.sub
     const data = await req.file()

@@ -167,7 +167,7 @@ Here is the result of your credential verification request on VERIDAQ.
 Candidate:       ${opts.studentName}
 Claim:           ${opts.claimType}
 Result:          ${outcome}
-Blockchain proof: https://sepolia.basescan.org/tx/${opts.txHash}
+Blockchain proof: https://stellar.expert/explorer/testnet/tx/${opts.txHash}
 
 The verification result above was produced by a Groth16 Zero-Knowledge Proof and
 validated by the VERIDAQ smart contract on Stellar Soroban. The linked transaction

@@ -203,7 +203,7 @@ export class ReportService {
       if (data.txHash) {
         row("Transaction Hash", data.txHash, true)
         doc.y += 1
-        const url = `https://sepolia.basescan.org/tx/${data.txHash}`
+        const url = `https://stellar.expert/explorer/testnet/tx/${data.txHash}`
         doc.fontSize(6.5).fillColor(LINK).font("Courier")
         doc.text(url, LX + 8, doc.y, { width: CW - 16, link: url, underline: true, lineBreak: false })
         doc.y += 13
@@ -234,8 +234,8 @@ export class ReportService {
       doc.fontSize(8).fillColor(NAVY).font("Orbitron")
       doc.text("VERIFIED BY VERIDAQ", LX + 44, sa + 6)
       doc.fontSize(6.5).fillColor(MUTED).font("Cambria")
-      doc.text("This verification is independently verifiable on the Base blockchain.", LX + 44, sa + 20)
-      doc.text("Verify the transaction hash at sepolia.basescan.org.", LX + 44, sa + 29)
+      doc.text("This verification is independently verifiable on the Stellar blockchain.", LX + 44, sa + 20)
+      doc.text("Verify the transaction hash at stellar.expert/explorer/testnet.", LX + 44, sa + 29)
 
       doc.y = sa + 46
 

@@ -130,7 +130,7 @@ export default function TechnicalResourcesPage() {
           </a>
 
           <a
-            href="https://sepolia.basescan.org/"
+            href="https://stellar.expert/explorer/testnet"
             target="_blank"
             rel="noreferrer"
             className="border-surface-border bg-surface-card hover:border-accent/50 group flex items-start gap-4 rounded-lg border p-6 transition-colors"
