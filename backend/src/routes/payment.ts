@@ -19,6 +19,11 @@ const completeFiatSchema = z.object({
   fiatCurrency: z.string().min(1),
 })
 
+const completeCryptoSchema = z.object({
+  referenceId: z.string().min(1),
+  txHash: z.string().min(1),
+})
+
 export const paymentRoutes: FastifyPluginAsync = async (app) => {
   const paymentSvc = new PaymentService(app.prisma)
 
@@ -125,6 +130,19 @@ export const paymentRoutes: FastifyPluginAsync = async (app) => {
       body.fiatCurrency
     )
     if ("error" in result) {
+      return rep.code(400).send({ error: result.error })
+    }
+    return { completed: true }
+  })
+
+  app.post("/complete/crypto", async (req, rep) => {
+    const body = completeCryptoSchema.parse(req.body)
+    const result = await paymentSvc.completeCryptoPayment(
+      body.referenceId,
+      body.txHash,
+    )
+    if ("error" in result) {
+      if (result.error === "NOT_FOUND") return rep.code(404).send({ error: "Payment not found" })
       return rep.code(400).send({ error: result.error })
     }
     return { completed: true }

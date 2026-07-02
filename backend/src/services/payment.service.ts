@@ -57,6 +57,28 @@ export class PaymentService {
     return payment
   }
 
+  async completeCryptoPayment(
+    referenceId: string,
+    txHash: string,
+  ) {
+    const payment = await this.prisma.payment.findUnique({ where: { referenceId } })
+    if (!payment) return { error: "NOT_FOUND" as const }
+    if (payment.status !== "PENDING") return { error: "ALREADY_PROCESSED" as const }
+
+    await this.prisma.payment.update({
+      where: { id: payment.id },
+      data: {
+        status: "COMPLETED",
+        method: "CRYPTO",
+        txHash,
+        completedAt: new Date(),
+      },
+    })
+
+    await this.applyPayment(payment)
+    return { completed: true }
+  }
+
   async completeFiatPayment(
     referenceId: string,
     fiatProvider: string,
