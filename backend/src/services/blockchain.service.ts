@@ -111,15 +111,19 @@ export class BlockchainService {
   // ── Generic helpers ───────────────────────────────────────────────────────
 
   private async getAccount() {
-    const res = await fetch(
-      `https://horizon-testnet.stellar.org/accounts/${this.source!}`,
-      { signal: AbortSignal.timeout(15000) },
-    )
-    if (!res.ok) {
-      throw new Error(`Horizon account fetch failed: ${res.status}`)
+    try {
+      const res = await fetch(
+        `https://horizon-testnet.stellar.org/accounts/${this.source!}`,
+        { signal: AbortSignal.timeout(30000) },
+      )
+      if (!res.ok) throw new Error(`Horizon account fetch failed: ${res.status}`)
+      const data = await res.json() as { id: string; sequence: string }
+      return new Account(data.id, data.sequence)
+    } catch (horizonErr) {
+      log.warn({ err: horizonErr }, "Horizon unavailable, falling back to Soroban RPC for account")
+      const account = await this.server!.getAccount(this.source!)
+      return account
     }
-    const data = await res.json() as { id: string; sequence: string }
-    return new Account(data.id, data.sequence)
   }
 
   private async buildTx(
