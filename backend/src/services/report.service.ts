@@ -1,6 +1,9 @@
 import { PrismaClient } from "@prisma/client"
 import PDFDocument from "pdfkit"
-import { resolve } from "path"
+import { resolve, dirname } from "path"
+import { fileURLToPath } from "url"
+
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../../..")
 
 const dateFormatter = new Intl.DateTimeFormat("en-GB", {
   day: "2-digit",
@@ -10,11 +13,11 @@ const dateFormatter = new Intl.DateTimeFormat("en-GB", {
   minute: "2-digit",
 })
 
-const FONT_DIR = resolve(process.cwd(), "backend/src/assets/fonts")
+const FONT_DIR = resolve(ROOT, "backend/src/assets/fonts")
 const ORBITRON_PATH = resolve(FONT_DIR, "Orbitron-Variable.ttf")
 const CAMBRIA_TTC = "/usr/share/fonts/truetype/msttcorefonts/CAMBRIA.TTC"
-const LOGO_WHITE = resolve(process.cwd(), "frontend/public/logo-white.png")
-const LOGO_BLACK = resolve(process.cwd(), "frontend/public/logo-black.png")
+const LOGO_WHITE = resolve(ROOT, "frontend/public/logo-white.png")
+const LOGO_BLACK = resolve(ROOT, "frontend/public/logo-black.png")
 
 const NAVY = "#0f172a"
 const WHITE = "#ffffff"

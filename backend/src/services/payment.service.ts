@@ -123,7 +123,7 @@ export class PaymentService {
     } else if (payment.type === "EMPLOYER_TOPUP") {
       const emp = await this.prisma.employer.findUnique({ where: { id: payment.payerId } })
       if (emp) {
-        const added = this.calculateCreditsForAmount(BigInt(payment.amountWei))
+        const added = this.calculateCreditsForAmount(payment.amountWei)
         await this.prisma.employer.update({
           where: { id: payment.payerId },
           data: { verificationCredits: { increment: added } },
@@ -152,8 +152,11 @@ export class PaymentService {
     })
   }
 
-  private calculateCreditsForAmount(_amount: bigint): number {
-    return 10
+  private calculateCreditsForAmount(amountStr: string): number {
+    const pack = CREDIT_PACKS.find(
+      (p) => p.amountXlm === amountStr || String(Number(p.amountXlm) / 100) === amountStr,
+    )
+    return pack?.credits ?? 10
   }
 
   async failPayment(referenceId: string) {

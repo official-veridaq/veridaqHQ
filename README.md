@@ -157,73 +157,215 @@ veridaq/
 
 ### Prerequisites
 
-- Node.js 22 or later
-- pnpm 9 or later
-- Docker Desktop (for PostgreSQL and Redis)
-- Rust toolchain with wasm32 target (for Soroban contract)
-- soroban-cli (for contract deployment)
-- Circom 2 (optional, for circuit compilation)
-- Freighter browser extension (Stellar wallet, optional for wallet features)
+| Tool | Version | Purpose |
+|------|---------|---------|
+| Node.js | 22+ | Runtime |
+| pnpm | 9+ | Package manager |
+| Docker Desktop | Latest | PostgreSQL 16 + Redis 7 |
+| Rust + wasm32 | Latest stable | Soroban contract compilation |
+| stellar CLI | Latest | Contract deployment & invocation |
+| Circom 2 | 2.0.8+ | ZKP circuit compilation (optimistic) |
+| Freighter | Latest | Stellar wallet browser extension |
 
-### Environment Setup
+### Quick Start (Local Development — No Blockchain Required)
+
+This path uses the mock blockchain — every Stellar call returns a safe default.
+No RPC endpoint, no wallet, no XLM needed.
 
 ```bash
-# Clone the repository
-git clone <repository-url>
+# 1. Clone
+git clone git@github.com:trinnode/veridaqHQ.git
 cd veridaq
 
-# Install dependencies
+# 2. Install dependencies
 pnpm install
 
-# Copy environment file
-cp .env.example .env
-
-# Edit .env with your values (see .env.example for all variables)
-```
-
-### Database Setup
-
-```bash
-# Start PostgreSQL and Redis
+# 3. Start infra (PostgreSQL + Redis)
 docker compose up -d
 
-# Verify both services are healthy
-docker compose ps
+# 4. Copy env and enable mock blockchain
+cp .env.example .env
+# Edit .env: set USE_MOCK_BLOCKCHAIN=true
+# This makes every blockchain call return a mock value.
+# All other vars can stay at defaults (except JWT_SECRET / ENCRYPTION_KEY).
 
-# Run migrations
+# 5. Database
 pnpm db:migrate
+pnpm db:seed
 
-# Seed the database with test data
+# 6. Start backend
+pnpm dev:backend     # → http://localhost:4000
+
+# 7. Start frontend (separate terminal)
+pnpm dev:frontend    # → http://localhost:3000
+
+# 8. Log in with seeded credentials (see below)
+```
+
+### Full Setup (Real Stellar Testnet — With On-Chain Transactions)
+
+#### Step 1 — Clone & Install
+
+```bash
+git clone git@github.com:trinnode/veridaqHQ.git
+cd veridaq
+pnpm install
+```
+
+#### Step 2 — Start Infrastructure
+
+```bash
+docker compose up -d
+docker compose ps          # Both postgres + redis should show "healthy"
+```
+
+#### Step 3 — Configure Environment
+
+```bash
+cp .env.example .env
+```
+
+Fill in the following variables in `.env`:
+
+| Variable | Value / How to Get |
+|----------|-------------------|
+| `JWT_SECRET` | `openssl rand -base64 64` |
+| `REFRESH_SECRET` | `openssl rand -base64 64` |
+| `ENCRYPTION_KEY` | `openssl rand -hex 32` |
+| `USE_MOCK_BLOCKCHAIN` | `false` |
+| `PLATFORM_ADMIN_SECRET_KEY` | Your Stellar secret key (see below) |
+| `PLATFORM_ADMIN_PUBLIC_KEY` | Corresponding public key |
+
+**Generate a Stellar admin keypair:**
+
+```bash
+stellar keys generate veridaq-admin
+stellar keys show veridaq-admin
+# Copy the secret key → PLATFORM_ADMIN_SECRET_KEY
+# Copy the public key  → PLATFORM_ADMIN_PUBLIC_KEY
+```
+
+Or derive from an existing 24-word mnemonic:
+
+```bash
+node -e "
+const { Keypair } = require('@stellar/stellar-sdk');
+// In production, never hardcode mnemonics — use a .env secret
+const mnemonic = 'your twenty four word mnemonic phrase goes here ...';
+const kp = Keypair.fromMnemonic(mnemonic);
+console.log('Secret:', kp.secret());
+console.log('Public:', kp.publicKey());
+"
+```
+
+**Fund the account on testnet** (needs XLM for contract fees):
+
+```bash
+curl -X POST "https://friendbot.stellar.org?addr=$(grep PLATFORM_ADMIN_PUBLIC_KEY .env | cut -d= -f2)"
+```
+
+#### Step 4 — Run Database Migrations
+
+```bash
+pnpm db:migrate
 pnpm db:seed
 ```
 
-### Smart Contract Setup
+The seed script creates three test accounts and prints confirmation lines.
+
+#### Step 5 — Deploy Contracts (Only If Starting Fresh)
+
+The following contracts have been pre-deployed on Stellar Soroban testnet with the **existing admin keypair**. If you are using a **different admin keypair**, you must redeploy them:
+
+**Institution Registry** — stores institution identities and KYC status
+**Credential Registry (Veridaq Core)** — stores credential commitments, handles batch registration, manages employer credits and verification fees
+**Groth16 Verifier** — verifies Groth16 ZK proofs on-chain
 
 ```bash
-# Build the Soroban contract
+# Build WASM
 cd contracts/groth16-verifier
 cargo build --target wasm32-unknown-unknown --release
-soroban contract build
+cd ../veridaq-core
+cargo build --target wasm32-unknown-unknown --release
+cd ../institution-registry
+cargo build --target wasm32-unknown-unknown --release
+cd ../..
 
-# Run contract tests
-cargo test
+# Deploy all three
+INST_REG=$(stellar contract deploy \
+  --wasm contracts/target/wasm32v1-none/release/institution_registry.wasm \
+  --source veridaq-admin --network testnet)
 
-# Deploy to Stellar testnet
-soroban contract deploy \
-  --wasm target/wasm32-unknown-unknown/release/groth16_verifier.wasm \
-  --source <your-identity> \
-  --network testnet
+CORE_REG=$(stellar contract deploy \
+  --wasm contracts/target/wasm32v1-none/release/veridaq_core.wasm \
+  --source veridaq-admin --network testnet)
+
+ZK_VER=$(stellar contract deploy \
+  --wasm contracts/target/wasm32v1-none/release/groth16_verifier.wasm \
+  --source veridaq-admin --network testnet)
+
+# Initialize each contract
+ADMIN=$(grep PLATFORM_ADMIN_PUBLIC_KEY .env | cut -d= -f2)
+
+stellar contract invoke --id $INST_REG --source veridaq-admin --network testnet -- \
+  initialize --admin $ADMIN
+
+stellar contract invoke --id $ZK_VER --source veridaq-admin --network testnet -- \
+  initialize --admin $ADMIN
+
+stellar contract invoke --id $CORE_REG --source veridaq-admin --network testnet -- \
+  initialize \
+  --admin $ADMIN \
+  --institution_registry $INST_REG \
+  --groth16_verifier $ZK_VER \
+  --verifier_vk_hash 0000000000000000000000000000000000000000000000000000000000000001 \
+  --xlm_asset $ADMIN
+
+# Fill .env with deployed IDs
+echo "
+INSTITUTION_REGISTRY_ID=$INST_REG
+CREDENTIAL_REGISTRY_ID=$CORE_REG
+REVOCATION_REGISTRY_ID=$CORE_REG
+ZK_VERIFIER_ID=$ZK_VER
+" >> .env
 ```
 
-### Circuit Setup
+**Pre-deployed contract IDs** (current admin keypair):
+
+| Contract | Address |
+|----------|---------|
+| Institution Registry | `CDX674MGO7EAYPFIRGWZEXDN2JTVUT2GMSJQA5DFKGCEIIATG2MOAALW` |
+| Credential Registry | `CD33Q52CNAQJGSDBOTSR2DYGEG4775SCLPHRGHLAXRAMAKAWRZQEDQB2` |
+| Groth16 Verifier | `CDV5XY4N3E7NPEVHK7ZARVOYQJ4VF3VCYPR7NRX64JMGO74GHY54ZA24` |
+
+**Register the test institution on-chain** (required for batch upload):
 
 ```bash
-# Compile the Circom circuit
-pnpm circuit:compile
+INST_REG=CDX674MGO7EAYPFIRGWZEXDN2JTVUT2GMSJQA5DFKGCEIIATG2MOAALW
+ADMIN=$(grep PLATFORM_ADMIN_PUBLIC_KEY .env | cut -d= -f2)
+# left-padded hex of "futminna"
+INST_ID="0000000000000000000000000000000000000000000000006675746d696e6e61"
 
-# Run trusted setup (requires Powers of Tau file)
+stellar contract invoke --id $INST_REG --source veridaq-admin --network testnet -- \
+  register --caller $ADMIN --id $INST_ID \
+  --name "Federal University of Technology Minna" --admin_wallet $ADMIN
+```
+
+#### Step 6 — Circuit Setup (Optimistic — Uses Pre-Built Artifacts)
+
+The circuit artifacts (proving key, WASM, verification key) are gitignored.
+If they are missing, run:
+
+```bash
+pnpm circuit:compile
 pnpm circuit:setup
 ```
+
+This downloads a ~230 MB Powers of Tau file, runs phase 2 setup, and exports:
+- `packages/circuits/build/credential_final.zkey` — proving key
+- `packages/circuits/build/credential_js/credential.wasm` — witness generator
+
+**Skip this step** if using mock blockchain (proof generation is not needed).
 
 ---
 
@@ -235,7 +377,8 @@ pnpm circuit:setup
 pnpm dev:backend
 ```
 
-The backend starts on port 4000 by default. API documentation is available at http://localhost:4000/docs.
+The backend starts on port 4000 by default.  
+Swagger UI (all routes documented): http://localhost:4000/docs
 
 ### Start the Frontend
 
@@ -243,27 +386,58 @@ The backend starts on port 4000 by default. API documentation is available at ht
 pnpm dev:frontend
 ```
 
-The frontend starts on port 3000.
+The frontend starts on port 3000. Three portals available:
+
+| Portal      | URL                                                |
+|-------------|----------------------------------------------------|
+| Institution | http://localhost:3000/institution/login            |
+| Employer    | http://localhost:3000/employer/login               |
+| Admin       | http://localhost:3000/admin/login                  |
 
 ### Default Login Credentials
 
-| Portal      | URL                                                | Email                    | Password    |
-| ----------- | -------------------------------------------------- | ------------------------ | ----------- |
-| Institution | http://localhost:3000/institution/login | futminna@veridaq.xyz     | Inst@2026!  |
-| Employer    | http://localhost:3000/employer/login    | firstbank@veridaq.xyz    | Emp@2026!   |
-| Admin       | http://localhost:3000/admin/login       | admin@veridaq.xyz        | Admin@2026! |
+| Portal      | Email                    | Password    |
+|-------------|--------------------------|-------------|
+| Institution | futminna@veridaq.xyz     | Inst@2026!  |
+| Employer    | firstbank@veridaq.xyz    | Emp@2026!   |
+| Admin       | admin@veridaq.xyz        | Admin@2026! |
+
+### Testing the Batch Upload Flow (Real On-Chain)
+
+1. Login as **institution** (`futminna@veridaq.xyz` / `Inst@2026!`)
+2. Go to **Batches** → **Upload**
+3. Download the template, fill in student rows, upload
+4. The worker processes the file and calls `register_batch` on Soroban
+5. Status changes to **CONFIRMED** with a real testnet transaction hash
+6. View the tx on https://stellar.expert/explorer/testnet/tx/{txHash}
+
+### Testing the Verification Flow
+
+1. Login as **employer** (`firstbank@veridaq.xyz` / `Emp@2026!`)
+2. Go to **Verify** — submit institution, matric number, claim type, threshold
+3. Backend generates a Groth16 proof and calls the Soroban verifier
+4. Result shows **VERIFIED** or **CLAIM_NOT_SATISFIED**
+5. Click **Download PDF report** to get a signed PDF verification certificate
+
+### Testing the Credits Purchase Flow
+
+1. Login as **employer**
+2. Click **Buy Credits** on the dashboard
+3. Select a credit pack
+4. Connect Freighter wallet (or use the fiat/card option)
+5. Credits are applied immediately after payment is recorded
 
 ---
 
 ## Testing
 
 ```bash
-pnpm lint           # ESLint
-pnpm typecheck      # TypeScript checks
-pnpm test:backend   # Backend test suite (124 tests)
-pnpm test:contracts # Rust contract tests (18 tests)
-pnpm build:backend  # Production build check
-pnpm build:frontend # Frontend build check
+pnpm lint           # ESLint — checks all TypeScript/TSX files
+pnpm typecheck      # TypeScript checks — both backend + frontend tsconfig
+pnpm test:backend   # Backend test suite (124 tests across 5+ suites)
+pnpm test:contracts # Rust contract tests (18 tests across 2 contracts)
+pnpm build:backend  # Production backend build (tsc)
+pnpm build:frontend # Production frontend build (next build)
 ```
 
 ---
@@ -275,6 +449,76 @@ pnpm build:frontend # Frontend build check
 3. Build and deploy the frontend to Vercel or your hosting provider
 4. Update .env with production values
 5. Run database migrations on the production database
+
+---
+
+---
+
+## Troubleshooting
+
+### "Port 4000 already in use"
+
+```bash
+fuser -k 4000/tcp
+pnpm dev:backend
+```
+
+### Backend crashes with "ENOENT: no such file or directory"
+
+The backend resolves paths relative to the source file location. If you moved files or are running from a different directory, ensure these exist:
+
+- `backend/src/assets/fonts/Orbitron-Variable.ttf`
+- `frontend/public/logo-white.png`
+- `frontend/public/logo-black.png`
+- `/usr/share/fonts/truetype/msttcorefonts/CAMBRIA.TTC` (install `msttcorefonts` if missing)
+
+### "Soroban simulation error" / on-chain call fails
+
+1. Check that all contract IDs in `.env` match deployed contracts
+2. Ensure the admin keypair (`PLATFORM_ADMIN_SECRET_KEY`) owns the contracts or has permissions
+3. Verify the account has enough testnet XLM:
+   ```bash
+   curl "https://horizon-testnet.stellar.org/accounts/$PLATFORM_ADMIN_PUBLIC_KEY"
+   ```
+4. Re-register the test institution on-chain if using a new admin key:
+   ```bash
+   stellar contract invoke --id $INST_REG --source veridaq-admin --network testnet -- \
+     register --caller $ADMIN --id $INST_ID \
+     --name "Federal University of Technology Minna" --admin_wallet $ADMIN
+   ```
+
+### "Transaction Failed" when buying credits
+
+The frontend sends XLM amounts like `"0.01"` which caused a `BigInt` parse error in earlier versions. Ensure you're running the latest code from this branch.
+
+### "Batch validation fails — GraduationYear error"
+
+The XLSX template expects 6 columns in this order:
+1. MatricNumber
+2. StudentName
+3. CGPA
+4. Classification
+5. CourseName
+6. GraduationYear
+
+Download the template from the institution Batches page for the correct format.
+
+### Docker not working / Docker Hub unreachable
+
+Docker is only needed for PostgreSQL and Redis. If Docker is unavailable:
+
+```bash
+# Use local Postgres + Redis instead
+# Install postgresql and redis-server on your system, then:
+createdb veridaq
+redis-server &
+
+# Update .env:
+# DATABASE_URL=postgresql://localhost:5432/veridaq
+# REDIS_URL=redis://localhost:6379
+```
+
+The backend and frontend run natively with `pnpm dev:backend` / `pnpm dev:frontend`.
 
 ---
 
