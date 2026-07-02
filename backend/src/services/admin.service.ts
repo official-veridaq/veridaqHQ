@@ -241,6 +241,40 @@ export class AdminService {
     return true
   }
 
+  async getEmployerProfile(employerId: string) {
+    return this.prisma.employer.findUnique({
+      where: { id: employerId },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        cacNumber: true,
+        walletAddress: true,
+        kycApproved: true,
+        active: true,
+        freeVerificationsRemaining: true,
+        createdAt: true,
+      },
+    })
+  }
+
+  async getAuditLog(page: number, limit: number) {
+    const skip = (page - 1) * limit
+    const [total, items] = await this.prisma.$transaction([
+      this.prisma.auditLog.count(),
+      this.prisma.auditLog.findMany({
+        orderBy: { createdAt: "desc" },
+        skip,
+        take: limit,
+      }),
+    ])
+    return { total, page, limit, items }
+  }
+
+  async getStats() {
+    return this.getPlatformStats()
+  }
+
   async getPlatformStats() {
     let adminWalletBalance = "0"
     try {

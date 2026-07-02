@@ -49,7 +49,7 @@ export class InstitutionService {
         errorReport: true,
       },
     })
-    return { total, page, limit, items }
+    return { total, page, limit, totalPages: Math.ceil(total / limit), items }
   }
 
   async getBatch(batchId: string, institutionId: string) {
@@ -99,6 +99,13 @@ export class InstitutionService {
       where: { institutionId, active: true },
       orderBy: { claimCode: "asc" },
     })
+  }
+
+  async deleteClaim(claimId: string, institutionId: string) {
+    const deleted = await this.prisma.claimDefinition.deleteMany({
+      where: { id: claimId, institutionId },
+    })
+    return deleted.count > 0
   }
 
   async updateClaim(

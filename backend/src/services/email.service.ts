@@ -72,8 +72,13 @@ type EmployerDeactivationOptions = {
 // ─── Transport builder ────────────────────────────────────────────────────────
 
 async function buildTransport(): Promise<Transporter> {
+  if (config.NODE_ENV === "test") {
+    // No-op JSON transport — never attempts network calls
+    return nodemailer.createTransport({ jsonTransport: true })
+  }
+
   if (config.NODE_ENV !== "production") {
-    // Use Ethereal in dev/test so no real mail is ever sent during development
+    // Use Ethereal in dev so no real mail is ever sent during development
     const testAccount = await nodemailer.createTestAccount()
     return nodemailer.createTransport({
       host: "smtp.ethereal.email",
