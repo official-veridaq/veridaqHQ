@@ -51,7 +51,7 @@ export default function PrivacyPolicyPage() {
             <ul className="mt-4 list-disc space-y-2 pl-5">
               <li>
                 <strong className="text-foreground">Institution Data:</strong> Organizational name,
-                administrator email, hashed operational passwords, and your public ETH wallet
+                administrator email, hashed operational passwords, and your public wallet
                 address.
               </li>
               <li>

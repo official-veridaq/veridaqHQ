@@ -97,7 +97,7 @@ export default function AdminAudit() {
                     <td className="p-3">{getActionBadge(entry.action)}</td>
                     <td className="p-3 text-muted text-xs hidden md:table-cell max-w-xs truncate">
                       {entry.action.startsWith("PAYMENT")
-                        ? `Amount: ${(Number((entry.details as any)?.amountWei ?? 0) / 1e18).toFixed(4)} ETH`
+                        ? `Amount: ${(Number((entry.details as any)?.amount ?? 0) / 1e7).toFixed(4)} XLM`
                         : entry.action.startsWith("BATCH")
                           ? `${(entry.details as any)?.count ?? "?"} credentials`
                           : entry.action.startsWith("TIER")

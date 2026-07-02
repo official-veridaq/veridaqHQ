@@ -4,7 +4,7 @@ This file is read by OpenAI Codex and GitHub Copilot agent mode when they work
 inside this workspace. Every section below tells the agent exactly how to
 approach tasks, what conventions to follow, which tools to use, and what the
 complete build sequence looks like from first install through a live deployment
-on Base Sepolia.
+on Stellar Soroban testnet.
 
 ---
 
@@ -27,13 +27,13 @@ as untrusted until validated by Zod.
 
 VERIDAQ is a privacy-preserving academic credential verification system.
 
-Institutions (universities) register student credentials on Base (Coinbase's
-L2) as Poseidon hash commitments. Employers verify specific academic claims
+Institutions (universities) register student credentials on Stellar (Soroban
+testnet) as Poseidon hash commitments. Employers verify specific academic claims
 through Groth16 Zero-Knowledge Proofs. No student personal data appears on
 the public blockchain at any stage.
 
 Three portals: Institution, Employer, Admin. One shared backend. One circuit.
-Five contracts.
+One Soroban contract.
 
 ---
 
@@ -42,7 +42,7 @@ Five contracts.
 ```
 veridaq/
   packages/
-    contracts/    Foundry project — 8 Solidity contracts + tests + deploy scripts
+    contracts/    Soroban Rust contract + tests
     circuits/     Circom 2 circuit + trusted setup scripts
     backend/      Fastify 5 API — routes, services, BullMQ workers, Prisma
     frontend/     Next.js 15 App Router — three portals
@@ -64,7 +64,7 @@ any subdirectory. Run `pnpm install` once at the root.
 
 | Layer             | Technology                      | Version       |
 | ----------------- | ------------------------------- | ------------- |
-| Blockchain        | Base Sepolia (EVM L2, OP Stack) |               |
+| Blockchain        | Stellar Soroban Testnet          |               |
 | Smart contracts   | Rust, Soroban SDK               |               |
 | ZKP               | Circom, SnarkJS, Groth16        | 2.0.8 / 0.7.x |
 | Commitment hash   | Poseidon (circomlib)            |               |
@@ -116,87 +116,51 @@ If it fails, check the `DATABASE_URL` in `.env`.
 
 ---
 
-## Task 2 — Compile and test the smart contracts
+## Task 2 — Build and test the Soroban contracts
 
-The contracts are a standard Foundry project at `packages/contracts/`.
+The contracts are a Soroban project at `contracts/groth16-verifier/`. The main
+contract is a Groth16 verifier with its own test suite.
 
 Steps:
 
-1. Install OpenZeppelin and other Foundry dependencies:
-
+1. Build the contract:
    ```bash
-   cd packages/contracts
-   forge install OpenZeppelin/openzeppelin-contracts --no-commit
-   forge install eth-infinitism/account-abstraction --no-commit
+   cd contracts/groth16-verifier
+   cargo build --target wasm32-unknown-unknown --release
+   soroban contract build
    ```
 
-2. Compile:
-
+2. Run tests:
    ```bash
-   forge build
+   cd contracts/groth16-verifier
+   cargo test
    ```
 
-   There should be zero compiler errors. Any warning about unused variables in
-   test files is acceptable.
-
-3. Run the test suite:
-
+3. Deploy to Stellar testnet (if not already deployed):
    ```bash
-   forge test -vvv
+   soroban contract deploy \
+     --wasm target/wasm32-unknown-unknown/release/groth16_verifier.wasm \
+     --source <your-identity> \
+     --network testnet
    ```
-
-4. Run coverage to see which lines are untested:
-   ```bash
-   forge coverage
-   ```
-   Target: InstitutionRegistry and CredentialRegistry at 80 percent or above.
 
 **What the contracts do:**
 
-- `InstitutionRegistry.sol` — maps institution bytes32 IDs to names and admin
-  wallets. Emits `InstitutionRegistered`.
-- `CredentialRegistry.sol` — stores batches of (commitment, nullifier) pairs.
-  Emits `BatchRegistered`.
-- `RevocationRegistry.sol` — append-only nullifier revocation list.
-- `SubscriptionManager.sol` — FREE vs PAID tier per institution. 3 free
-  verifications per employer.
-- `PaymasterVault.sol` — ERC-4337 v0.6 Paymaster that sponsors gas for
-  institutions. Institution admins can withdraw their own balance.
-- `ZKVerifier.sol` — SnarkJS-generated Groth16 verifier (real, not mock).
-  4 public signals: commitment, nullifier, claimType, threshold.
-- `VeridaqSimpleAccount.sol` — ERC-4337 SimpleAccount for AA batch submission.
-- `VeridaqSimpleAccountFactory.sol` — Factory for SimpleAccount deployment.
+- `groth16-verifier/src/lib.rs` — SnarkJS-compatible Groth16 verifier on Soroban.
+  `register_vk` stores a verification key, and `verify_raw` checks a Groth16 proof
+  with 4 public signals (commitment, nullifier, claimType, threshold).
 
 **Writing new contract tests:**
 
-File: `packages/contracts/test/ContractName.t.sol`
+File: `contracts/groth16-verifier/src/test.rs`
 Pattern:
 
-```solidity
-// SPDX-License-Identifier: MIT
-pragma solidity 0.8.28;
-
-import "forge-std/Test.sol";
-import "../src/ContractName.sol";
-
-contract ContractNameTest is Test {
-    ContractName internal target;
-
-    function setUp() public {
-        target = new ContractName(/* constructor args */);
-    }
-
-    function test_descriptiveSnakeCase() public {
-        // arrange
-        // act
-        // assert with assertEq / assertTrue / vm.expectRevert
-    }
-
-    // Fuzz tests use the same pattern but with arguments
-    function testFuzz_behaviorUnderRandomInput(uint256 value) public {
-        vm.assume(value > 0);
-        // ...
-    }
+```rust
+#[test]
+fn test_descriptive_snake_case() {
+    // arrange
+    // act
+    // assert with assert_eq! / assert!(...)
 }
 ```
 
@@ -252,43 +216,37 @@ if they are missing).
 
 ---
 
-## Task 4 — Deploy contracts to Base Sepolia
+## Task 4 — Deploy contracts to Stellar Testnet
 
-Prerequisites: wallet in `.env` has at least 0.05 ETH on Base Sepolia.
-Faucet: https://docs.base.org/docs/tools/network-faucets
+Prerequisites: wallet identity has testnet XLM (get from https://laboratory.stellar.org/#account-creator?network=testnet).
 
 Run:
 
 ```bash
-pnpm contracts:deploy
+soroban contract deploy \
+  --wasm target/wasm32-unknown-unknown/release/groth16_verifier.wasm \
+  --source <your-identity> \
+  --network testnet
 ```
 
-This runs `forge script script/Deploy.s.sol --rpc-url base_sepolia --broadcast --verify`.
-
-The deploy script prints the addresses of all eight contracts. Copy them into
-`.env`:
+The deploy command prints the contract address. Copy it into `.env`:
 
 ```
-INSTITUTION_REGISTRY_ADDRESS=0x...
-CREDENTIAL_REGISTRY_ADDRESS=0x...
-REVOCATION_REGISTRY_ADDRESS=0x...
-SUBSCRIPTION_MANAGER_ADDRESS=0x...
-PAYMASTER_VAULT_ADDRESS=0x...
-ZK_VERIFIER_ADDRESS=0x...
-AA_SIMPLE_ACCOUNT_FACTORY_ADDRESS=0x...
+ZK_VERIFIER_ID=CDMHFJNHJCUI2A54LY4LMVYBE7IO3BDDIH4STNJGMU2PQIMNVXJOXMI3
 ```
 
 Verify deployment:
 
 ```bash
-cast call $INSTITUTION_REGISTRY_ADDRESS "owner()(address)" \
-  --rpc-url $ALCHEMY_BASE_SEPOLIA_URL
+soroban contract invoke \
+  --id CDMHFJNHJCUI2A54LY4LMVYBE7IO3BDDIH4STNJGMU2PQIMNVXJOXMI3 \
+  --source <your-identity> \
+  --network testnet \
+  -- \
+  vk_hash
 ```
 
-Should return the deployer address.
-
-The deploy script (`Deploy.s.sol`) automatically grants `BUNDLER_ROLE` to the
-platform admin during deployment — no manual step required.
+Should return a 32-byte value.
 
 ---
 
@@ -583,13 +541,12 @@ via a guard in `backend/src/services/blockchain.service.ts` that checks
 | Start everything     | `docker compose up -d && pnpm dev:backend` (then in another terminal `pnpm dev:frontend`)                          |
 | Reset database       | `pnpm db:reset && pnpm db:seed`                                                                                    |
 | View Prisma schema   | `pnpm db:studio`                                                                                                   |
-| Forge test watch     | `cd packages/contracts && forge test -vvv --watch`                                                                 |
+| Run contract tests   | `cd contracts/groth16-verifier && cargo test`                                                                      |
 | Run one backend test | `pnpm test:backend -- --testNamePattern="auth"`                                                                    |
-| Check contract gas   | `cd packages/contracts && forge snapshot`                                                                          |
-| Interact with chain  | `cast call <address> "<sig>" --rpc-url $ALCHEMY_BASE_SEPOLIA_URL`                                                  |
-| Send a tx            | `cast send <address> "<sig>" <args> --private-key $PLATFORM_ADMIN_PRIVATE_KEY --rpc-url $ALCHEMY_BASE_SEPOLIA_URL` |
-| Decode tx data       | `cast 4byte-decode <calldata>`                                                                                     |
-| Check wallet balance | `cast balance $PLATFORM_ADMIN_ADDRESS --rpc-url $ALCHEMY_BASE_SEPOLIA_URL --ether`                                 |
+| Build contract       | `cd contracts/groth16-verifier && cargo build --target wasm32-unknown-unknown --release`                           |
+| Interact with chain  | `soroban contract invoke --id <contract-id> --source <identity> --network testnet -- <method> <args>`               |
+| Send a tx            | `soroban contract invoke --id <contract-id> --source <identity> --network testnet -- <method> <args>`               |
+| Fund testnet account | `soroban config identity fund --source <identity> --network testnet`                                                |
 
 ---
 

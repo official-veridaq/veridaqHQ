@@ -165,7 +165,7 @@ Result:          ${outcome}
 Blockchain proof: https://sepolia.basescan.org/tx/${opts.txHash}
 
 The verification result above was produced by a Groth16 Zero-Knowledge Proof and
-validated by the VERIDAQ smart contract on Base Sepolia. The linked transaction
+validated by the VERIDAQ smart contract on Stellar Soroban. The linked transaction
 hash is the on-chain record.
 
 VERIDAQ Platform

@@ -7,12 +7,16 @@ use soroban_sdk::{
 
 fn neg_g1(env: &Env, p: &Bn254G1Affine) -> Bn254G1Affine {
     let bn254 = env.crypto().bn254();
+    // BN254 curve order r = 0x30644e72e131a029b85045b68181585d2833e84879b9709143e1f593f0000001
+    // Negation: g1_mul(P, r-1) = -P
+    // r-1 = 0x30644e72e131a029b85045b68181585d2833e84879b9709143e1f593f0000000
+    // U256::from_parts(part0=MSB, part1, part2, part3=LSB)
     let s = Bn254Fr::from_u256(U256::from_parts(
         env,
-        0x30644e72e131a029,
+        0x30644e72e131a029,  // MSB
         0xb85045b68181585d,
         0x2833e84879b97091,
-        0x43e1f593f0000000,
+        0x43e1f593f0000000,  // LSB
     ));
     bn254.g1_mul(p, &s)
 }
@@ -73,6 +77,36 @@ impl Groth16Verifier {
         Ok(())
     }
 
+    /// Register VK from raw bytes, using from_bytes directly (avoids struct
+    /// deserialization byte-ordering mismatch). G2 bytes must be in CAP-74 /
+    /// EIP-197 format: x_c1 || x_c0 || y_c1 || y_c0.
+    pub fn register_vk_raw(
+        env: Env, caller: Address, vk_hash: BytesN<32>,
+        alpha: BytesN<64>, beta: BytesN<128>, gamma: BytesN<128>, delta: BytesN<128>,
+        ic: Vec<BytesN<64>>,
+    ) -> Result<(), VerifierError> {
+        let admin: Address = env.storage().instance().get(&VkKey::Admin)
+            .ok_or(VerifierError::MalformedVerifyingKey)?;
+        caller.require_auth();
+        if caller != admin { return Err(VerifierError::MalformedVerifyingKey); }
+
+        let vk = VerificationKey {
+            alpha: Bn254G1Affine::from_bytes(alpha),
+            beta: Bn254G2Affine::from_bytes(beta),
+            gamma: Bn254G2Affine::from_bytes(gamma),
+            delta: Bn254G2Affine::from_bytes(delta),
+            ic: {
+                let mut v = vec![&env];
+                for b in ic.iter() {
+                    v.push_back(Bn254G1Affine::from_bytes(b));
+                }
+                v
+            },
+        };
+        env.storage().persistent().set(&VkKey::Vk(vk_hash), &vk);
+        Ok(())
+    }
+
     pub fn is_vk_registered(env: Env, vk_hash: BytesN<32>) -> bool {
         env.storage().persistent().has(&VkKey::Vk(vk_hash))
     }
@@ -98,12 +132,12 @@ impl Groth16Verifier {
             vk_x = bn254.g1_add(&vk_x, &prod);
         }
 
+        // Groth16 verification: e(A, B) = e(alpha, beta) * e(vk_x, gamma) * e(C, delta)
+        // Rearranged for pairing_check: e(-A, B) * e(alpha, beta) * e(vk_x, gamma) * e(C, delta) = 1
+        // Only A is negated; alpha, vk_x, and C pass through as-is.
         let neg_a = neg_g1(&env, &proof.a);
-        let neg_alpha = neg_g1(&env, &vk.alpha);
-        let neg_vk_x = neg_g1(&env, &vk_x);
-        let neg_c = neg_g1(&env, &proof.c);
 
-        let vp1 = vec![&env, neg_a, neg_alpha, neg_vk_x, neg_c];
+        let vp1 = vec![&env, neg_a, vk.alpha, vk_x, proof.c];
         let vp2 = vec![&env, proof.b, vk.beta, vk.gamma, vk.delta];
         Ok(bn254.pairing_check(vp1, vp2))
     }
@@ -131,12 +165,10 @@ impl Groth16Verifier {
             vk_x = bn254.g1_add(&vk_x, &prod);
         }
 
+        // Groth16: e(-A, B) * e(alpha, beta) * e(vk_x, gamma) * e(C, delta) = 1
         let neg_a = neg_g1(&env, &a);
-        let neg_alpha = neg_g1(&env, &vk.alpha);
-        let neg_vk_x = neg_g1(&env, &vk_x);
-        let neg_c = neg_g1(&env, &c);
 
-        let vp1 = vec![&env, neg_a, neg_alpha, neg_vk_x, neg_c];
+        let vp1 = vec![&env, neg_a, vk.alpha, vk_x, c];
         let vp2 = vec![&env, b, vk.beta, vk.gamma, vk.delta];
         Ok(bn254.pairing_check(vp1, vp2))
     }

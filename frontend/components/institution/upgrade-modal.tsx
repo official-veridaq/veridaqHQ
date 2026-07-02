@@ -39,7 +39,7 @@ export function UpgradeModal({ open, onClose, onSuccess }: UpgradeModalProps) {
       const { data: payment } = await api.post("/payment/create", {
         type: "INSTITUTION_UPGRADE",
         method: "CRYPTO",
-        amountWei: UPGRADE_PRICE_XLM,
+        amount: UPGRADE_PRICE_XLM,
         amountFiat: String(UPGRADE_PRICE_USD),
         fiatCurrency: "USD",
         description: "Institution tier upgrade to PAID",
@@ -164,8 +164,8 @@ export function UpgradeModal({ open, onClose, onSuccess }: UpgradeModalProps) {
                   <CheckCircle2 className="h-10 w-10 text-green-500" />
                   <p className="text-foreground font-medium">Transaction Confirmed</p>
                   {txHash && (
-                    <a href={`https://sepolia.basescan.org/tx/${txHash}`} target="_blank" rel="noopener noreferrer" className="text-accent flex items-center gap-1 text-xs hover:underline">
-                      View on Stellar Expert <ExternalLink className="h-3 w-3" />
+                    <a href={`https://stellar.expert/explorer/testnet/tx/${txHash}`} target="_blank" rel="noopener noreferrer" className="text-accent flex items-center gap-1 text-xs hover:underline">
+                      View on Stellar Explorer <ExternalLink className="h-3 w-3" />
                     </a>
                   )}
                 </div>

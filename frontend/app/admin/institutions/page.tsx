@@ -204,7 +204,7 @@ export default function InstitutionsPage() {
                 <p className="text-muted mt-2 text-xs">{fundTarget.name}</p>
 
                 <div className="mt-4">
-                  <label className="text-muted text-xs">Amount in ETH</label>
+                  <label className="text-muted text-xs">Amount in XLM</label>
                   <input
                     value={fundAmount}
                     onChange={(e) => setFundAmount(e.target.value)}

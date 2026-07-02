@@ -24,13 +24,15 @@ async function main() {
   const adminHash = await bcryptjs.hash("Admin@2026!", COST)
   const instHash = await bcryptjs.hash("Inst@2026!", COST)
   const empHash = await bcryptjs.hash("Emp@2026!", COST)
-  const institutionKeyHex = randomBytes(32).toString("hex")
+  // Use fixed key for development — matches gen-proof.ts and backend-e2e.cjs
+  // WARNING: change this before any production deployment
+  const institutionKeyHex = "deadbeefcafebabedeadbeefcafebabe"
   const { encryptedData, encryptedIv, encryptedTag } = encrypt(institutionKeyHex)
 
   // Admin
   await prisma.admin.upsert({
     where: { email: "admin@veridaq.xyz" },
-    update: {},
+    update: { passwordHash: adminHash },
     create: {
       email: "admin@veridaq.xyz",
       passwordHash: adminHash,
@@ -42,11 +44,13 @@ async function main() {
   const inst = await prisma.institution.upsert({
     where: { email: "futminna@veridaq.xyz" },
     update: {
+      passwordHash: instHash,
+      onChainId: "0x" + Buffer.from("futminna").toString("hex").padStart(64, "0"),
       institutionKeyEncrypted: encryptedData,
       institutionKeyIv: encryptedIv,
       institutionKeyTag: encryptedTag,
       publicKey: "0x04aabbcc",
-      adminWallet: "0x0000000000000000000000000000000000000001",
+      adminWallet: "GDTBSEHROHY6DBR4275ICUMCL46WYYV4BB5YARZMJM373MPLUYVJJORT",
       active: true,
       tier: "FREE",
       kycApproved: true,
@@ -56,7 +60,7 @@ async function main() {
       name: "Federal University of Technology Minna",
       email: "futminna@veridaq.xyz",
       passwordHash: instHash,
-      adminWallet: "0x0000000000000000000000000000000000000001",
+      adminWallet: "GDTBSEHROHY6DBR4275ICUMCL46WYYV4BB5YARZMJM373MPLUYVJJORT",
       publicKey: "0x04aabbcc",
       institutionKeyEncrypted: encryptedData,
       institutionKeyIv: encryptedIv,
@@ -119,13 +123,16 @@ async function main() {
   // Employer — First Bank Nigeria
   await prisma.employer.upsert({
     where: { email: "firstbank@veridaq.xyz" },
-    update: {},
+    update: {
+      passwordHash: empHash,
+      walletAddress: "GDTBSEHROHY6DBR4275ICUMCL46WYYV4BB5YARZMJM373MPLUYVJJORT",
+    },
     create: {
       name: "First Bank Nigeria Ltd",
       cacNumber: "RC000001",
       email: "firstbank@veridaq.xyz",
       passwordHash: empHash,
-      walletAddress: "0x0000000000000000000000000000000000000002",
+      walletAddress: "GDTBSEHROHY6DBR4275ICUMCL46WYYV4BB5YARZMJM373MPLUYVJJORT",
       active: true,
       kycApproved: true,
       freeVerificationsRemaining: 3,

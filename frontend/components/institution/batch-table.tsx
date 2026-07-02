@@ -23,9 +23,9 @@ type Batch = {
     institutionBalance?: string
     entryPointDeposit?: string
     maxCostEstimate?: string
-    availableFundsWei?: string
+    availableFunds?: string
     availableFundsEth?: string
-    fundingShortfallWei?: string
+    fundingShortfall?: string
     fundingShortfallEth?: string
     hasEnoughFunds?: boolean
     hasEnoughEntryPointDeposit?: boolean

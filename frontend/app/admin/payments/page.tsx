@@ -10,7 +10,7 @@ type PaymentRecord = {
   type: string
   method: string | null
   status: string
-  amountWei: string
+  amount: string
   amountFiat: string | null
   fiatCurrency: string | null
   payerId: string
@@ -110,7 +110,7 @@ export default function AdminPayments() {
                     <td className="p-3 text-foreground hidden lg:table-cell">
                       {p.amountFiat
                         ? `${p.amountFiat} ${p.fiatCurrency ?? "USD"}`
-                        : `${(Number(p.amountWei) / 1e18).toFixed(4)} ETH`}
+                        : `${(Number(p.amount) / 1e7).toFixed(4)} XLM`}
                     </td>
                     <td className="p-3 text-muted hidden lg:table-cell">{p.method ?? "—"}</td>
                     <td className="p-3 text-muted hidden md:table-cell">

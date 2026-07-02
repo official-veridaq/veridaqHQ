@@ -39,6 +39,7 @@ const envSchema = z.object({
 
   CIRCUIT_ZKEY_PATH: z.string().min(1).transform(p => resolve(ROOT, p)),
   CIRCUIT_WASM_PATH: z.string().min(1).transform(p => resolve(ROOT, p)),
+  VERIFICATION_KEY_PATH: z.string().min(1).default("packages/circuits/build/verification_key.json").transform(p => resolve(ROOT, p)),
 
   // Must be exactly 64 hex characters (32 bytes)
   ENCRYPTION_KEY: z.string().regex(/^[0-9a-fA-F]{64}$/, "ENCRYPTION_KEY must be 64 hex chars"),

@@ -1,7 +1,7 @@
 "use client"
 
 import { createContext, useContext, useState, useEffect, useCallback } from "react"
-import { isConnected as checkFreighterConnected, getPublicKey } from "@/lib/stellar"
+import { isConnected as checkFreighterConnected, getPublicKey, requestAccess } from "@/lib/stellar"
 
 type WalletContextType = {
   isConnected: boolean
@@ -40,10 +40,10 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
 
   const connect = useCallback(async () => {
     try {
-      const pk = await getPublicKey()
-      setPublicKey(pk)
+      const { address } = await requestAccess()
+      setPublicKey(address)
     } catch {
-      // Freighter not available — no-op
+      // Freighter not available or rejected
     }
   }, [])
 

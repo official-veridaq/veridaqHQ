@@ -45,6 +45,7 @@ services:
       - REDIS_URL=redis://redis:6379
       - FRONTEND_URL=http://localhost:3000
       - BACKEND_URL=http://localhost:4000
+      - VERIFICATION_KEY_PATH=circuits/build/verification_key.json
     depends_on:
       postgres:
         condition: service_healthy

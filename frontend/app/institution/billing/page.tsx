@@ -87,7 +87,7 @@ export default function InstitutionBilling() {
               {data?.tier === "FREE" ? (
                 <div className="mt-6 border-t border-surface-border pt-4">
                   <p className="text-muted mb-3 text-sm">
-                    Upgrade to PAID tier to deposit ETH and enable sponsored gas for batch submissions.
+                    Upgrade to PAID tier to enable sponsored gas for batch submissions.
                     Pay with crypto or fiat via Crossmint.
                   </p>
                   <button
@@ -100,14 +100,14 @@ export default function InstitutionBilling() {
               ) : (
                 <div className="mt-6 border-t border-surface-border pt-4">
                   <p className="text-muted mb-3 text-sm">
-                    Your institution is on the PAID tier. Deposit ETH to fund batch submissions
+                    Your institution is on the PAID tier. Deposit XLM to fund batch submissions
                     and sponsored gas via Crossmint or direct crypto transfer.
                   </p>
                   <button
                     onClick={() => setShowDeposit(true)}
                     className="bg-accent text-void hover:bg-accent/90 inline-flex items-center gap-2 rounded px-5 py-2.5 text-sm font-medium transition-colors"
                   >
-                    <ArrowUpCircle size={16} /> Deposit ETH
+                    <ArrowUpCircle size={16} /> Deposit XLM
                   </button>
                 </div>
               )}
@@ -122,11 +122,11 @@ export default function InstitutionBilling() {
                 </div>
                 <p className={`mt-2 text-3xl font-bold ${isLowBalance ? "text-error" : "text-foreground"}`}>
                   {currentBalance.toFixed(4)}
-                  <span className="text-muted ml-1 text-sm font-normal">ETH</span>
+                  <span className="text-muted ml-1 text-sm font-normal">XLM</span>
                 </p>
                 {isLowBalance && (
                   <p className="mt-1 flex items-center gap-1 text-xs text-error">
-                    Low balance — deposit ETH to continue batch submissions
+                    Low balance — deposit XLM to continue batch submissions
                   </p>
                 )}
                 <button
@@ -146,14 +146,14 @@ export default function InstitutionBilling() {
                 </div>
                 <p className="mt-2 text-3xl font-bold text-foreground">
                   {Number(data?.institutionBalance || 0).toFixed(4)}
-                  <span className="text-muted ml-1 text-sm font-normal">ETH</span>
+                  <span className="text-muted ml-1 text-sm font-normal">XLM</span>
                 </p>
                 {data?.tier === "PAID" && (
                   <button
                     onClick={() => setShowDeposit(true)}
                     className="bg-accent text-void hover:bg-accent/90 mt-3 inline-flex items-center gap-2 rounded px-3 py-1.5 text-xs font-medium transition-colors"
                   >
-                    <ArrowUpCircle size={12} /> Deposit ETH
+                    <ArrowUpCircle size={12} /> Deposit XLM
                   </button>
                 )}
               </div>
@@ -165,7 +165,7 @@ export default function InstitutionBilling() {
                 </div>
                 <p className="mt-2 text-3xl font-bold text-foreground">
                   {Number(data?.sponsoredPoolBalance || 0).toFixed(4)}
-                  <span className="text-muted ml-1 text-sm font-normal">ETH</span>
+                  <span className="text-muted ml-1 text-sm font-normal">XLM</span>
                 </p>
                 <p className="text-muted mt-1 text-xs">Platform-sponsored gas pool</p>
               </div>

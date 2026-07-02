@@ -49,7 +49,7 @@ The request flow is:
 2. Frontend calls the backend API using `NEXT_PUBLIC_BACKEND_URL`
 3. Backend reads and writes PostgreSQL through Prisma
 4. Backend queues work and rate limiting data in Redis
-5. Backend talks to Base Sepolia, contracts, and the circuit artifacts when needed
+5. Backend talks to Stellar Soroban Testnet, contracts, and the circuit artifacts when needed
 
 The key production implication is simple:
 
@@ -95,8 +95,7 @@ These are required for the backend to start:
 - `REDIS_URL`
 - `JWT_SECRET`
 - `REFRESH_SECRET`
-- `ALCHEMY_API_KEY`
-- `ALCHEMY_BASE_SEPOLIA_URL`
+- `STELLAR_RPC_URL`
 - `CIRCUIT_ZKEY_PATH`
 - `CIRCUIT_WASM_PATH`
 - `ENCRYPTION_KEY`
@@ -135,7 +134,7 @@ The frontend reads these in browser visible code:
 
 - `NEXT_PUBLIC_BACKEND_URL`
 - `NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID`
-- `NEXT_PUBLIC_BASE_SEPOLIA_CHAIN_ID`
+- `NEXT_PUBLIC_STELLAR_NETWORK`
 
 The wallet provider also supports the standard WalletConnect and RainbowKit ecosystem variables, but this repo only reads `NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID` directly.
 
@@ -271,7 +270,7 @@ The frontend depends on:
 
 - `NEXT_PUBLIC_BACKEND_URL`
 - `NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID`
-- `NEXT_PUBLIC_BASE_SEPOLIA_CHAIN_ID`
+- `NEXT_PUBLIC_STELLAR_NETWORK`
 
 ### 8.2 What does not belong on Vercel in this repo
 
@@ -293,7 +292,7 @@ Deploy in this order:
 
 1. Supabase PostgreSQL
 2. Upstash Redis
-3. Contracts to Base Sepolia, if you are using live chain interactions
+3. Contracts to Stellar Soroban Testnet, if you are using live chain interactions
 4. Backend host
 5. Vercel frontend
 6. Update frontend and backend env vars with the final public URLs
@@ -355,8 +354,7 @@ Set these in the backend host environment:
 - `REDIS_URL=<upstash_rediss_url>`
 - `JWT_SECRET=<long_random_secret>`
 - `REFRESH_SECRET=<another_long_random_secret>`
-- `ALCHEMY_API_KEY=<alchemy_key>`
-- `ALCHEMY_BASE_SEPOLIA_URL=https://base-sepolia.g.alchemy.com/v2/<alchemy_key>`
+- `STELLAR_RPC_URL=https://soroban-testnet.stellar.org`
 - `CIRCUIT_ZKEY_PATH=/app/packages/circuits/build/credential_final.zkey` if the backend runs in a container
 - `CIRCUIT_WASM_PATH=/app/packages/circuits/build/credential_js/credential.wasm` if the backend runs in a container
 - `ENCRYPTION_KEY=<64_hex_char_key>`
@@ -406,7 +404,7 @@ In the Vercel project settings, add these values:
 
 - `NEXT_PUBLIC_BACKEND_URL=https://your-backend-domain`
 - `NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID=<walletconnect_project_id>`
-- `NEXT_PUBLIC_BASE_SEPOLIA_CHAIN_ID=84532`
+- `NEXT_PUBLIC_STELLAR_NETWORK=testnet`
 
 If the frontend needs any other `NEXT_PUBLIC_...` value later, add it here as well.
 
@@ -466,7 +464,7 @@ Set:
 
 - `NEXT_PUBLIC_BACKEND_URL=https://your-backend-domain`
 - `NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID=...`
-- `NEXT_PUBLIC_BASE_SEPOLIA_CHAIN_ID=84532`
+- `NEXT_PUBLIC_STELLAR_NETWORK=testnet`
 
 ### 12.3 In backend host settings
 
@@ -479,7 +477,7 @@ Set:
 - `JWT_SECRET=...`
 - `REFRESH_SECRET=...`
 - `ENCRYPTION_KEY=...`
-- `ALCHEMY_BASE_SEPOLIA_URL=...`
+- `STELLAR_RPC_URL=...`
 
 ## 13. Seed Data And Migrations
 
@@ -609,8 +607,7 @@ Backend:
 - `REDIS_URL=<upstash_rediss_url>`
 - `JWT_SECRET=<long_random_secret>`
 - `REFRESH_SECRET=<long_random_secret>`
-- `ALCHEMY_API_KEY=<alchemy_key>`
-- `ALCHEMY_BASE_SEPOLIA_URL=https://base-sepolia.g.alchemy.com/v2/<alchemy_key>`
+- `STELLAR_RPC_URL=https://soroban-testnet.stellar.org`
 - `CIRCUIT_ZKEY_PATH=/app/packages/circuits/build/credential_final.zkey`
 - `CIRCUIT_WASM_PATH=/app/packages/circuits/build/credential_js/credential.wasm`
 - `ENCRYPTION_KEY=<64_hex_char_key>`
@@ -619,7 +616,7 @@ Frontend on Vercel:
 
 - `NEXT_PUBLIC_BACKEND_URL=https://your-backend-domain`
 - `NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID=<walletconnect_project_id>`
-- `NEXT_PUBLIC_BASE_SEPOLIA_CHAIN_ID=84532`
+- `NEXT_PUBLIC_STELLAR_NETWORK=testnet`
 
 ## 21. Bottom Line
 

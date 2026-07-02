@@ -1,193 +1,244 @@
 # VERIDAQ
 
-**Privacy-first academic credential verification. Zero-knowledge proofs on Stellar.**
+Privacy Preserving Academic Credential Verification on Stellar Soroban
 
-VERIDAQ lets universities register student credentials as Poseidon hash commitments
-on the Stellar network and lets employers verify specific academic claims through
-Groth16 Zero-Knowledge Proofs. No student name, grade, matriculation number, or
-personal attribute ever appears on the public blockchain in readable form.
+Veridaq is a zero knowledge platform that enables academic institutions to issue verifiable credentials and employers to verify them without exposing any student personal data. Built on Stellar Soroban with Groth16 Zero Knowledge Proofs.
 
 ---
 
-## How it works
+## Table of Contents
 
-A university registrar uploads an Excel file of graduating students. The backend
-computes a Poseidon hash commitment and a nullifier for each student record and
-submits them to a Soroban smart contract in a single batch transaction. No raw
-data leaves the backend.
-
-When an employer wants to verify a candidate's qualifications, they submit the
-candidate's matriculation number, institution, and the specific claim they want
-confirmed (e.g. "minimum Upper Second Class"). The backend retrieves the private
-credential data, generates a Groth16 ZKP proving the claim is true, then submits
-the proof to the on-chain verifier. The result is VERIFIED or NOT VERIFIED.
-
-Students receive one email when their credential is registered. They take no action.
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [How It Works](#how-it-works)
+- [Repository Layout](#repository-layout)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Environment Setup](#environment-setup)
+  - [Database Setup](#database-setup)
+  - [Smart Contract Setup](#smart-contract-setup)
+  - [Circuit Setup](#circuit-setup)
+- [Running the Application](#running-the-application)
+  - [Start the Backend](#start-the-backend)
+  - [Start the Frontend](#start-the-frontend)
+  - [Default Login Credentials](#default-login-credentials)
+- [Testing](#testing)
+- [Deployment](#deployment)
+- [License](#license)
 
 ---
 
-## Quick start
+## Overview
 
-```bash
-git clone https://github.com/official-veridaq/veridaqHQ
-cd veridaqHQ
+Veridaq solves a fundamental problem in credential verification: how can an employer verify an applicant's academic claims without the applicant surrendering their personal data and without the institution manually responding to every verification request?
 
-# Start the full stack
-docker compose up -d
-```
-
-That's it. The backend (port 4000), frontend (port 3000), PostgreSQL, and Redis
-start automatically. The database is seeded with demo accounts.
-
-Open http://localhost:3000.
-
-### Demo credentials
-
-| Portal      | Email                 | Password    |
-| ----------- | --------------------- | ----------- |
-| Admin       | admin@veridaq.xyz     | Admin@2026! |
-| Institution | futminna@veridaq.xyz  | Inst@2026!  |
-| Employer    | firstbank@veridaq.xyz | Emp@2026!   |
-
-### Using the mock blockchain (no Stellar testnet needed)
-
-By default, `.env` sets `USE_MOCK_BLOCKCHAIN=true`, which makes the backend return
-success for all blockchain operations without connecting to Stellar. This lets you
-run the full demo flow — batch upload, verification, etc. — without real XLM or
-deployed contracts.
-
-For production, set `USE_MOCK_BLOCKCHAIN=false` and deploy contracts to Stellar
-testnet/mainnet.
+The answer is Zero Knowledge Proofs. Institutions register cryptographic commitments on the Stellar blockchain. When an employer needs to verify a claim, the system generates a Groth16 proof that the credential meets specific criteria (minimum CGPA, degree class, graduation year) without revealing the underlying data. The proof is verified on chain against the stored commitment.
 
 ---
 
 ## Architecture
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                     Next.js 15 frontend                  │
-│           Institution │ Employer │ Admin portals          │
-└──────────────────────────┬──────────────────────────────┘
-                           │ HTTPS / REST
-┌──────────────────────────▼──────────────────────────────┐
-│                   Fastify 5 backend                      │
-│   Auth │ Batch upload │ Proof generation │ Admin API     │
-│   Prisma 6 (PostgreSQL) │ BullMQ (Redis) │ Stellar SDK  │
-└──────────────────────────┬──────────────────────────────┘
-                           │ JSON-RPC (Soroban)
-┌──────────────────────────▼──────────────────────────────┐
-│                  Stellar Soroban                         │
-│  InstitutionRegistry │ CredentialRegistry               │
-│  RevocationRegistry  │ Groth16Verifier                  │
-│  SubscriptionManager  │ PaymasterVault                  │
-└─────────────────────────────────────────────────────────┘
-```
+The platform consists of four main components:
+
+**Smart Contract (Soroban)**
+A Groth16 verifier contract deployed on Stellar Soroban testnet. It stores verification keys and verifies Groth16 proofs with four public signals: commitment, nullifier, claim type, and threshold. The contract is written in Rust using the Soroban SDK.
+
+**Zero Knowledge Circuit (Circom)**
+A Circom 2 circuit that handles six claim types: CGPA minimum, degree class minimum, graduation year range, course of study match, institution accreditation, and cumulative credit threshold. The circuit uses Poseidon hashing and produces Groth16 proofs via SnarkJS.
+
+**Backend (Fastify)**
+A Node.js API built with Fastify 5 that orchestrates the entire verification flow. It handles institution and employer management, batch credential uploads, proof generation, on chain verification, and billing. Uses Prisma ORM with PostgreSQL and BullMQ for background job processing.
+
+**Frontend (Next.js)**
+Three separate portals for institutions, employers, and platform administrators. Built with Next.js 15 App Router, Tailwind CSS, and shadcn/ui. Features include batch upload for institutions, one click verification for employers, and platform management for admins.
 
 ---
 
-## Tech stack
+## How It Works
 
-| Layer               | Technology                               |
-| ------------------- | ---------------------------------------- |
-| Blockchain          | Stellar, Soroban smart contracts         |
-| Smart contracts     | Rust, Soroban SDK                        |
-| ZKP circuit         | Circom 2.0.8, SnarkJS 0.7, Groth16       |
-| Commitment hash     | Poseidon (circomlibjs)                   |
-| Backend             | Node.js 22, Fastify 5, TypeScript 5.8    |
-| Database            | PostgreSQL 16, Prisma 6                  |
-| Queue               | Redis 7, BullMQ 5                        |
-| Blockchain client   | @stellar/stellar-sdk                     |
-| Frontend            | Next.js 15 App Router, React 19          |
-| Styling             | Tailwind CSS 3.4, shadcn/ui              |
-| Package manager     | pnpm 9 (single root package.json)        |
-| Infrastructure      | Docker Compose                           |
+### Credential Issuance
+
+1. Institution admin uploads an XLSX file containing student credentials (name, matriculation number, CGPA, degree class, graduation year, course of study)
+2. Backend processes each row through a BullMQ worker
+3. Each credential is encrypted with AES 256 GCM using the institution's secret key
+4. A Poseidon hash commitment (matricHash, secret, nullifier) is computed and stored on Stellar
+5. The encrypted credential is stored in PostgreSQL
+6. The plaintext data is immediately discarded from memory
+
+### Credential Verification
+
+1. Employer submits a verification request (institution, matriculation number, claim type, threshold value)
+2. Backend looks up the credential by matriculation number
+3. Decrypts the credential data using the institution's stored secret key
+4. Generates a Groth16 proof via SnarkJS fullProve using the circuit
+5. Submits the proof to the Soroban verifier contract on Stellar testnet
+6. If the proof verifies, the result is stored as VERIFIED
+7. Both institution and employer can see the verification result
 
 ---
 
-## Project structure
+## Repository Layout
 
 ```
 veridaq/
-  backend/       Fastify 5 API — routes, services, BullMQ workers, Prisma
-  frontend/      Next.js 15 App Router — institution, employer, admin portals
-  contracts/     Soroban smart contracts (Rust)
-  circuits/      Circom 2 circuit + trusted setup artifacts
-  docker-compose.yml  PostgreSQL 16 + Redis 7 + backend + frontend
-  package.json   All npm dependencies for the entire monorepo
+  packages/
+    contracts/          Soroban Rust contract
+    circuits/           Circom 2 circuit
+    backend/            Fastify API
+    frontend/           Next.js App Router
+    extension/          Chrome extension
+  docker-compose.yml
+  package.json
 ```
 
 ---
 
-## Smart contracts
+## Tech Stack
 
-| Contract            | Purpose                                                  |
-| ------------------- | -------------------------------------------------------- |
-| InstitutionRegistry | On-chain identity for registered universities            |
-| CredentialRegistry  | Stores (commitment, nullifier) pairs in batches          |
-| RevocationRegistry  | Append-only revocation list keyed by nullifier           |
-| SubscriptionManager | Institution tier management (FREE / PAID)                |
-| PaymasterVault      | Gas sponsorship for credential submissions               |
-| Groth16Verifier     | Generated by SnarkJS from the Circom circuit             |
-
----
-
-## ZKP circuit
-
-The circuit at `circuits/credential.circom` proves that a given commitment was
-computed from private inputs satisfying the claimed property, without revealing
-the inputs themselves.
-
-**Private inputs:** student name hash, matric number hash, CGPA, degree class,
-course hash, graduation year, random blinding factor.
-
-**Public inputs:** commitment, nullifier, claim type, claim threshold.
-
-**Hash function:** Poseidon — designed for efficiency inside arithmetic circuits.
-Keccak256 would make the circuit impractically large.
+| Layer                   | Technology              |
+| ----------------------- | ----------------------- |
+| Blockchain              | Stellar Soroban Testnet |
+| Smart Contract          | Rust, Soroban SDK       |
+| Zero Knowledge Proof    | Circom 2, SnarkJS       |
+| Commitment Hash         | Poseidon (circomlib)    |
+| Backend                 | Fastify 5, TypeScript   |
+| ORM                     | Prisma 6                |
+| Database                | PostgreSQL 16           |
+| Queue                   | Redis, BullMQ           |
+| Blockchain Client       | @stellar/stellar-sdk    |
+| Frontend                | Next.js 15, React 19    |
+| Styling                 | Tailwind CSS, shadcn/ui |
+| Package Manager         | pnpm                    |
+| Infrastructure          | Docker Compose          |
 
 ---
 
-## Security
+## Getting Started
 
-- **No personal data on-chain.** Commitments are Poseidon hashes with a random
-  blinding factor. Computationally hiding — the raw input cannot be recovered.
-- **Non-forgeability.** The Groth16 verifier checks mathematical soundness. The
-  backend cannot fabricate a VERIFIED result without a valid witness.
-- **Revocation.** Institutions can revoke credentials by nullifier. The verifier
-  checks the revocation registry before accepting a proof.
-- **JWT hygiene.** Access tokens in memory only. Refresh tokens in httpOnly
-  cookies. Never stored in localStorage.
-- **Input validation.** Every API endpoint validates its request body with Zod
-  before touching the database or blockchain.
+### Prerequisites
 
----
+- Node.js 22 or later
+- pnpm 9 or later
+- Docker Desktop (for PostgreSQL and Redis)
+- Rust toolchain with wasm32 target (for Soroban contract)
+- soroban-cli (for contract deployment)
+- Circom 2 (optional, for circuit compilation)
+- Freighter browser extension (Stellar wallet, optional for wallet features)
 
-## Development
-
-### Full simulation (API flow)
+### Environment Setup
 
 ```bash
-bash simulate-flow.sh
+# Clone the repository
+git clone <repository-url>
+cd veridaq
+
+# Install dependencies
+pnpm install
+
+# Copy environment file
+cp .env.example .env
+
+# Edit .env with your values (see .env.example for all variables)
 ```
 
-This script exercises the entire flow: admin login → institution upload →
-employer verification. Requires the backend to be running.
-
-### Individual backend tests
+### Database Setup
 
 ```bash
-pnpm test:backend
-pnpm test:contracts
-pnpm lint
-pnpm typecheck
+# Start PostgreSQL and Redis
+docker compose up -d
+
+# Verify both services are healthy
+docker compose ps
+
+# Run migrations
+pnpm db:migrate
+
+# Seed the database with test data
+pnpm db:seed
 ```
+
+### Smart Contract Setup
+
+```bash
+# Build the Soroban contract
+cd contracts/groth16-verifier
+cargo build --target wasm32-unknown-unknown --release
+soroban contract build
+
+# Run contract tests
+cargo test
+
+# Deploy to Stellar testnet
+soroban contract deploy \
+  --wasm target/wasm32-unknown-unknown/release/groth16_verifier.wasm \
+  --source <your-identity> \
+  --network testnet
+```
+
+### Circuit Setup
+
+```bash
+# Compile the Circom circuit
+pnpm circuit:compile
+
+# Run trusted setup (requires Powers of Tau file)
+pnpm circuit:setup
+```
+
+---
+
+## Running the Application
+
+### Start the Backend
+
+```bash
+pnpm dev:backend
+```
+
+The backend starts on port 4000 by default. API documentation is available at http://localhost:4000/docs.
+
+### Start the Frontend
+
+```bash
+pnpm dev:frontend
+```
+
+The frontend starts on port 3000.
+
+### Default Login Credentials
+
+| Portal      | URL                           | Email                    | Password   |
+| ----------- | ----------------------------- | ------------------------ | ---------- |
+| Institution | http://localhost:3000/institution/login | futminna@veridaq.xyz     | Inst@2026! |
+| Employer    | http://localhost:3000/employer/login    | firstbank@veridaq.xyz    | Emp@2026!  |
+| Admin       | http://localhost:3000/admin/login       | admin@veridaq.xyz        | Admin@2026!|
+
+---
+
+## Testing
+
+```bash
+pnpm lint          # ESLint
+pnpm typecheck     # TypeScript checks
+pnpm test:backend  # Backend test suite
+pnpm test:contracts # Rust contract tests
+pnpm build:backend  # Production build check
+pnpm build:frontend # Frontend build check
+```
+
+---
+
+## Deployment
+
+1. Deploy the Soroban contract to Stellar testnet or mainnet
+2. Build and deploy the backend to your hosting provider
+3. Build and deploy the frontend to Vercel or your hosting provider
+4. Update .env with production values
+5. Run database migrations on the production database
 
 ---
 
 ## License
 
-MIT — see `LICENSE` file.
-
-> VERIDAQ is a production-grade credential verification platform. For production
-> deployment, deploy your own Soroban contracts and obtain an independent security
-> audit.
+MIT

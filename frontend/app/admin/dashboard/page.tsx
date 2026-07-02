@@ -3,10 +3,11 @@ import { AdminLayout } from "@/components/admin/layout"
 import { StatCard } from "@/components/ui/stat-card"
 import { api } from "@/lib/api"
 import { useAuth } from "@/lib/auth"
-import { Activity, Settings, ShieldCheck } from "lucide-react"
+import { Activity, Settings, ShieldCheck, Sparkles } from "lucide-react"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import { toast } from "@/components/ui/toast"
+import { StellarWalletButton } from "@/components/ui/stellar-wallet-button"
 
 export default function AdminDashboard() {
   const { user } = useAuth()
@@ -43,8 +44,8 @@ export default function AdminDashboard() {
     }
   }, [user])
 
-  const adminBalanceEth = parseFloat(stats?.adminWalletBalance ?? "0")
-  const isLowBalance = adminBalanceEth < 0.05
+  const adminBalance = parseFloat(stats?.adminWalletBalance ?? "0")
+  const isLowBalance = adminBalance < 0.05
 
   return (
     <AdminLayout title="Platform Operator Dashboard">
@@ -69,6 +70,10 @@ export default function AdminDashboard() {
                 value={stats?.successfulVerifications ?? 0}
                 accent
               />
+            </div>
+            <div className="group [perspective:500px] hover:[transform:rotateX(0.5deg)] bg-surface-card border-surface-border relative flex items-center justify-center rounded-xl border p-4 transition-all duration-300">
+              <Sparkles className="text-muted h-4 w-4" />
+              <span className="text-muted ml-2 text-xs">Earnings coming soon</span>
             </div>
           </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -96,10 +101,10 @@ export default function AdminDashboard() {
                     <ShieldCheck className="text-accent h-4 w-4" />
                     Admin Wallet
                   </h3>
-                  <span className="rounded-full bg-accent/10 px-2 py-0.5 text-[10px] font-medium text-accent">BASE SEPOLIA</span>
+                  <span className="rounded-full bg-accent/10 px-2 py-0.5 text-[10px] font-medium text-accent">STELLAR SOROBAN</span>
                 </div>
                 <p className="mb-2 font-mono text-3xl tracking-tight">
-                  {adminBalanceEth.toFixed(4)} <span className="text-muted text-sm">ETH</span>
+                  {adminBalance.toFixed(4)} <span className="text-muted text-sm">XLM</span>
                 </p>
                 {isLowBalance && (
                   <p className="mt-2 flex items-center gap-1 text-xs text-red-400">
@@ -108,9 +113,12 @@ export default function AdminDashboard() {
                   </p>
                 )}
               </div>
+              <div className="mt-4">
+                <StellarWalletButton variant="card" />
+              </div>
             </div>
 
-            {/* Paymaster Info — glass card with 3D tilt */}
+            {/* Gas Vault Info — glass card with 3D tilt */}
             <div className="group [perspective:500px] hover:[transform:rotateX(1deg)] bg-surface-card border-surface-border relative overflow-hidden border p-6 transition-all duration-500">
               <div className="pointer-events-none absolute -inset-px opacity-0 transition-opacity duration-500 group-hover:opacity-100">
                 <div className="absolute inset-0 bg-gradient-to-br from-orange-500/[0.03] to-transparent" />
@@ -119,7 +127,7 @@ export default function AdminDashboard() {
                 <div className="mb-4 flex items-center justify-between">
                   <h3 className="font-display flex items-center gap-2 text-sm font-semibold tracking-wide text-foreground">
                     <Activity className="h-4 w-4 text-orange-400" />
-                    Paymaster Vault
+                    Gas Vault
                   </h3>
                 </div>
                 <div className="mb-2 space-y-1.5">
@@ -127,21 +135,21 @@ export default function AdminDashboard() {
                     <span className="text-muted text-xs">Sponsored Pool</span>
                     <span className="font-mono text-xl tracking-tight">
                       {stats?.sponsoredPoolEth ? parseFloat(stats.sponsoredPoolEth).toFixed(4) : "0"}{" "}
-                      <span className="text-muted text-xs">ETH</span>
+                      <span className="text-muted text-xs">XLM</span>
                     </span>
                   </div>
                   <div className="flex items-baseline justify-between rounded bg-black/20 px-3 py-2">
-                    <span className="text-muted text-xs">EntryPoint Deposit</span>
+                    <span className="text-muted text-xs">Staking Reserve</span>
                     <span className="font-mono text-sm">
-                      {stats?.entryPointDepositEth ? parseFloat(stats.entryPointDepositEth).toFixed(4) : "0"}{" "}
-                      <span className="text-muted text-xs">ETH</span>
+                      {stats?.stakingReserve ? parseFloat(stats.stakingReserve).toFixed(4) : "0"}{" "}
+                      <span className="text-muted text-xs">XLM</span>
                     </span>
                   </div>
                   <div className="flex items-baseline justify-between rounded bg-black/20 px-3 py-2">
                     <span className="text-muted text-xs">Contract Balance</span>
                     <span className="font-mono text-sm text-muted">
                       {stats?.paymasterBalance ? parseFloat(stats.paymasterBalance).toFixed(4) : "0"}{" "}
-                      <span className="text-xs">ETH</span>
+                      <span className="text-xs">XLM</span>
                     </span>
                   </div>
                 </div>

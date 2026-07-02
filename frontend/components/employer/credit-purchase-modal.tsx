@@ -51,7 +51,7 @@ export function CreditPurchaseModal({ open, onClose, onSuccess }: CreditPurchase
       const { data: payment } = await api.post("/payment/create", {
         type: "EMPLOYER_TOPUP",
         method: "CRYPTO",
-        amountWei: selectedPack.xlm,
+        amount: selectedPack.xlm,
         amountFiat: String(selectedPack.usd),
         fiatCurrency: "USD",
         description: `Top-up ${selectedPack.credits} verification credits`,

@@ -27,12 +27,12 @@ interface UploadModalProps {
 type Step = "TEMPLATE" | "UPLOAD" | "VALIDATE" | "CONFIRM" | "PROCESSING" | "COMPLETE"
 
 interface SimulationData {
-  maxCostEth: string
+  maxCostXlm: string
   needsInit: boolean
   isSponsored: boolean
-  availableFundsEth: string
-  entryPointDepositEth: string
-  fundingShortfallEth: string
+  availableFundsXlm: string
+  entryPointDepositXlm: string
+  fundingShortfallXlm: string
   hasEnoughFunds: boolean
   hasEnoughEntryPointDeposit: boolean
 }
@@ -51,7 +51,7 @@ interface ErrorReportEntry {
   error?: string
   txRef?: string
   userOpHash?: string
-  fundingShortfallEth?: string
+  fundingShortfallXlm?: string
   hasEnoughFunds?: boolean
   callGasLimit?: string
   verificationGasLimit?: string
@@ -504,7 +504,7 @@ export function UploadModal({ onDismiss, onSuccess }: UploadModalProps) {
                         ? [
                             [
                               "Max cost",
-                              Number(validation.simulation.maxCostEth).toFixed(6) + " ETH",
+                              Number(validation.simulation.maxCostXlm).toFixed(6) + " XLM",
                             ],
                             [
                               "AA account",
@@ -512,13 +512,13 @@ export function UploadModal({ onDismiss, onSuccess }: UploadModalProps) {
                             ],
                             [
                               "Available",
-                              Number(validation.simulation.availableFundsEth).toFixed(6) +
-                                " ETH",
+                              Number(validation.simulation.availableFundsXlm).toFixed(6) +
+                                " XLM",
                             ],
                             [
                               "EntryPoint",
-                              Number(validation.simulation.entryPointDepositEth).toFixed(6) +
-                                " ETH",
+                              Number(validation.simulation.entryPointDepositXlm).toFixed(6) +
+                                " XLM",
                             ],
                           ]
                         : []),
@@ -535,7 +535,7 @@ export function UploadModal({ onDismiss, onSuccess }: UploadModalProps) {
                       <p className="font-medium">Insufficient funds for this batch</p>
                       <p className="mt-1 text-xs">
                         Shortfall:{" "}
-                        {Number(validation.simulation.fundingShortfallEth).toFixed(6)} ETH.
+                        {Number(validation.simulation.fundingShortfallXlm).toFixed(6)} XLM.
                         {!validation.simulation.hasEnoughFunds
                           ? " Top up the sponsored pool or institution balance."
                           : " Top up the EntryPoint deposit."}
@@ -737,9 +737,9 @@ export function UploadModal({ onDismiss, onSuccess }: UploadModalProps) {
                             UserOp: {e.userOpHash.slice(0, 18)}…
                           </p>
                         )}
-                        {e.fundingShortfallEth && e.fundingShortfallEth !== "0" && (
+                        {e.fundingShortfallXlm && e.fundingShortfallXlm !== "0" && (
                           <p className="mt-0.5 text-red-400">
-                            Shortfall: {e.fundingShortfallEth} ETH
+                            Shortfall: {e.fundingShortfallXlm} XLM
                           </p>
                         )}
                         {typeof e.hasEnoughFunds === "boolean" && (

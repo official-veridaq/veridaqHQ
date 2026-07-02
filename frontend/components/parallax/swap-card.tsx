@@ -10,7 +10,7 @@ const views = [
     badge: "INSTITUTION",
     email: "futminna@veridaq.xyz",
     tier: "FREE",
-    balance: "0.06 ETH",
+    balance: "0.06 XLM",
     actions: [
       { label: "Upload Batch", accent: true },
       { label: "View Claims" },

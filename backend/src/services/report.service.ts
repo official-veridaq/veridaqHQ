@@ -199,7 +199,7 @@ export class ReportService {
       // ════════════════ ON-CHAIN PROOF ═══════════════════════════════
       section("On-Chain Proof")
       row("Verification Method", "Groth16 Zero-Knowledge Proof")
-      row("Network", data.txHash ? "Base Sepolia (L2)" : "Base Sepolia (L2)")
+      row("Network", "Stellar Soroban Testnet")
       if (data.txHash) {
         row("Transaction Hash", data.txHash, true)
         doc.y += 1

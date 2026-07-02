@@ -4,7 +4,7 @@ import { GuardKyc } from "@/components/ui/guard-kyc"
 import { StatCard } from "@/components/ui/stat-card"
 import { api } from "@/lib/api"
 import { useAuth } from "@/lib/auth"
-import { AlertCircle, ArrowRight, FileCheck2, RefreshCcw, ShieldCheck, Upload } from "lucide-react"
+import { AlertCircle, ArrowRight, FileCheck2, RefreshCcw, ShieldCheck, Upload, Sparkles } from "lucide-react"
 import { toast } from "@/components/ui/toast"
 import Link from "next/link"
 import { useEffect, useState } from "react"
@@ -32,11 +32,11 @@ export default function InstitutionDashboard() {
     setSyncing(true)
     try {
       const { data } = await api.post("/institution/billing/sync")
-      const eth = formatStellarBalance(data.paymasterBalanceWei || 0)
+      const balance = formatStellarBalance(data.paymasterBalance || 0)
       setStats((prev: any) => ({
         ...prev,
-        paymasterBalanceWei: data.paymasterBalanceWei,
-        paymasterBalanceEth: eth,
+        paymasterBalance: data.paymasterBalance,
+        paymasterBalanceValue: balance,
       }))
     } catch {
       toast.error("Failed to sync paymaster balance")
@@ -99,16 +99,16 @@ export default function InstitutionDashboard() {
                 </div>
                 <div className="mt-2">
                   <p
-                    className={`text-2xl font-semibold ${Number(stats?.paymasterBalanceEth) < 0.01 ? "text-red-400" : "text-foreground"}`}
+                    className={`text-2xl font-semibold ${Number(stats?.paymasterBalanceValue) < 0.01 ? "text-red-400" : "text-foreground"}`}
                   >
-                    {Number(stats?.paymasterBalanceEth || 0).toFixed(4)}{" "}
+                    {Number(stats?.paymasterBalanceValue || 0).toFixed(4)}{" "}
                     <span className="text-muted text-sm">XLM</span>
                   </p>
                   {stats?.promoActive ? (
                     <p className="text-accent mt-1 text-xs">
                       Promo active, gas sponsored for up to 999 records
                     </p>
-                  ) : Number(stats?.paymasterBalanceEth) < 0.01 ? (
+                  ) : Number(stats?.paymasterBalanceValue) < 0.01 ? (
                     <p className="mt-1 flex items-center gap-1 text-xs text-red-400">
                       <AlertCircle size={12} /> Low balance
                     </p>
@@ -127,6 +127,11 @@ export default function InstitutionDashboard() {
                   {syncing ? "Syncing" : "Sync balance"}
                 </button>
               </div>
+            </div>
+
+            <div className="flex items-center justify-center gap-2 rounded-xl border border-dashed border-surface-border bg-surface-card/50 p-3">
+              <Sparkles className="text-muted h-4 w-4" />
+              <span className="text-muted text-xs">Earnings & analytics coming soon</span>
             </div>
 
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">

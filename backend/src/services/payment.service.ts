@@ -130,7 +130,7 @@ export class PaymentService {
     })
   }
 
-  private calculateCreditsForAmount(_amountWei: bigint): number {
+  private calculateCreditsForAmount(_amount: bigint): number {
     return 10
   }
 

@@ -6,9 +6,9 @@ const log = pino({ name: "crossmint-service" })
 
 const CROSSMINT_API = "https://www.crossmint.com/api/2022-06-09"
 
-// USDC on Base Sepolia (Crossmint-supported token locator)
-const USDC_BASE_SEPOLIA = "base-sepolia:0x036CbD53842c5426634e7929541eC2318f3dCF7e"
-const USDC_BASE_MAINNET = "base:0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+// USDC on Stellar (Crossmint-supported token locator)
+const USDC_STELLAR = "stellar:USDC"
+const USDC_STELLAR_MAINNET = "stellar:USDC"
 
 type CrossmintWebhookPayload = {
   type: string
@@ -25,7 +25,7 @@ export class CrossmintService {
   }
 
   getUsdcTokenLocator(): string {
-    return config.NODE_ENV === "production" ? USDC_BASE_MAINNET : USDC_BASE_SEPOLIA
+    return config.NODE_ENV === "production" ? USDC_STELLAR_MAINNET : USDC_STELLAR
   }
 
   /**

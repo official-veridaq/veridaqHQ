@@ -95,11 +95,8 @@ export class ProofService {
     }
 
     // The full witness + proof is computed entirely in memory by SnarkJS.
-    // We use fullProve rather than groth16.prove + witness.generate because
-    // fullProve handles the WASM witness generation internally.
     const { proof, publicSignals } = await snarkjs.groth16.fullProve(
       {
-        // Private inputs
         nameHash: privateInputs.nameHash.toString(),
         matricHash: privateInputs.matricHash.toString(),
         cgpa: privateInputs.cgpa.toString(),
@@ -108,7 +105,6 @@ export class ProofService {
         graduationYear: privateInputs.graduationYear.toString(),
         blindingFactor: privateInputs.blindingFactor.toString(),
         institutionKey: privateInputs.institutionKey.toString(),
-        // Public inputs
         commitment: publicInputs.commitment,
         nullifier: publicInputs.nullifier,
         claimType: publicInputs.claimType.toString(),

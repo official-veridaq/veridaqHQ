@@ -199,145 +199,6 @@ function AnimatedProofFlow() {
 }
 
 /* ──────────────────────────────────────────────
-   AA Flow Diagram
-   ────────────────────────────────────────────── */
-function AaFlowDiagram() {
-  const nodes = [
-    {
-      id: 1,
-      label: "Institution Backend",
-      x: 10,
-      y: 10,
-      icon: <Server className="h-4 w-4" />,
-      color: "accent",
-    },
-    {
-      id: 2,
-      label: "SimpleAccount Factory",
-      x: 40,
-      y: 5,
-      icon: <GitBranch className="h-4 w-4" />,
-      color: "info",
-    },
-    {
-      id: 3,
-      label: "UserOperation Build",
-      x: 25,
-      y: 30,
-      icon: <FileCode2 className="h-4 w-4" />,
-      color: "accent",
-    },
-    {
-      id: 4,
-      label: "PaymasterVault",
-      x: 10,
-      y: 55,
-      icon: <Wallet className="h-4 w-4" />,
-      color: "warning",
-    },
-    {
-      id: 5,
-      label: "EntryPoint",
-      x: 40,
-      y: 55,
-      icon: <Route className="h-4 w-4" />,
-      color: "info",
-    },
-    {
-      id: 6,
-      label: "Bundler Relay",
-      x: 55,
-      y: 40,
-      icon: <Globe className="h-4 w-4" />,
-      color: "accent",
-    },
-    {
-      id: 7,
-      label: "Stellar Testnet",
-      x: 70,
-      y: 25,
-      icon: <Database className="h-4 w-4" />,
-      color: "success",
-    },
-    {
-      id: 8,
-      label: "CredentialRegistry",
-      x: 55,
-      y: 10,
-      icon: <Layers className="h-4 w-4" />,
-      color: "accent",
-    },
-  ]
-
-  const edges = [
-    [1, 2],
-    [2, 3],
-    [3, 4],
-    [3, 5],
-    [4, 5],
-    [5, 6],
-    [6, 7],
-    [7, 8],
-  ]
-
-  return (
-    <div className="border-surface-border bg-surface-card rounded-xl border p-4 md:p-6">
-      <h3 className="mb-6 text-lg font-bold">ERC 4337 Account Abstraction Flow</h3>
-      <div className="relative mx-auto h-[340px] w-full max-w-[600px]">
-        <svg className="absolute inset-0 h-full w-full" viewBox="0 0 100 80">
-          {edges.map(([from, to], i) => {
-            const f = nodes.find((n) => n.id === from)!
-            const t = nodes.find((n) => n.id === to)!
-            return (
-              <motion.line
-                key={i}
-                x1={f.x}
-                y1={f.y}
-                x2={t.x}
-                y2={t.y}
-                stroke="rgb(var(--color-accent) / 0.25)"
-                strokeWidth="0.4"
-                strokeDasharray="2 1"
-                initial={{ pathLength: 0 }}
-                animate={{ pathLength: 1 }}
-                transition={{ duration: 2, delay: i * 0.15, repeat: Infinity, repeatDelay: 5 }}
-              />
-            )
-          })}
-        </svg>
-        <div className="relative grid h-full grid-cols-4 grid-rows-3 gap-2">
-          {nodes.map((n) => {
-            const col = n.x <= 30 ? 0 : n.x <= 50 ? 1 : n.x <= 65 ? 2 : 3
-            const row = n.y <= 25 ? 0 : n.y <= 45 ? 1 : 2
-            return (
-              <motion.div
-                key={n.id}
-                className={`relative flex flex-col items-center justify-center rounded-lg border p-2 text-center text-[9px] font-medium transition-all duration-300 hover:scale-105 md:text-[10px]`}
-                style={{
-                  gridColumn: col + 1,
-                  gridRow: row + 1,
-                  borderColor: `rgb(var(--color-${n.color}) / 0.3)`,
-                  backgroundColor: `rgb(var(--color-${n.color}) / 0.06)`,
-                }}
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                whileHover={{ backgroundColor: `rgb(var(--color-${n.color}) / 0.12)` }}
-              >
-                <div className="mb-1" style={{ color: `rgb(var(--color-${n.color}))` }}>
-                  {n.icon}
-                </div>
-                <span style={{ color: `rgb(var(--color-${n.color}))` }}>{n.label}</span>
-              </motion.div>
-            )
-          })}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-/* ──────────────────────────────────────────────
    Topology Diagram
    ────────────────────────────────────────────── */
 function TopologyDiagram() {
@@ -387,10 +248,10 @@ function TopologyDiagram() {
       name: "Blockchain Layer",
       color: "success",
       items: [
-        { icon: <Hexagon className="h-4 w-4" />, label: "Stellar Testnet L2" },
+        { icon: <Hexagon className="h-4 w-4" />, label: "Stellar Soroban" },
         { icon: <Wallet className="h-4 w-4" />, label: "8 Smart Contracts" },
         { icon: <ShieldCheck className="h-4 w-4" />, label: "ZKVerifier" },
-        { icon: <Coins className="h-4 w-4" />, label: "PaymasterVault" },
+        { icon: <Coins className="h-4 w-4" />, label: "Gas Vault" },
       ],
     },
     {
@@ -699,7 +560,7 @@ export default function BlueprintPage() {
                   </li>
                   <li className="flex items-start gap-2">
                     <div className="bg-success/20 mt-1 h-1.5 w-1.5 shrink-0 rounded-full" />
-                    <span>ERC 4337 Paymaster sponsors gas for FREE tier institutions</span>
+                    <span>Contract sponsors gas for FREE tier institutions</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <div className="bg-success/20 mt-1 h-1.5 w-1.5 shrink-0 rounded-full" />
@@ -777,7 +638,7 @@ export default function BlueprintPage() {
                 "Maps bytes32 institution IDs to name, adminWallet, publicKey, active status",
                 "PLATFORM_ADMIN_ROLE can register, deactivate, reactivate, transfer admin wallets",
                 "Institution admin can rotate off chain signing key",
-                "Referenced by CredentialRegistry, RevocationRegistry, PaymasterVault",
+                "Referenced by Groth16Verifier, CredentialRegistry",
               ]}
             />
             <ContractCard
@@ -812,19 +673,19 @@ export default function BlueprintPage() {
               icon={<Coins className="h-4 w-4" />}
               highlights={[
                 "InstitutionTier enum: FREE (platform sponsors gas) or PAID (institution funds own gas)",
-                "shouldSponsor function used by PaymasterVault to decide gas sponsorship",
+                "Gas sponsorship handled by contract logic",
                 "Tracks employer free verifications: 3 per new employer",
                 "BUNDLER_ROLE decrements free verification counter",
               ]}
             />
             <ContractCard
-              name="PaymasterVault"
-              purpose="ERC 4337 v0.6 Paymaster"
-              abi="IPaymaster"
+              name="GasVault"
+              purpose="Fee management contract"
+              abi="V1"
               icon={<Wallet className="h-4 w-4" />}
               highlights={[
-                "Two ETH pools: sponsoredPool (platform funded) and per institution institutionBalances",
-                "validatePaymasterUserOp decodes paymasterAndData to extract institutionId and batchSize",
+                "Two XLM pools: sponsored pool (platform funded) and per-institution balances",
+                "Contract decodes institution ID and batch size for fee management",
                 "postOp reconciles actual gas cost, refunds unused reserve",
                 "Institution admin or platform admin can withdraw institution balances",
                 "emergencyWithdrawSponsoredPool for decommissioning",
@@ -844,7 +705,7 @@ export default function BlueprintPage() {
             />
             <ContractCard
               name="VeridaqSimpleAccount"
-              purpose="ERC 4337 SimpleAccount"
+              purpose="Institution Account"
               abi="UUPS"
               icon={<UserCheck className="h-4 w-4" />}
               highlights={[
@@ -881,7 +742,7 @@ export default function BlueprintPage() {
                 },
                 {
                   step: 5,
-                  name: "PaymasterVault",
+                  name: "GasVault",
                   desc: "Depends on EntryPoint and SubscriptionManager",
                 },
                 { step: 6, name: "ZKVerifier", desc: "Standalone, embeds verification key" },
@@ -1141,65 +1002,62 @@ export default function BlueprintPage() {
         <section id="accountabstraction" className="container mx-auto max-w-6xl px-4 md:px-6">
           <div className="grid gap-8 lg:grid-cols-2">
             <div className="space-y-6">
-              <h2 className="text-2xl font-bold md:text-3xl">ERC 4337 Paymaster Flow</h2>
+              <h2 className="text-2xl font-bold md:text-3xl">Stellar Soroban Fee Model</h2>
               <p className="text-muted text-sm leading-relaxed">
-                Veridaq uses ERC 4337 Account Abstraction to separate gas payment from transaction
-                authorship. This allows the platform to sponsor transaction fees for FREE tier
-                institutions and enables institutions to pay for their own batches from a dedicated
-                on chain balance.
+                Veridaq uses Stellar Soroban's native fee model. Each contract invocation
+                requires a small XLM fee. For FREE tier institutions (up to 999 students per
+                batch), fees are paid from the platform's sponsored XLM pool. For PAID tier
+                institutions, fees are deducted from the institution's on-chain XLM balance.
               </p>
-              <div className="border-surface-border bg-surface-card rounded-xl border p-5">
-                <h3 className="mb-4 text-sm font-bold">UserOperation Construction</h3>
-                <ol className="text-muted space-y-3 text-sm">
-                  {[
-                    "Compute sender address via SimpleAccountFactory.getAddress",
-                    "Encode registerBatch calldata wrapped in SimpleAccount.execute()",
-                    "Build UserOp with sender, nonce, initCode, callData, callGasLimit, verificationGasLimit, preVerificationGas, maxFeePerGas, maxPriorityFeePerGas",
-                    "Encode paymasterAndData with institutionId and batchSize for PaymasterVault",
-                    "Estimate gas via bundler RPC method eth_estimateUserOperationGas",
-                    "Check funds: FREE tier uses sponsored pool, PAID tier uses institution balance",
-                    "Sign userOp hash with the AA owner private key",
-                    "Submit via eth_sendUserOperation and poll for UserOperationEvent receipt",
-                  ].map((step, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <span className="bg-accent/10 text-accent mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded font-mono text-[10px]">
-                        {i + 1}
-                      </span>
-                      <span>{step}</span>
-                    </li>
-                  ))}
-                </ol>
+              <div className="space-y-4 text-sm">
+                {[
+                  "Batch upload triggers Soroban contract invocation via stellar-sdk",
+                  "Fee is calculated based on contract execution cost in XLM",
+                  "Contract checks institution tier via on-chain lookup",
+                  "If FREE tier → sponsored pool covers XLM fee. If PAID → institution balance charged",
+                  "Contract executes credential registration on Stellar",
+                  "Institution admin can top up XLM balance via Crossmint fiat on-ramp",
+                ].map((step, i) => (
+                  <div key={i} className="flex items-start gap-3">
+                    <span className="bg-accent/10 text-accent mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold">
+                      {i + 1}
+                    </span>
+                    <p className="text-muted leading-relaxed">{step}</p>
+                  </div>
+                ))}
               </div>
-            </div>
-            <div className="space-y-6">
-              <AaFlowDiagram />
-              <div className="border-surface-border bg-surface-card rounded-xl border p-5">
-                <h3 className="mb-4 text-sm font-bold">Gas Sponsorship Decision Flow</h3>
-                <div className="text-muted space-y-3 text-xs">
-                  <div className="bg-surface border-surface-border rounded-lg border p-3">
-                    <span className="text-accent block font-semibold">FREE Tier</span>
-                    <span className="mt-1 block">
-                      Platform sponsored pool covers gas for up to 999 students per batch.
-                      SubscriptionManager.shouldSponsor returns true. PaymasterVault deducts from
-                      sponsoredPool after postOp reconciliation.
-                    </span>
-                  </div>
-                  <div className="bg-surface border-surface-border rounded-lg border p-3">
-                    <span className="text-accent block font-semibold">PAID Tier</span>
-                    <span className="mt-1 block">
-                      Institution pays from its own on chain balance. PaymasterVault deducts from
-                      institutionBalances mapping. Institution admin can deposit ETH via
-                      fundInstitution and withdraw anytime.
-                    </span>
-                  </div>
-                  <div className="bg-error/5 border-error/20 rounded-lg border p-3">
-                    <span className="text-error block font-semibold">Insufficient Funds</span>
-                    <span className="mt-1 block">
-                      If neither pool has sufficient balance, the batch is marked FAILED with
-                      detailed error metadata showing funding shortfall.
-                    </span>
-                  </div>
-                </div>
+
+              <h3 className="mt-8 text-lg font-bold">Fee Management</h3>
+              <div className="border-surface-border mt-4 overflow-hidden rounded-xl border">
+                <table className="w-full text-left text-sm">
+                  <thead>
+                    <tr className="border-surface-border border-b bg-black/20">
+                      <th className="px-4 py-3 font-medium text-foreground">Component</th>
+                      <th className="px-4 py-3 font-medium text-foreground">Role</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      {
+                        contract: "Soroban Fee Model",
+                        role: "Native fee model — XLM cost per contract invocation",
+                      },
+                      {
+                        contract: "Gas Vault",
+                        role: "Manages sponsored XLM pool and institution fee balances",
+                      },
+                      {
+                        contract: "Institution Account",
+                        role: "On-chain XLM balance for batch submission fees",
+                      },
+                    ].map((row, i) => (
+                      <tr key={i} className="border-surface-border border-b last:border-0">
+                        <td className="px-4 py-3 font-mono text-foreground">{row.contract}</td>
+                        <td className="text-muted px-4 py-3">{row.role}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
@@ -1380,7 +1238,7 @@ export default function BlueprintPage() {
                   "Batch upload, validation, and on chain submission",
                   "Claim definition management with 6 claim types",
                   "Verification request review and approval workflow",
-                  "Billing with paymaster balance sync",
+                  "Billing with on-chain balance sync",
                 ],
               },
               {
@@ -1402,7 +1260,7 @@ export default function BlueprintPage() {
                 routes: [
                   "Institution KYC approval and tier management",
                   "Employer KYC approval and onboarding",
-                  "Paymaster funding and balance management",
+                  "XLM balance management",
                   "Platform statistics with real time SSE streaming",
                   "Institution and employer deactivation",
                 ],
@@ -1594,7 +1452,7 @@ export default function BlueprintPage() {
               <p className="text-muted text-sm leading-relaxed">
                 Veridaq runs on Docker Compose for local development with PostgreSQL 16 and Redis 7
                 as backing services. The backend and frontend run outside Docker on the host
-                machine. Stellar Testnet serves as the L2 settlement layer.
+                machine. Stellar Soroban testnet serves as the settlement layer.
               </p>
               <div className="border-surface-border bg-surface-card rounded-xl border p-5">
                 <h3 className="mb-4 text-sm font-bold">Local Development Stack</h3>
@@ -1623,7 +1481,7 @@ export default function BlueprintPage() {
                     {
                       service: "Stellar Testnet",
                       port: "RPC",
-                      purpose: "L2 EVM with 8 deployed contracts",
+                      purpose: "Soroban with deployed contract",
                     },
                   ].map((s) => (
                     <div
@@ -1722,7 +1580,7 @@ export default function BlueprintPage() {
                 "Pausable for emergency stop capability.",
                 "CEI pattern Checks Effects Interactions strictly followed.",
                 "InstitutionRegistry validates caller identity before any registry operation.",
-                "PaymasterVault uses staticcall for balance reads to prevent reentrancy.",
+                "The verifier contract uses static patterns to prevent reentrancy.",
               ]}
             />
             <SecurityPillar
@@ -1774,7 +1632,7 @@ export default function BlueprintPage() {
                 {
                   rule: "Gas sponsorship is deterministic",
                   detail:
-                    "The PaymasterVault sponsorship decision is based purely on the institution tier and batch size. No human intervention, no discretionary approval. FREE tier batches under 1000 students are always sponsored.",
+                    "The gas sponsorship decision is based purely on the institution tier and batch size. No human intervention, no discretionary approval. FREE tier batches under 1000 students are always sponsored.",
                 },
                 {
                   rule: "Plaintext is ephemeral",

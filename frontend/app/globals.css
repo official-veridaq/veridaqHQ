@@ -69,13 +69,25 @@
   html {
     @apply scroll-smooth antialiased;
     scroll-behavior: smooth;
-    font-size: 17px;
+    font-size: 16px;
+  }
+  @screen md {
+    html { font-size: 17px; }
+  }
+  @screen lg {
+    html { font-size: 18px; }
   }
 
   body {
     @apply min-h-screen font-sans;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    @screen sm {
+      line-height: 1.6;
+    }
+    @screen md {
+      line-height: 1.7;
+    }
   }
 
   /* Theme-aware base colors */
@@ -196,10 +208,11 @@
 
   /* ── Inputs ── */
   .input {
-    @apply w-full rounded-lg border px-4 py-2.5 text-sm outline-none transition-all focus:ring-1;
+    @apply w-full rounded-lg border px-4 py-3 text-base outline-none transition-all focus:ring-1 sm:text-sm;
     background-color: rgb(var(--color-surface));
     border-color: rgb(var(--color-surface-border));
     color: inherit;
+    -webkit-appearance: none;
   }
   .input::placeholder {
     color: rgb(var(--color-muted));
@@ -210,10 +223,11 @@
   }
 
   .input-elevated {
-    @apply w-full rounded-lg border px-4 py-3 text-sm outline-none transition-all focus:ring-1;
+    @apply w-full rounded-lg border px-4 py-3 text-base outline-none transition-all focus:ring-1 sm:text-sm;
     background-color: rgb(var(--color-surface-card));
     border-color: rgb(var(--color-surface-border));
     color: inherit;
+    -webkit-appearance: none;
   }
   .input-elevated::placeholder {
     color: rgb(var(--color-muted));

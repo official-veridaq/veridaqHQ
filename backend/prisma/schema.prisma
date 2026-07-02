@@ -118,7 +118,7 @@ model Institution {
   resetToken        String?
   resetTokenExpires DateTime?
 
-  // Current ETH balance in the PaymasterVault (in wei, stored as string to avoid overflow)
+  // Current XLM balance (stored as string to avoid overflow)
   paymasterBalance String   @default("0")
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
@@ -140,7 +140,7 @@ model Employer {
   cacNumber                  String  @unique
   email                      String  @unique
   passwordHash               String
-  // The employer's wallet address for ERC-4337 SubscriptionManager tracking
+  // The employer's wallet address for on-chain SubscriptionManager tracking
   walletAddress              String  @unique @default("")
   active                     Boolean @default(true)
   kycApproved                Boolean @default(false)

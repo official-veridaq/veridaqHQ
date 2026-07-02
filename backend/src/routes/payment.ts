@@ -5,7 +5,7 @@ import { PaymentService, CREDIT_PACKS } from "../services/payment.service.js"
 const createPaymentSchema = z.object({
   type: z.enum(["INSTITUTION_UPGRADE", "INSTITUTION_FUNDING", "EMPLOYER_TOPUP"]),
   method: z.enum(["CRYPTO", "FIAT"]),
-  amountWei: z.string().min(1),
+  amount: z.string().min(1),
   amountFiat: z.string().optional(),
   fiatCurrency: z.string().optional(),
   description: z.string().optional(),
@@ -41,7 +41,7 @@ export const paymentRoutes: FastifyPluginAsync = async (app) => {
     const payment = await paymentSvc.createPayment({
       type: body.type as any,
       method: body.method as any,
-      amountWei: body.amountWei,
+      amountWei: body.amount,
       amountFiat: body.amountFiat ?? null,
       fiatCurrency: body.fiatCurrency ?? "USD",
       payerId: req.jwtPayload.sub,

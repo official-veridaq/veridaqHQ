@@ -115,7 +115,7 @@ export type AdminStats = {
   totalCredentials:         number
   revokedCredentials:       number
   activeInstitutionNames:   string[]
-  paymasterBalance:         string
+  paymasterBalance: string
   adminWalletBalance:       string
 }
 

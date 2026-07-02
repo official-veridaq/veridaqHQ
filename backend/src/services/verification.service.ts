@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client"
 import pino from "pino"
 import { decrypt } from "../utils/crypto.js"
 import { hashToField, hexToField } from "../utils/field.js"
+import { config } from "../config/index.js"
 import { BlockchainService } from "./blockchain.service.js"
 import { ProofService } from "./proof.service.js"
 
@@ -163,6 +164,17 @@ export class VerificationService {
           threshold: input.threshold,
         }
       )
+
+      // Local verification as a sanity check before on-chain call
+      const locallyVerified = await this.proofSvc.verifyProofLocally(
+        proof,
+        publicSignals,
+        config.VERIFICATION_KEY_PATH,
+      )
+      if (!locallyVerified) {
+        throw new Error("Local proof verification failed — proof is invalid or VK mismatch")
+      }
+      log.info("Local proof verification passed — proceeding to on-chain verification")
 
       const a = [BigInt(proof.pi_a[0]), BigInt(proof.pi_a[1])] as [bigint, bigint]
       const b = [

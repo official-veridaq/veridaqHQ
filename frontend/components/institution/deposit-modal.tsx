@@ -13,11 +13,11 @@ type DepositModalProps = {
 }
 
 const PREDEFINED_AMOUNTS = [
-  { usd: 25, eth: "0.0125" },
-  { usd: 50, eth: "0.025" },
-  { usd: 100, eth: "0.05" },
-  { usd: 200, eth: "0.1" },
-  { usd: 500, eth: "0.25" },
+  { usd: 25, xlm: "25" },
+  { usd: 50, xlm: "50" },
+  { usd: 100, xlm: "100" },
+  { usd: 200, xlm: "200" },
+  { usd: 500, xlm: "500" },
 ]
 
 export function DepositModal({ open, onClose, onSuccess }: DepositModalProps) {
@@ -50,7 +50,7 @@ export function DepositModal({ open, onClose, onSuccess }: DepositModalProps) {
       const { data: payment } = await api.post("/payment/create", {
         type: "INSTITUTION_FUNDING",
         method: "CRYPTO",
-        amountWei: effectiveEth,
+        amount: effectiveEth,
         amountFiat: String(effectiveUsd),
         fiatCurrency: "USD",
         description: `Deposit $${effectiveUsd} worth of XLM`,
@@ -78,7 +78,7 @@ export function DepositModal({ open, onClose, onSuccess }: DepositModalProps) {
         txHash,
       })
       if (data.completed) {
-        toast.success(`Deposit of ${effectiveEth} ETH confirmed!`)
+        toast.success(`Deposit of ${effectiveEth} XLM confirmed!`)
         setStep("success")
         onSuccess()
       }
@@ -116,14 +116,14 @@ export function DepositModal({ open, onClose, onSuccess }: DepositModalProps) {
                   key={a.usd}
                   onClick={() => {
                     setSelectedUsd(a.usd)
-                    setSelectedEth(a.eth)
+                    setSelectedEth(a.xlm)
                     setCustomUsd("")
                     setStep("amount")
                   }}
                   className="border-surface-border bg-void hover:border-accent/50 rounded-lg border p-3 text-center transition-colors"
                 >
                   <p className="text-foreground text-sm font-semibold">${a.usd}</p>
-                    <p className="text-muted text-xs">{a.eth} XLM</p>
+                    <p className="text-muted text-xs">{a.xlm} XLM</p>
                 </button>
               ))}
             </div>

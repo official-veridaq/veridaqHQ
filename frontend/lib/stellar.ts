@@ -1,62 +1,54 @@
 /**
- * Stellar Freighter API stub.
+ * Stellar Freighter API wrapper.
  *
- * Wraps Freighter (Stellar browser wallet) in try-catch so the app never
- * crashes when the extension is not installed.  Replace the inner calls
- * with the real @stellar/freighter-api functions once the package is added.
+ * Provides a consistent interface over @stellar/freighter-api v6.
+ * Returns safe defaults when the extension is not installed.
  */
 
-async function getFreighter(): Promise<StellarProvider | null> {
+let freighterApi: any = null
+
+async function getFreighter(): Promise<any> {
+  if (freighterApi) return freighterApi
   try {
-    if (typeof window !== "undefined" && (window as any).stellar) {
-      return (window as any).stellar as StellarProvider
-    }
-    // Dynamically try the freighter-api module in case it gets installed later
-    const freighter = await import("@stellar/freighter-api")
-    return {
-      isConnected: () => freighter.isConnected(),
-      getPublicKey: () => freighter.getPublicKey(),
-      getAddress: async () => {
-        const pk = await freighter.getPublicKey()
-        return { address: pk }
-      },
-    } as StellarProvider
+    if (typeof window === "undefined") return null
+    const mod = await import("@stellar/freighter-api")
+    freighterApi = mod.default ?? mod
+    return freighterApi
   } catch {
     return null
   }
 }
 
 export async function isConnected(): Promise<{ isConnected: boolean }> {
-  const freighter = await getFreighter()
-  if (freighter) {
-    try {
-      return await freighter.isConnected()
-    } catch {
-      // fall through
-    }
+  const api = await getFreighter()
+  if (!api) return { isConnected: false }
+  try {
+    const res = await api.isConnected()
+    return { isConnected: !!res.isConnected }
+  } catch {
+    return { isConnected: false }
   }
-  return { isConnected: false }
 }
 
 export async function getPublicKey(): Promise<string> {
-  const freighter = await getFreighter()
-  if (freighter) {
-    try {
-      return await freighter.getPublicKey()
-    } catch {
-      // fall through
-    }
-  }
-  throw new Error("Freighter not available")
+  const api = await getFreighter()
+  if (!api) throw new Error("Freighter wallet not available")
+  const res = await api.getAddress()
+  if (res.error) throw new Error(res.error.message ?? "Failed to get address")
+  return res.address
 }
 
 export async function getAddress(): Promise<{ address: string }> {
-  const publicKey = await getPublicKey()
-  return { address: publicKey }
+  const address = await getPublicKey()
+  return { address }
 }
 
-export type StellarProvider = {
-  isConnected: () => Promise<{ isConnected: boolean }>
-  getPublicKey: () => Promise<string>
-  getAddress: () => Promise<{ address: string }>
+export async function requestAccess(): Promise<{ address: string }> {
+  const api = await getFreighter()
+  if (!api) throw new Error("Freighter wallet not available")
+  const allowed = await api.setAllowed()
+  if (!allowed.isAllowed) throw new Error("Wallet connection was rejected")
+  const res = await api.getAddress()
+  if (res.error) throw new Error(res.error.message ?? "Failed to get address")
+  return { address: res.address }
 }

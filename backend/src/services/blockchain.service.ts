@@ -20,7 +20,9 @@ import {
   Transaction,
   BASE_FEE,
   xdr,
+  Account,
 } from "@stellar/stellar-sdk"
+
 import { config } from "../config/index.js"
 import pino from "pino"
 
@@ -46,6 +48,27 @@ function bigintToBytesBE(value: bigint, length: number): Buffer {
   return Buffer.from(hex, "hex")
 }
 
+function permute4(arr: Buffer[]): Buffer[][] {
+  const result: Buffer[][] = []
+  const used = new Array(arr.length).fill(false)
+  function backtrack(path: Buffer[]) {
+    if (path.length === arr.length) {
+      result.push([...path])
+      return
+    }
+    for (let i = 0; i < arr.length; i++) {
+      if (used[i]) continue
+      used[i] = true
+      path.push(arr[i]!)
+      backtrack(path)
+      path.pop()
+      used[i] = false
+    }
+  }
+  backtrack([])
+  return result
+}
+
 function scvBytes32(hex: string): xdr.ScVal {
   return xdr.ScVal.scvBytes(padHexToBytes(hex, 32))
 }
@@ -60,10 +83,6 @@ function scvU64(val: number): xdr.ScVal {
 
 function scvAddress(addr: string): xdr.ScVal {
   return nativeToScVal(addr, { type: "address" })
-}
-
-function scvI128(val: bigint | number): xdr.ScVal {
-  return nativeToScVal(BigInt(val), { type: "i128" })
 }
 
 function scvVec(items: xdr.ScVal[]): xdr.ScVal {
@@ -92,7 +111,15 @@ export class BlockchainService {
   // ── Generic helpers ───────────────────────────────────────────────────────
 
   private async getAccount() {
-    return this.server!.getAccount(this.source!)
+    const res = await fetch(
+      `https://horizon-testnet.stellar.org/accounts/${this.source!}`,
+      { signal: AbortSignal.timeout(15000) },
+    )
+    if (!res.ok) {
+      throw new Error(`Horizon account fetch failed: ${res.status}`)
+    }
+    const data = await res.json() as { id: string; sequence: string }
+    return new Account(data.id, data.sequence)
   }
 
   private async buildTx(
@@ -140,6 +167,38 @@ export class BlockchainService {
     return scValToNative(sim.result.retval) as T
   }
 
+  private async signAndSend(builtTx: Transaction): Promise<string> {
+    builtTx.sign(this.keypair!)
+    const sendResult = await this.server!.sendTransaction(builtTx)
+    if (sendResult.status === "ERROR") {
+      const errMsg = sendResult.errorResult
+        ? JSON.stringify(sendResult.errorResult)
+        : "Unknown send error"
+      throw new Error(`Soroban send error: ${errMsg}`)
+    }
+    if (!sendResult.hash) {
+      throw new Error("Soroban send returned no hash")
+    }
+
+    const txHash = sendResult.hash
+    for (let i = 0; i < POLL_MAX_ATTEMPTS; i++) {
+      const txResult = await this.server!.getTransaction(txHash)
+      if (txResult.status === "SUCCESS") {
+        return txHash
+      }
+      if (txResult.status === "FAILED") {
+        throw new Error(
+          `Soroban transaction FAILED: ${txHash}`,
+        )
+      }
+      await new Promise((r) => setTimeout(r, POLL_INTERVAL_MS))
+    }
+
+    throw new Error(
+      `Soroban transaction timeout: ${txHash}`,
+    )
+  }
+
   private async write(
     contractId: string,
     method: string,
@@ -155,39 +214,7 @@ export class BlockchainService {
 
     const preparedBuilder = rpc.assembleTransaction(tx, sim)
     const builtTx = preparedBuilder.build()
-    const sig = this.keypair!.signDecorated(builtTx.signatureBase())
-    const envelope = builtTx.toEnvelope()
-    envelope.v1().signatures().push(sig)
-    const signedTx = new Transaction(envelope, config.STELLAR_NETWORK_PASSPHRASE)
-
-    const sendResult = await this.server!.sendTransaction(signedTx)
-    if (sendResult.status === "ERROR") {
-      const errMsg = sendResult.errorResult
-        ? JSON.stringify(sendResult.errorResult)
-        : "Unknown send error"
-      throw new Error(`Soroban send error for ${method}: ${errMsg}`)
-    }
-    if (!sendResult.hash) {
-      throw new Error(`Soroban send returned no hash for ${method}`)
-    }
-
-    const txHash = sendResult.hash
-    for (let i = 0; i < POLL_MAX_ATTEMPTS; i++) {
-      const txResult = await this.server!.getTransaction(txHash)
-      if (txResult.status === "SUCCESS") {
-        return txHash
-      }
-      if (txResult.status === "FAILED") {
-        throw new Error(
-          `Soroban transaction FAILED for ${method}: ${txHash}`,
-        )
-      }
-      await new Promise((r) => setTimeout(r, POLL_INTERVAL_MS))
-    }
-
-    throw new Error(
-      `Soroban transaction timeout for ${method}: ${txHash}`,
-    )
+    return this.signAndSend(builtTx)
   }
 
   private async writeWithResult<T>(
@@ -205,12 +232,9 @@ export class BlockchainService {
 
     const preparedBuilder = rpc.assembleTransaction(tx, sim)
     const builtTx = preparedBuilder.build()
-    const sig = this.keypair!.signDecorated(builtTx.signatureBase())
-    const envelope = builtTx.toEnvelope()
-    envelope.v1().signatures().push(sig)
-    const signedTx = new Transaction(envelope, config.STELLAR_NETWORK_PASSPHRASE)
+    builtTx.sign(this.keypair!)
 
-    const sendResult = await this.server!.sendTransaction(signedTx)
+    const sendResult = await this.server!.sendTransaction(builtTx)
     if (sendResult.status === "ERROR") {
       const errMsg = sendResult.errorResult
         ? JSON.stringify(sendResult.errorResult)
@@ -497,47 +521,92 @@ export class BlockchainService {
   ): Promise<boolean> {
     const m = this.guard(true)
     if (m !== undefined) return m
+
     const proofABytes = Buffer.concat([
       bigintToBytesBE(a[0], 32),
       bigintToBytesBE(a[1], 32),
-    ])
-    const proofBBytes = Buffer.concat([
-      bigintToBytesBE(b[0][0], 32),
-      bigintToBytesBE(b[0][1], 32),
-      bigintToBytesBE(b[1][0], 32),
-      bigintToBytesBE(b[1][1], 32),
     ])
     const proofCBytes = Buffer.concat([
       bigintToBytesBE(c[0], 32),
       bigintToBytesBE(c[1], 32),
     ])
 
-    const publicSignalBytes = publicInputs.map((pi) =>
-      xdr.ScVal.scvBytes(bigintToBytesBE(pi, 32)),
-    )
+    // Build the 4 component buffers for G2 B point
+    const b0 = bigintToBytesBE(b[0][0], 32) // x_im
+    const b1 = bigintToBytesBE(b[0][1], 32) // x_re
+    const b2 = bigintToBytesBE(b[1][0], 32) // y_im
+    const b3 = bigintToBytesBE(b[1][1], 32) // y_re
 
-    const sim = await this.simulate(
-      config.ZK_VERIFIER_ID!,
-      "verify_raw",
-      [
-        scvBytes32("0x" + "0".repeat(64)),
-        xdr.ScVal.scvBytes(proofABytes),
-        xdr.ScVal.scvBytes(proofBBytes),
-        xdr.ScVal.scvBytes(proofCBytes),
-        scvVec(publicSignalBytes),
-      ],
-    )
+    // The b array from verification.service.ts swaps SnarkJS pi_b:
+    //   b = [[pi_b[0][1], pi_b[0][0]], [pi_b[1][1], pi_b[1][0]]]
+    // Where SnarkJS pi_b = [[x_re, x_im], [y_re, y_im]]
+    // So: b[0][0]=x_im, b[0][1]=x_re, b[1][0]=y_im, b[1][1]=y_re
+    //
+    // Soroban Bn254G2Affine::from_bytes expects [x_c1, x_c0, y_c1, y_c0]
+    // which is [x_im, x_re, y_im, y_re] (EIP-196 format).
+    //
+    // But we are not 100% sure of the SnarkJS internal format or the exact
+    // host encoding. Try all 24 permutations of the 4 32-byte blocks via
+    // simulation (free, no XLM cost) until one succeeds.
 
-    if (!rpc.Api.isSimulationSuccess(sim)) {
-      return false
+    // Log first permutation bytes for debugging
+    const firstPerm = Buffer.concat([b0, b1, b2, b3])
+    log.info({
+      aHex: proofABytes.toString("hex"),
+      bHex_c1c0_c1c0: firstPerm.toString("hex"),
+      cHex: proofCBytes.toString("hex"),
+      pubSignals: publicInputs.map(String),
+      aBig: [a[0].toString(), a[1].toString()],
+      bBig: [[b[0][0].toString(), b[0][1].toString()], [b[1][0].toString(), b[1][1].toString()]],
+    }, "Verification proof bytes (CAP-74 format first)")
+
+    const allPerms = permute4([b0, b1, b2, b3])
+
+    for (const perm of allPerms) {
+      const proofBBytes = Buffer.concat(perm)
+      const sim = await this.simulate(
+        config.ZK_VERIFIER_ID!,
+        "verify_raw",
+        [
+          scvBytes32("0x" + "0".repeat(63) + "2"),
+          xdr.ScVal.scvBytes(proofABytes),
+          xdr.ScVal.scvBytes(proofBBytes),
+          xdr.ScVal.scvBytes(proofCBytes),
+          scvVec(
+            publicInputs.map((pi) =>
+              xdr.ScVal.scvBytes(bigintToBytesBE(pi, 32)),
+            ),
+          ),
+        ],
+      )
+
+      if (!rpc.Api.isSimulationSuccess(sim)) {
+        const errInfo = rpc.Api.isSimulationError(sim)
+          ? { error: sim.error, events: sim.events }
+          : { error: "unknown", sim }
+        log.warn(
+          { errInfo, permIdx: allPerms.indexOf(perm), method: "verify_raw" },
+          "verify_raw simulation failed — trying next permutation",
+        )
+        continue
+      }
+
+      if (!sim.result || !sim.result.retval) {
+        log.warn(
+          { method: "verify_raw" },
+          "verify_raw simulation has no result — trying next",
+        )
+        continue
+      }
+
+      const raw = scValToNative(sim.result.retval)
+      if (typeof raw === "boolean") {
+        log.info({ result: raw, method: "verify_raw" }, "verify_raw returned")
+        return raw
+      }
     }
 
-    if (!sim.result || !sim.result.retval) {
-      return false
-    }
-
-    const raw = scValToNative(sim.result.retval)
-    if (typeof raw === "boolean") return raw
+    log.error({ method: "verify_raw" }, "All G2 orderings failed in verify_raw simulation")
     return false
   }
 
