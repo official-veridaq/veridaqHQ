@@ -1,8 +1,47 @@
-# VERIDAQ
+<div align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="frontend/public/logo-white.png">
+    <source media="(prefers-color-scheme: light)" srcset="frontend/public/logo-black.png">
+    <img alt="VERIDAQ" src="frontend/public/logo-black.png" width="180" style="max-width: 100%;">
+  </picture>
 
-Privacy Preserving Academic Credential Verification on Stellar Soroban
+  <h1 align="center" style="margin-top: 16px; margin-bottom: 4px; font-size: 2.5em; font-weight: 700; letter-spacing: -0.02em;">VERIDAQ</h1>
 
-Veridaq is a zero knowledge platform that enables academic institutions to issue verifiable credentials and employers to verify them without exposing any student personal data. Built on Stellar Soroban with Groth16 Zero Knowledge Proofs.
+  <p align="center" style="font-size: 1.15em; color: #586069; max-width: 600px; margin: 8px auto 20px;">
+    Privacy-Preserving Academic Credential Verification on Stellar Soroban
+  </p>
+
+  <p align="center">
+    <a href="https://github.com/official-veridaq/veridaqHQ/blob/main/LICENSE">
+      <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License">
+    </a>
+    <a href="https://www.typescriptlang.org/">
+      <img src="https://img.shields.io/badge/language-TypeScript-blue" alt="TypeScript">
+    </a>
+    <a href="https://nextjs.org/">
+      <img src="https://img.shields.io/badge/frontend-Next.js%2015-black" alt="Next.js 15">
+    </a>
+    <a href="https://fastify.dev/">
+      <img src="https://img.shields.io/badge/backend-Fastify%205-ffffff" alt="Fastify 5">
+    </a>
+    <a href="https://soroban.stellar.org/">
+      <img src="https://img.shields.io/badge/blockchain-Soroban-9cf" alt="Soroban">
+    </a>
+    <a href="https://docs.circom.io/">
+      <img src="https://img.shields.io/badge/zkp-Circom%202-ff69b4" alt="Circom 2">
+    </a>
+  </p>
+
+  <br>
+
+  <p align="center" style="font-size: 1.05em; max-width: 720px; margin: 0 auto; line-height: 1.6;">
+    <strong>VERIDAQ</strong> enables academic institutions to issue verifiable credentials and<br>
+    employers to verify them — all without exposing any student personal data.<br>
+    Built on <strong>Stellar Soroban</strong> with <strong>Groth16 Zero-Knowledge Proofs</strong>.
+  </p>
+</div>
+
+<br>
 
 ---
 
@@ -31,9 +70,9 @@ Veridaq is a zero knowledge platform that enables academic institutions to issue
 
 ## Overview
 
-Veridaq solves a fundamental problem in credential verification: how can an employer verify an applicant's academic claims without the applicant surrendering their personal data and without the institution manually responding to every verification request?
+VERIDAQ solves a fundamental problem in credential verification: how can an employer verify an applicant's academic claims without the applicant surrendering their personal data and without the institution manually responding to every verification request?
 
-The answer is Zero Knowledge Proofs. Institutions register cryptographic commitments on the Stellar blockchain. When an employer needs to verify a claim, the system generates a Groth16 proof that the credential meets specific criteria (minimum CGPA, degree class, graduation year) without revealing the underlying data. The proof is verified on chain against the stored commitment.
+The answer is Zero-Knowledge Proofs. Institutions register cryptographic commitments on the Stellar blockchain. When an employer needs to verify a claim, the system generates a Groth16 proof that the credential meets specific criteria (minimum CGPA, degree class, graduation year) without revealing the underlying data. The proof is verified on-chain against the stored commitment.
 
 ---
 
@@ -44,14 +83,14 @@ The platform consists of four main components:
 **Smart Contract (Soroban)**
 A Groth16 verifier contract deployed on Stellar Soroban testnet. It stores verification keys and verifies Groth16 proofs with four public signals: commitment, nullifier, claim type, and threshold. The contract is written in Rust using the Soroban SDK.
 
-**Zero Knowledge Circuit (Circom)**
+**Zero-Knowledge Circuit (Circom)**
 A Circom 2 circuit that handles six claim types: CGPA minimum, degree class minimum, graduation year range, course of study match, institution accreditation, and cumulative credit threshold. The circuit uses Poseidon hashing and produces Groth16 proofs via SnarkJS.
 
 **Backend (Fastify)**
-A Node.js API built with Fastify 5 that orchestrates the entire verification flow. It handles institution and employer management, batch credential uploads, proof generation, on chain verification, and billing. Uses Prisma ORM with PostgreSQL and BullMQ for background job processing.
+A Node.js API built with Fastify 5 that orchestrates the entire verification flow. It handles institution and employer management, batch credential uploads, proof generation, on-chain verification, and billing. Uses Prisma ORM with PostgreSQL and BullMQ for background job processing.
 
 **Frontend (Next.js)**
-Three separate portals for institutions, employers, and platform administrators. Built with Next.js 15 App Router, Tailwind CSS, and shadcn/ui. Features include batch upload for institutions, one click verification for employers, and platform management for admins.
+Three separate portals for institutions, employers, and platform administrators. Built with Next.js 15 App Router, Tailwind CSS, and shadcn/ui. Features include batch upload for institutions, one-click verification for employers, and platform management for admins.
 
 ---
 
@@ -61,7 +100,7 @@ Three separate portals for institutions, employers, and platform administrators.
 
 1. Institution admin uploads an XLSX file containing student credentials (name, matriculation number, CGPA, degree class, graduation year, course of study)
 2. Backend processes each row through a BullMQ worker
-3. Each credential is encrypted with AES 256 GCM using the institution's secret key
+3. Each credential is encrypted with AES-256-GCM using the institution's secret key
 4. A Poseidon hash commitment (matricHash, secret, nullifier) is computed and stored on Stellar
 5. The encrypted credential is stored in PostgreSQL
 6. The plaintext data is immediately discarded from memory
@@ -100,7 +139,7 @@ veridaq/
 | ----------------------- | ----------------------- |
 | Blockchain              | Stellar Soroban Testnet |
 | Smart Contract          | Rust, Soroban SDK       |
-| Zero Knowledge Proof    | Circom 2, SnarkJS       |
+| Zero-Knowledge Proof    | Circom 2, SnarkJS       |
 | Commitment Hash         | Poseidon (circomlib)    |
 | Backend                 | Fastify 5, TypeScript   |
 | ORM                     | Prisma 6                |
@@ -208,21 +247,21 @@ The frontend starts on port 3000.
 
 ### Default Login Credentials
 
-| Portal      | URL                           | Email                    | Password   |
-| ----------- | ----------------------------- | ------------------------ | ---------- |
-| Institution | http://localhost:3000/institution/login | futminna@veridaq.xyz     | Inst@2026! |
-| Employer    | http://localhost:3000/employer/login    | firstbank@veridaq.xyz    | Emp@2026!  |
-| Admin       | http://localhost:3000/admin/login       | admin@veridaq.xyz        | Admin@2026!|
+| Portal      | URL                                                | Email                    | Password    |
+| ----------- | -------------------------------------------------- | ------------------------ | ----------- |
+| Institution | http://localhost:3000/institution/login | futminna@veridaq.xyz     | Inst@2026!  |
+| Employer    | http://localhost:3000/employer/login    | firstbank@veridaq.xyz    | Emp@2026!   |
+| Admin       | http://localhost:3000/admin/login       | admin@veridaq.xyz        | Admin@2026! |
 
 ---
 
 ## Testing
 
 ```bash
-pnpm lint          # ESLint
-pnpm typecheck     # TypeScript checks
-pnpm test:backend  # Backend test suite
-pnpm test:contracts # Rust contract tests
+pnpm lint           # ESLint
+pnpm typecheck      # TypeScript checks
+pnpm test:backend   # Backend test suite (124 tests)
+pnpm test:contracts # Rust contract tests (18 tests)
 pnpm build:backend  # Production build check
 pnpm build:frontend # Frontend build check
 ```
