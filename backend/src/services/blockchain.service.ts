@@ -48,27 +48,6 @@ function bigintToBytesBE(value: bigint, length: number): Buffer {
   return Buffer.from(hex, "hex")
 }
 
-function permute4(arr: Buffer[]): Buffer[][] {
-  const result: Buffer[][] = []
-  const used = new Array(arr.length).fill(false)
-  function backtrack(path: Buffer[]) {
-    if (path.length === arr.length) {
-      result.push([...path])
-      return
-    }
-    for (let i = 0; i < arr.length; i++) {
-      if (used[i]) continue
-      used[i] = true
-      path.push(arr[i]!)
-      backtrack(path)
-      path.pop()
-      used[i] = false
-    }
-  }
-  backtrack([])
-  return result
-}
-
 function scvBytes32(hex: string): xdr.ScVal {
   return xdr.ScVal.scvBytes(padHexToBytes(hex, 32))
 }
@@ -535,83 +514,59 @@ export class BlockchainService {
       bigintToBytesBE(c[1], 32),
     ])
 
-    // Build the 4 component buffers for G2 B point
-    const b0 = bigintToBytesBE(b[0][0], 32) // x_im
-    const b1 = bigintToBytesBE(b[0][1], 32) // x_re
-    const b2 = bigintToBytesBE(b[1][0], 32) // y_im
-    const b3 = bigintToBytesBE(b[1][1], 32) // y_re
-
-    // The b array from verification.service.ts swaps SnarkJS pi_b:
-    //   b = [[pi_b[0][1], pi_b[0][0]], [pi_b[1][1], pi_b[1][0]]]
-    // Where SnarkJS pi_b = [[x_re, x_im], [y_re, y_im]]
+    // Build the G2 B point bytes in CAP-74/EIP-197 format.
+    // From verification.service.ts: b = [[pi_b[0][1], pi_b[0][0]], [pi_b[1][1], pi_b[1][0]]]
+    // where SnarkJS pi_b = [[x_re, x_im], [y_re, y_im]]
     // So: b[0][0]=x_im, b[0][1]=x_re, b[1][0]=y_im, b[1][1]=y_re
     //
-    // Soroban Bn254G2Affine::from_bytes expects [x_c1, x_c0, y_c1, y_c0]
-    // which is [x_im, x_re, y_im, y_re] (EIP-196 format).
-    //
-    // But we are not 100% sure of the SnarkJS internal format or the exact
-    // host encoding. Try all 24 permutations of the 4 32-byte blocks via
-    // simulation (free, no XLM cost) until one succeeds.
+    // Soroban Bn254G2Affine format (EIP-197/CAP-74): x_c1 || x_c0 || y_c1 || y_c0
+    // where c1 = imaginary = x_im, c0 = real = x_re
+    const proofBBytes = Buffer.concat([
+      bigintToBytesBE(b[0][0], 32), // x_im (x_c1)
+      bigintToBytesBE(b[0][1], 32), // x_re (x_c0)
+      bigintToBytesBE(b[1][0], 32), // y_im (y_c1)
+      bigintToBytesBE(b[1][1], 32), // y_re (y_c0)
+    ])
 
-    // Log first permutation bytes for debugging
-    const firstPerm = Buffer.concat([b0, b1, b2, b3])
     log.info({
       aHex: proofABytes.toString("hex"),
-      bHex_c1c0_c1c0: firstPerm.toString("hex"),
+      bHex: proofBBytes.toString("hex"),
       cHex: proofCBytes.toString("hex"),
       pubSignals: publicInputs.map(String),
-      aBig: [a[0].toString(), a[1].toString()],
-      bBig: [[b[0][0].toString(), b[0][1].toString()], [b[1][0].toString(), b[1][1].toString()]],
-    }, "Verification proof bytes (CAP-74 format first)")
+    }, "Verification proof bytes (CAP-74 format)")
 
-    const allPerms = permute4([b0, b1, b2, b3])
-
-    for (const perm of allPerms) {
-      const proofBBytes = Buffer.concat(perm)
-      const sim = await this.simulate(
-        config.ZK_VERIFIER_ID!,
-        "verify_raw",
-        [
-          scvBytes32("0x" + "0".repeat(63) + "2"),
-          xdr.ScVal.scvBytes(proofABytes),
-          xdr.ScVal.scvBytes(proofBBytes),
-          xdr.ScVal.scvBytes(proofCBytes),
-          scvVec(
-            publicInputs.map((pi) =>
-              xdr.ScVal.scvBytes(bigintToBytesBE(pi, 32)),
-            ),
+    const sim = await this.simulate(
+      config.ZK_VERIFIER_ID!,
+      "verify_raw",
+      [
+        scvBytes32("0x" + config.VK_HASH),
+        xdr.ScVal.scvBytes(proofABytes),
+        xdr.ScVal.scvBytes(proofBBytes),
+        xdr.ScVal.scvBytes(proofCBytes),
+        scvVec(
+          publicInputs.map((pi) =>
+            xdr.ScVal.scvBytes(bigintToBytesBE(pi, 32)),
           ),
-        ],
-      )
+        ),
+      ],
+    )
 
-      if (!rpc.Api.isSimulationSuccess(sim)) {
-        const errInfo = rpc.Api.isSimulationError(sim)
-          ? { error: sim.error, events: sim.events }
-          : { error: "unknown", sim }
-        log.warn(
-          { errInfo, permIdx: allPerms.indexOf(perm), method: "verify_raw" },
-          "verify_raw simulation failed — trying next permutation",
-        )
-        continue
-      }
-
-      if (!sim.result || !sim.result.retval) {
-        log.warn(
-          { method: "verify_raw" },
-          "verify_raw simulation has no result — trying next",
-        )
-        continue
-      }
-
-      const raw = scValToNative(sim.result.retval)
-      if (typeof raw === "boolean") {
-        log.info({ result: raw, method: "verify_raw" }, "verify_raw returned")
-        return raw
-      }
+    if (!rpc.Api.isSimulationSuccess(sim)) {
+      const errInfo = rpc.Api.isSimulationError(sim)
+        ? { error: sim.error, events: sim.events }
+        : { error: "unknown", sim }
+      log.error({ errInfo, method: "verify_raw" }, "verify_raw simulation failed")
+      return false
     }
 
-    log.error({ method: "verify_raw" }, "All G2 orderings failed in verify_raw simulation")
-    return false
+    if (!sim.result || !sim.result.retval) {
+      log.error({ method: "verify_raw" }, "verify_raw simulation has no result")
+      return false
+    }
+
+    const raw = scValToNative(sim.result.retval)
+    log.info({ result: raw, method: "verify_raw" }, "verify_raw returned")
+    return typeof raw === "boolean" ? raw : false
   }
 
   // ── XLM balance ───────────────────────────────────────────────────────────
