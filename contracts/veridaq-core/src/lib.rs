@@ -1,4 +1,8 @@
 #![no_std]
+// Contract entrypoints are part of the on-chain ABI. Folding their arguments
+// into a struct would change every deployed client's call encoding, so the
+// argument-count lint is not actionable here.
+#![allow(clippy::too_many_arguments)]
 use soroban_sdk::{
     contract, contracterror, contractimpl, contracttype, token, vec, Address, BytesN, Env, IntoVal,
     Symbol, Vec,
@@ -160,7 +164,7 @@ impl VeridaqCore {
         graduation_year: u32,
         degree_type_code: u32,
     ) -> Result<u32, CoreError> {
-        if commitments.len() == 0 {
+        if commitments.is_empty() {
             return Err(CoreError::EmptyBatch);
         }
         if commitments.len() != nullifiers.len() {
@@ -394,11 +398,7 @@ impl VeridaqCore {
             env.storage().persistent().remove(&DataKey::InstBal(id));
         }
 
-        token::TokenClient::new(&env, &xlm).transfer(
-            &caller,
-            &env.current_contract_address(),
-            &amt,
-        );
+        token::TokenClient::new(&env, &xlm).transfer(&caller, env.current_contract_address(), &amt);
         Ok(())
     }
 
@@ -429,11 +429,7 @@ impl VeridaqCore {
             .instance()
             .set(&DataKey::AdminBal, &(bal - amt));
 
-        token::TokenClient::new(&env, &xlm).transfer(
-            &caller,
-            &env.current_contract_address(),
-            &amt,
-        );
+        token::TokenClient::new(&env, &xlm).transfer(&caller, env.current_contract_address(), &amt);
         Ok(())
     }
 
@@ -544,7 +540,7 @@ impl VeridaqCore {
                 fee_paid = cfg.verification_fee;
                 token::TokenClient::new(&env, &xlm).transfer(
                     &caller,
-                    &env.current_contract_address(),
+                    env.current_contract_address(),
                     &fee_paid,
                 );
                 Self::distribute(&env, &institution_id, fee_paid)?;
@@ -558,7 +554,7 @@ impl VeridaqCore {
             fee_paid = cfg.verification_fee;
             token::TokenClient::new(&env, &xlm).transfer(
                 &caller,
-                &env.current_contract_address(),
+                env.current_contract_address(),
                 &fee_paid,
             );
             Self::distribute(&env, &institution_id, fee_paid)?;

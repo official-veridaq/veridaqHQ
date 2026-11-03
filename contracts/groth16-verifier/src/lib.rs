@@ -1,4 +1,8 @@
 #![no_std]
+// Contract entrypoints are part of the on-chain ABI. Folding their arguments
+// into a struct would change every deployed client's call encoding, so the
+// argument-count lint is not actionable here.
+#![allow(clippy::too_many_arguments)]
 use soroban_sdk::{
     contract, contracterror, contractimpl, contracttype,
     crypto::bn254::{Bn254Fr, Bn254G1Affine, Bn254G2Affine},
@@ -58,6 +62,10 @@ pub enum VkKey {
 #[contract]
 pub struct Groth16Verifier;
 
+// Contract entrypoints are part of the on-chain ABI. Folding their arguments
+// into a struct would change every deployed client's call encoding, so the
+// argument-count lint is not actionable here.
+#[allow(clippy::too_many_arguments)]
 #[contractimpl]
 impl Groth16Verifier {
     pub fn initialize(env: Env, admin: Address) {
