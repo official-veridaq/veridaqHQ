@@ -22,6 +22,10 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # The Prisma client is generated code, not a dependency: without this step
+      # every @prisma/client type import resolves to the empty stub and the
+      # typecheck fails on a clean checkout.
+      - run: pnpm db:generate
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm format:check
