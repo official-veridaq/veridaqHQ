@@ -68,9 +68,18 @@ jobs:
   test-contracts:
     name: Contract Tests
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: contracts
     steps:
       - uses: actions/checkout@v4
-      - uses: stellar/actions@v2
+      - uses: dtolnay/rust-toolchain@stable
         with:
-          soroban-version: latest
-      - run: cargo test
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: contracts
+      # The Cargo workspace lives in contracts/, so this must run there: from the
+      # repository root there is no Cargo.toml and cargo exits before testing.
+      - run: cargo test --all-targets
+      - run: cargo build --target wasm32-unknown-unknown --release
