@@ -50,7 +50,7 @@ export function InstitutionsMarquee() {
               className="bg-surface-card border-surface-border hover:border-accent/40 flex items-center gap-3 rounded-full border px-6 py-3 shadow-sm transition-colors"
             >
               <Building2 className="text-accent h-5 w-5" />
-              <span className="text-sm font-medium text-foreground md:text-base">{name}</span>
+              <span className="text-foreground text-sm font-medium md:text-base">{name}</span>
             </div>
           ))}
           {/* Duplicate block for seamless loop */}
@@ -60,7 +60,7 @@ export function InstitutionsMarquee() {
               className="bg-surface-card border-surface-border hover:border-accent/40 flex items-center gap-3 rounded-full border px-6 py-3 shadow-sm transition-colors"
             >
               <Building2 className="text-accent h-5 w-5" />
-              <span className="text-sm font-medium text-foreground md:text-base">{name}</span>
+              <span className="text-foreground text-sm font-medium md:text-base">{name}</span>
             </div>
           ))}
         </div>

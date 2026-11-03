@@ -62,21 +62,21 @@ any subdirectory. Run `pnpm install` once at the root.
 
 ## Tech stack reference
 
-| Layer             | Technology                      | Version       |
-| ----------------- | ------------------------------- | ------------- |
-| Blockchain        | Stellar Soroban Testnet          |               |
-| Smart contracts   | Rust, Soroban SDK               |               |
-| ZKP               | Circom, SnarkJS, Groth16        | 2.0.8 / 0.7.x |
-| Commitment hash   | Poseidon (circomlib)            |               |
-| Backend           | Node.js, Fastify, TypeScript    | 22 / 5 / 5.8  |
-| ORM               | Prisma                          | 6             |
-| Database          | PostgreSQL                      | 16            |
-| Queue             | Redis, BullMQ                   | 7 / 5         |
-| Blockchain client | @stellar/stellar-sdk            | 15            |
-| Frontend          | Next.js, React                  | 15 / 19       |
-| Styling           | Tailwind CSS, shadcn/ui         | 3.4           |
-| Package manager   | pnpm                            | 9             |
-| Infrastructure    | Docker Compose                  |               |
+| Layer             | Technology                   | Version       |
+| ----------------- | ---------------------------- | ------------- |
+| Blockchain        | Stellar Soroban Testnet      |               |
+| Smart contracts   | Rust, Soroban SDK            |               |
+| ZKP               | Circom, SnarkJS, Groth16     | 2.0.8 / 0.7.x |
+| Commitment hash   | Poseidon (circomlib)         |               |
+| Backend           | Node.js, Fastify, TypeScript | 22 / 5 / 5.8  |
+| ORM               | Prisma                       | 6             |
+| Database          | PostgreSQL                   | 16            |
+| Queue             | Redis, BullMQ                | 7 / 5         |
+| Blockchain client | @stellar/stellar-sdk         | 15            |
+| Frontend          | Next.js, React               | 15 / 19       |
+| Styling           | Tailwind CSS, shadcn/ui      | 3.4           |
+| Package manager   | pnpm                         | 9             |
+| Infrastructure    | Docker Compose               |               |
 
 ---
 
@@ -124,6 +124,7 @@ contract is a Groth16 verifier with its own test suite.
 Steps:
 
 1. Build the contract:
+
    ```bash
    cd contracts/groth16-verifier
    cargo build --target wasm32-unknown-unknown --release
@@ -131,6 +132,7 @@ Steps:
    ```
 
 2. Run tests:
+
    ```bash
    cd contracts/groth16-verifier
    cargo test
@@ -536,17 +538,17 @@ via a guard in `backend/src/services/blockchain.service.ts` that checks
 
 ## Useful commands
 
-| What                 | Command                                                                                                            |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| Start everything     | `docker compose up -d && pnpm dev:backend` (then in another terminal `pnpm dev:frontend`)                          |
-| Reset database       | `pnpm db:reset && pnpm db:seed`                                                                                    |
-| View Prisma schema   | `pnpm db:studio`                                                                                                   |
-| Run contract tests   | `cd contracts/groth16-verifier && cargo test`                                                                      |
-| Run one backend test | `pnpm test:backend -- --testNamePattern="auth"`                                                                    |
-| Build contract       | `cd contracts/groth16-verifier && cargo build --target wasm32-unknown-unknown --release`                           |
-| Interact with chain  | `soroban contract invoke --id <contract-id> --source <identity> --network testnet -- <method> <args>`               |
-| Send a tx            | `soroban contract invoke --id <contract-id> --source <identity> --network testnet -- <method> <args>`               |
-| Fund testnet account | `soroban config identity fund --source <identity> --network testnet`                                                |
+| What                 | Command                                                                                               |
+| -------------------- | ----------------------------------------------------------------------------------------------------- |
+| Start everything     | `docker compose up -d && pnpm dev:backend` (then in another terminal `pnpm dev:frontend`)             |
+| Reset database       | `pnpm db:reset && pnpm db:seed`                                                                       |
+| View Prisma schema   | `pnpm db:studio`                                                                                      |
+| Run contract tests   | `cd contracts/groth16-verifier && cargo test`                                                         |
+| Run one backend test | `pnpm test:backend -- --testNamePattern="auth"`                                                       |
+| Build contract       | `cd contracts/groth16-verifier && cargo build --target wasm32-unknown-unknown --release`              |
+| Interact with chain  | `soroban contract invoke --id <contract-id> --source <identity> --network testnet -- <method> <args>` |
+| Send a tx            | `soroban contract invoke --id <contract-id> --source <identity> --network testnet -- <method> <args>` |
+| Fund testnet account | `soroban config identity fund --source <identity> --network testnet`                                  |
 
 ---
 

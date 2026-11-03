@@ -85,10 +85,12 @@ export function UpgradeModal({ open, onClose, onSuccess }: UpgradeModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="bg-surface-card border-surface-border mx-4 w-full max-w-md rounded-xl border p-6 shadow-2xl shadow-accent-glow/20">
+      <div className="bg-surface-card border-surface-border shadow-accent-glow/20 mx-4 w-full max-w-md rounded-xl border p-6 shadow-2xl">
         <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-foreground">Upgrade to PAID Tier</h2>
-          <button onClick={onClose} className="text-muted hover:text-foreground transition-colors">&times;</button>
+          <h2 className="text-foreground text-lg font-semibold">Upgrade to PAID Tier</h2>
+          <button onClick={onClose} className="text-muted hover:text-foreground transition-colors">
+            &times;
+          </button>
         </div>
 
         {step === "choose" && (
@@ -96,7 +98,7 @@ export function UpgradeModal({ open, onClose, onSuccess }: UpgradeModalProps) {
             <div className="bg-accent/5 border-accent/10 rounded-lg border p-4">
               <p className="text-foreground text-center text-2xl font-bold">{UPGRADE_PRICE_USD}</p>
               <p className="text-muted text-center text-xs">USD</p>
-               <p className="text-muted text-center text-xs mt-1">≈ {UPGRADE_PRICE_XLM} XLM</p>
+              <p className="text-muted mt-1 text-center text-xs">≈ {UPGRADE_PRICE_XLM} XLM</p>
             </div>
 
             <div className="bg-void border-surface-border rounded-lg border p-3">
@@ -114,17 +116,24 @@ export function UpgradeModal({ open, onClose, onSuccess }: UpgradeModalProps) {
                     disabled={loading}
                     className="bg-accent text-void hover:bg-accent/90 flex w-full items-center justify-center gap-2 rounded px-4 py-3 font-medium transition-colors disabled:opacity-50"
                   >
-                    {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ExternalLink className="h-4 w-4" />}
+                    {loading ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <ExternalLink className="h-4 w-4" />
+                    )}
                     Pay {UPGRADE_PRICE_XLM} XLM
                   </button>
                 )}
                 {isConnected && publicKey && (
-                  <div className="bg-void border-surface-border flex items-center gap-2 rounded-lg border px-3 py-2 text-xs text-muted">
+                  <div className="bg-void border-surface-border text-muted flex items-center gap-2 rounded-lg border px-3 py-2 text-xs">
                     <Wallet className="h-3 w-3 shrink-0" />
                     <span className="truncate font-mono">{publicKey}</span>
                     <button
-                      onClick={() => { navigator.clipboard.writeText(publicKey!); toast.success("Address copied") }}
-                      className="ml-auto shrink-0 hover:text-foreground transition-colors"
+                      onClick={() => {
+                        navigator.clipboard.writeText(publicKey!)
+                        toast.success("Address copied")
+                      }}
+                      className="hover:text-foreground ml-auto shrink-0 transition-colors"
                     >
                       <Copy className="h-3 w-3" />
                     </button>
@@ -134,8 +143,12 @@ export function UpgradeModal({ open, onClose, onSuccess }: UpgradeModalProps) {
             </div>
 
             <div className="relative">
-              <div className="border-surface-border absolute inset-0 flex items-center"><div className="w-full border-t" /></div>
-              <div className="relative flex justify-center text-xs"><span className="bg-surface-card text-muted px-2">or</span></div>
+              <div className="border-surface-border absolute inset-0 flex items-center">
+                <div className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs">
+                <span className="bg-surface-card text-muted px-2">or</span>
+              </div>
             </div>
 
             <CrossmintCheckout
@@ -146,7 +159,9 @@ export function UpgradeModal({ open, onClose, onSuccess }: UpgradeModalProps) {
               label="Pay $75 with Card"
             />
 
-            <p className="text-muted text-center text-xs">Powered by Crossmint &middot; All payments tracked per institution.</p>
+            <p className="text-muted text-center text-xs">
+              Powered by Crossmint &middot; All payments tracked per institution.
+            </p>
           </div>
         )}
 
@@ -154,8 +169,8 @@ export function UpgradeModal({ open, onClose, onSuccess }: UpgradeModalProps) {
           <div className="space-y-4">
             {txPending && (
               <div className="flex flex-col items-center gap-3 py-6">
-                <Loader2 className="h-8 w-8 animate-spin text-accent" />
-                  <p className="text-muted text-sm">Processing payment...</p>
+                <Loader2 className="text-accent h-8 w-8 animate-spin" />
+                <p className="text-muted text-sm">Processing payment...</p>
               </div>
             )}
             {isConfirmed && !loading && (
@@ -164,12 +179,21 @@ export function UpgradeModal({ open, onClose, onSuccess }: UpgradeModalProps) {
                   <CheckCircle2 className="h-10 w-10 text-green-500" />
                   <p className="text-foreground font-medium">Transaction Confirmed</p>
                   {txHash && (
-                    <a href={`https://stellar.expert/explorer/testnet/tx/${txHash}`} target="_blank" rel="noopener noreferrer" className="text-accent flex items-center gap-1 text-xs hover:underline">
+                    <a
+                      href={`https://stellar.expert/explorer/testnet/tx/${txHash}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-accent flex items-center gap-1 text-xs hover:underline"
+                    >
                       View on Stellar Explorer <ExternalLink className="h-3 w-3" />
                     </a>
                   )}
                 </div>
-                <button onClick={confirmOnChain} disabled={loading} className="bg-accent text-void hover:bg-accent/90 flex w-full items-center justify-center gap-2 rounded px-4 py-2.5 text-sm font-medium transition-colors disabled:opacity-50">
+                <button
+                  onClick={confirmOnChain}
+                  disabled={loading}
+                  className="bg-accent text-void hover:bg-accent/90 flex w-full items-center justify-center gap-2 rounded px-4 py-2.5 text-sm font-medium transition-colors disabled:opacity-50"
+                >
                   {loading && <Loader2 className="h-4 w-4 animate-spin" />} Confirm & Apply Upgrade
                 </button>
               </div>
@@ -177,7 +201,12 @@ export function UpgradeModal({ open, onClose, onSuccess }: UpgradeModalProps) {
             {!txPending && !isConfirmed && (
               <div className="flex flex-col items-center gap-3 py-4">
                 <p className="text-muted text-sm">Transaction not yet confirmed.</p>
-                <button onClick={() => setStep("choose")} className="text-muted hover:text-foreground text-xs transition-colors">Back</button>
+                <button
+                  onClick={() => setStep("choose")}
+                  className="text-muted hover:text-foreground text-xs transition-colors"
+                >
+                  Back
+                </button>
               </div>
             )}
           </div>
@@ -187,7 +216,10 @@ export function UpgradeModal({ open, onClose, onSuccess }: UpgradeModalProps) {
           <CrossmintCheckout
             amountUsd={UPGRADE_PRICE_USD}
             paymentType="INSTITUTION_UPGRADE"
-            onSuccess={() => { setStep("success"); onSuccess() }}
+            onSuccess={() => {
+              setStep("success")
+              onSuccess()
+            }}
             onClose={() => setStep("choose")}
             label="Pay $75 with Card"
           />
@@ -196,18 +228,33 @@ export function UpgradeModal({ open, onClose, onSuccess }: UpgradeModalProps) {
         {step === "success" && (
           <div className="flex flex-col items-center gap-4 py-6">
             <CheckCircle2 className="h-12 w-12 text-green-500" />
-            <p className="text-lg font-semibold text-foreground">Upgrade Successful!</p>
-            <p className="text-muted text-sm text-center">Your institution is now PAID tier.</p>
-            <button onClick={onClose} className="bg-accent text-void hover:bg-accent/90 mt-2 rounded px-6 py-2 text-sm font-medium transition-colors">Done</button>
+            <p className="text-foreground text-lg font-semibold">Upgrade Successful!</p>
+            <p className="text-muted text-center text-sm">Your institution is now PAID tier.</p>
+            <button
+              onClick={onClose}
+              className="bg-accent text-void hover:bg-accent/90 mt-2 rounded px-6 py-2 text-sm font-medium transition-colors"
+            >
+              Done
+            </button>
           </div>
         )}
 
         {step === "error" && (
           <div className="flex flex-col items-center gap-4 py-6">
-            <div className="text-error flex h-12 w-12 items-center justify-center rounded-full bg-red-500/10"><span className="text-2xl">!</span></div>
-            <p className="text-lg font-semibold text-foreground">Payment Failed</p>
-            <p className="text-muted text-sm text-center">{error ?? "An error occurred"}</p>
-            <button onClick={() => { setStep("choose"); setError(null) }} className="bg-accent text-void hover:bg-accent/90 rounded px-6 py-2 text-sm font-medium transition-colors">Try Again</button>
+            <div className="text-error flex h-12 w-12 items-center justify-center rounded-full bg-red-500/10">
+              <span className="text-2xl">!</span>
+            </div>
+            <p className="text-foreground text-lg font-semibold">Payment Failed</p>
+            <p className="text-muted text-center text-sm">{error ?? "An error occurred"}</p>
+            <button
+              onClick={() => {
+                setStep("choose")
+                setError(null)
+              }}
+              className="bg-accent text-void hover:bg-accent/90 rounded px-6 py-2 text-sm font-medium transition-colors"
+            >
+              Try Again
+            </button>
           </div>
         )}
       </div>

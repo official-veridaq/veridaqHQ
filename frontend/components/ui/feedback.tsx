@@ -6,15 +6,11 @@ import { cn } from "@/lib/utils"
 export function Spinner({ className }: { className?: string }) {
   return (
     <svg
-      className={cn("animate-spin text-accent", className ?? "w-5 h-5")}
+      className={cn("text-accent animate-spin", className ?? "h-5 w-5")}
       fill="none"
       viewBox="0 0 24 24"
     >
-      <circle
-        className="opacity-25"
-        cx="12" cy="12" r="10"
-        stroke="currentColor" strokeWidth="4"
-      />
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
       <path
         className="opacity-75"
         fill="currentColor"
@@ -28,8 +24,8 @@ export function Spinner({ className }: { className?: string }) {
 
 export function LoadingScreen() {
   return (
-    <div className="flex items-center justify-center h-64 text-muted text-sm gap-2">
-      <Spinner className="w-4 h-4" />
+    <div className="text-muted flex h-64 items-center justify-center gap-2 text-sm">
+      <Spinner className="h-4 w-4" />
       <span>Loading…</span>
     </div>
   )
@@ -42,17 +38,17 @@ export function EmptyState({
   description,
   action,
 }: {
-  title:       string
+  title: string
   description: string
-  action?:     React.ReactNode
+  action?: React.ReactNode
 }) {
   return (
-    <div className="flex flex-col items-center justify-center py-16 px-4 text-center gap-3">
-      <div className="w-12 h-12 rounded-xl bg-surface border border-surface-border flex items-center justify-center mb-2">
-        <div className="w-2 h-2 rounded-full bg-muted-subtle" />
+    <div className="flex flex-col items-center justify-center gap-3 px-4 py-16 text-center">
+      <div className="bg-surface border-surface-border mb-2 flex h-12 w-12 items-center justify-center rounded-xl border">
+        <div className="bg-muted-subtle h-2 w-2 rounded-full" />
       </div>
-      <p className="text-foreground font-medium text-sm">{title}</p>
-      <p className="text-muted text-xs max-w-xs leading-relaxed">{description}</p>
+      <p className="text-foreground text-sm font-medium">{title}</p>
+      <p className="text-muted max-w-xs text-xs leading-relaxed">{description}</p>
       {action && <div className="mt-2">{action}</div>}
     </div>
   )
@@ -62,7 +58,7 @@ export function EmptyState({
 
 export function ErrorBanner({ message }: { message: string }) {
   return (
-    <div className="bg-error-bg border border-error/20 rounded-lg px-4 py-3 text-error text-sm">
+    <div className="bg-error-bg border-error/20 text-error rounded-lg border px-4 py-3 text-sm">
       {message}
     </div>
   )
@@ -75,15 +71,15 @@ export function SectionHeader({
   description,
   action,
 }: {
-  title:       string
+  title: string
   description?: string
-  action?:     React.ReactNode
+  action?: React.ReactNode
 }) {
   return (
-    <div className="flex items-start justify-between gap-4 mb-6">
+    <div className="mb-6 flex items-start justify-between gap-4">
       <div>
-        <h2 className="text-foreground font-semibold text-base">{title}</h2>
-        {description && <p className="text-muted text-sm mt-0.5">{description}</p>}
+        <h2 className="text-foreground text-base font-semibold">{title}</h2>
+        {description && <p className="text-muted mt-0.5 text-sm">{description}</p>}
       </div>
       {action && <div className="shrink-0">{action}</div>}
     </div>

@@ -18,27 +18,53 @@ interface ScrollRevealProps {
 const variantMap: Record<RevealDirection, Variants> = {
   up: {
     hidden: { opacity: 0, y: 30 },
-    visible: (d: number) => ({ opacity: 1, y: 0, transition: { duration: 0.7, delay: d, ease: [0.16, 1, 0.3, 1] } }),
+    visible: (d: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.7, delay: d, ease: [0.16, 1, 0.3, 1] },
+    }),
   },
   down: {
     hidden: { opacity: 0, y: -30 },
-    visible: (d: number) => ({ opacity: 1, y: 0, transition: { duration: 0.7, delay: d, ease: [0.16, 1, 0.3, 1] } }),
+    visible: (d: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.7, delay: d, ease: [0.16, 1, 0.3, 1] },
+    }),
   },
   left: {
     hidden: { opacity: 0, x: -40 },
-    visible: (d: number) => ({ opacity: 1, x: 0, transition: { duration: 0.7, delay: d, ease: [0.16, 1, 0.3, 1] } }),
+    visible: (d: number) => ({
+      opacity: 1,
+      x: 0,
+      transition: { duration: 0.7, delay: d, ease: [0.16, 1, 0.3, 1] },
+    }),
   },
   right: {
     hidden: { opacity: 0, x: 40 },
-    visible: (d: number) => ({ opacity: 1, x: 0, transition: { duration: 0.7, delay: d, ease: [0.16, 1, 0.3, 1] } }),
+    visible: (d: number) => ({
+      opacity: 1,
+      x: 0,
+      transition: { duration: 0.7, delay: d, ease: [0.16, 1, 0.3, 1] },
+    }),
   },
   scale: {
     hidden: { opacity: 0, scale: 0.9, y: 20 },
-    visible: (d: number) => ({ opacity: 1, scale: 1, y: 0, transition: { duration: 0.8, delay: d, ease: [0.16, 1, 0.3, 1] } }),
+    visible: (d: number) => ({
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      transition: { duration: 0.8, delay: d, ease: [0.16, 1, 0.3, 1] },
+    }),
   },
   "zoom-in": {
     hidden: { opacity: 0, scale: 0.8, filter: "blur(4px)" },
-    visible: (d: number) => ({ opacity: 1, scale: 1, filter: "blur(0px)", transition: { duration: 0.9, delay: d, ease: [0.16, 1, 0.3, 1] } }),
+    visible: (d: number) => ({
+      opacity: 1,
+      scale: 1,
+      filter: "blur(0px)",
+      transition: { duration: 0.9, delay: d, ease: [0.16, 1, 0.3, 1] },
+    }),
   },
   none: {
     hidden: { opacity: 0 },

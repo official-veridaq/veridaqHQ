@@ -36,7 +36,7 @@ export default function InstitutionRegisterPage() {
     } catch (err: unknown) {
       const resp =
         typeof err === "object" && err !== null
-          ? (err as Record<string, unknown>)["response"] as Record<string, unknown> | undefined
+          ? ((err as Record<string, unknown>)["response"] as Record<string, unknown> | undefined)
           : undefined
       const data = resp?.["data"] as Record<string, unknown> | undefined
       toast.error(
@@ -49,16 +49,18 @@ export default function InstitutionRegisterPage() {
   }
 
   const generateKeys = () => {
-    const key = "0x04" + Array.from({ length: 128 }, () => Math.floor(Math.random() * 16).toString(16)).join("")
+    const key =
+      "0x04" +
+      Array.from({ length: 128 }, () => Math.floor(Math.random() * 16).toString(16)).join("")
     setFormData({ ...formData, publicKey: key })
     toast.success("Cryptographic keys generated!")
   }
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-void px-4 py-8">
+    <div className="bg-void relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-8">
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-0 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-accent/[0.04] blur-[120px]" />
-        <div className="absolute inset-0 bg-grid-pattern bg-grid opacity-30" />
+        <div className="bg-accent/[0.04] absolute left-1/2 top-0 h-[500px] w-[500px] -translate-x-1/2 rounded-full blur-[120px]" />
+        <div className="bg-grid-pattern bg-grid absolute inset-0 opacity-30" />
       </div>
 
       <div className="relative z-10 w-full max-w-lg">
@@ -70,14 +72,14 @@ export default function InstitutionRegisterPage() {
           <ThemeToggle />
         </div>
 
-        <div className="border-surface-border bg-surface-card/80 rounded-2xl border p-8 shadow-elevated backdrop-blur-sm">
+        <div className="border-surface-border bg-surface-card/80 shadow-elevated rounded-2xl border p-8 backdrop-blur-sm">
           <div className="mb-6 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/10">
-              <Building2 className="h-5 w-5 text-accent" />
+            <div className="bg-accent/10 flex h-10 w-10 items-center justify-center rounded-xl">
+              <Building2 className="text-accent h-5 w-5" />
             </div>
             <div>
-              <h1 className="text-lg font-semibold text-foreground">Institution Registration</h1>
-              <p className="text-xs text-muted">
+              <h1 className="text-foreground text-lg font-semibold">Institution Registration</h1>
+              <p className="text-muted text-xs">
                 Register to issue Zero-Knowledge credentials on Stellar
               </p>
             </div>
@@ -113,20 +115,20 @@ export default function InstitutionRegisterPage() {
                   type="text"
                   required
                   readOnly
-                  className="input-elevated min-w-0 flex-1 font-mono text-xs text-muted"
+                  className="input-elevated text-muted min-w-0 flex-1 font-mono text-xs"
                   value={formData.publicKey || "Click generate to create keys"}
                 />
                 <button
                   type="button"
                   onClick={generateKeys}
-                  className="border-surface-border hover:bg-surface flex shrink-0 items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-medium text-foreground transition-colors"
+                  className="border-surface-border hover:bg-surface text-foreground flex shrink-0 items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-medium transition-colors"
                 >
                   <Key className="h-3 w-3" />
                   Generate
                 </button>
               </div>
               {formData.publicKey && (
-                <p className="mt-1 flex items-center gap-1 text-[10px] text-success">
+                <p className="text-success mt-1 flex items-center gap-1 text-[10px]">
                   <Shield className="h-3 w-3" /> Cryptographic keys attached
                 </p>
               )}
@@ -146,7 +148,7 @@ export default function InstitutionRegisterPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted transition-colors hover:text-foreground"
+                  className="text-muted hover:text-foreground absolute right-3 top-1/2 -translate-y-1/2 transition-colors"
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
@@ -155,12 +157,12 @@ export default function InstitutionRegisterPage() {
 
             <button
               type="submit"
-              className="bg-accent mt-2 flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-void transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-50"
+              className="bg-accent text-void mt-2 flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-50"
               disabled={loading || !formData.publicKey}
             >
               {loading ? (
                 <span className="flex items-center gap-2">
-                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-void/30 border-t-void" />
+                  <span className="border-void/30 border-t-void h-4 w-4 animate-spin rounded-full border-2" />
                   Registering…
                 </span>
               ) : (
@@ -173,11 +175,11 @@ export default function InstitutionRegisterPage() {
           </form>
 
           <div className="border-surface-border mt-6 border-t pt-5">
-            <p className="text-center text-xs text-muted">
+            <p className="text-muted text-center text-xs">
               Already have an account?{" "}
               <Link
                 href="/institution/login"
-                className="font-medium text-foreground transition-colors hover:text-accent"
+                className="text-foreground hover:text-accent font-medium transition-colors"
               >
                 Sign in
               </Link>

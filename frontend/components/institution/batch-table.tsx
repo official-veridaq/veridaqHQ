@@ -68,8 +68,8 @@ export function BatchTable({ batches, onDismiss }: { batches: Batch[]; onDismiss
           {batches.map((b) => (
             <tr key={b.id} className="table-row">
               <td className="text-muted py-3">{format(new Date(b.createdAt), "dd MMM yyyy")}</td>
-              <td className="py-3 text-foreground">{b.studentCount}</td>
-              <td className="hidden py-3 text-foreground sm:table-cell">{b.graduationYear}</td>
+              <td className="text-foreground py-3">{b.studentCount}</td>
+              <td className="text-foreground hidden py-3 sm:table-cell">{b.graduationYear}</td>
               <td className="py-3">
                 <span className={statusClass[b.status] ?? "badge-muted"}>{b.status}</span>
               </td>
@@ -93,7 +93,7 @@ export function BatchTable({ batches, onDismiss }: { batches: Batch[]; onDismiss
                     <summary className="cursor-pointer text-red-400 hover:text-red-300">
                       View details
                     </summary>
-                    <div className="glass-panel shimmer-sweep border-surface-border bg-void mt-2 rounded border p-3 text-xs text-foreground">
+                    <div className="glass-panel shimmer-sweep border-surface-border bg-void text-foreground mt-2 rounded border p-3 text-xs">
                       <div className="text-muted mb-2">Batch ID: {b.id}</div>
                       <div className="space-y-2">
                         {b.errorReport.map((err, i) => (

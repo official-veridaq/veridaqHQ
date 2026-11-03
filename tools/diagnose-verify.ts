@@ -1,6 +1,15 @@
 import { readFileSync } from "fs"
 import * as snarkjs from "snarkjs"
-import { rpc, xdr, nativeToScVal, scValToNative, Contract, TransactionBuilder, BASE_FEE, Keypair } from "@stellar/stellar-sdk"
+import {
+  rpc,
+  xdr,
+  nativeToScVal,
+  scValToNative,
+  Contract,
+  TransactionBuilder,
+  BASE_FEE,
+  Keypair,
+} from "@stellar/stellar-sdk"
 
 const RPC_URL = "https://soroban-testnet.stellar.org"
 const NETWORK = "Test SDF Network ; September 2015"
@@ -44,20 +53,24 @@ async function main() {
   const vkey = JSON.parse(readFileSync(vkPath, "utf8"))
 
   // Generate a proof with minimal inputs
-  const { proof, publicSignals } = await snarkjs.groth16.fullProve({
-    nameHash: "12345",
-    matricHash: "67890",
-    cgpa: "4",
-    classification: "1",
-    courseHash: "11111",
-    graduationYear: "2025",
-    blindingFactor: "99999",
-    institutionKey: "123456789",
-    commitment: "0x0000000000000000000000000000000000000000000000000000000000000001",
-    nullifier: "0x0000000000000000000000000000000000000000000000000000000000000002",
-    claimType: "1",
-    threshold: "50",
-  }, wasmBuffer, zkeyBuffer)
+  const { proof, publicSignals } = await snarkjs.groth16.fullProve(
+    {
+      nameHash: "12345",
+      matricHash: "67890",
+      cgpa: "4",
+      classification: "1",
+      courseHash: "11111",
+      graduationYear: "2025",
+      blindingFactor: "99999",
+      institutionKey: "123456789",
+      commitment: "0x0000000000000000000000000000000000000000000000000000000000000001",
+      nullifier: "0x0000000000000000000000000000000000000000000000000000000000000002",
+      claimType: "1",
+      threshold: "50",
+    },
+    wasmBuffer,
+    zkeyBuffer
+  )
 
   console.log("=== Proof generated ===")
   console.log("pi_a:", proof.pi_a)
@@ -84,14 +97,8 @@ async function main() {
   ]
   const c: [bigint, bigint] = [BigInt(proof.pi_c[0]), BigInt(proof.pi_c[1])]
 
-  const proofABytes = Buffer.concat([
-    bigintToBytesBE(a[0], 32),
-    bigintToBytesBE(a[1], 32),
-  ])
-  const proofCBytes = Buffer.concat([
-    bigintToBytesBE(c[0], 32),
-    bigintToBytesBE(c[1], 32),
-  ])
+  const proofABytes = Buffer.concat([bigintToBytesBE(a[0], 32), bigintToBytesBE(a[1], 32)])
+  const proofCBytes = Buffer.concat([bigintToBytesBE(c[0], 32), bigintToBytesBE(c[1], 32)])
 
   const b0 = bigintToBytesBE(b[0][0], 32) // x_im / x_c1
   const b1 = bigintToBytesBE(b[0][1], 32) // x_re / x_c0
@@ -122,9 +129,7 @@ async function main() {
         await server.getAccount("GD73PRZI62RFIBJ47KM2SVIGMUA5EDZB7VM2FKXQGZBMQCHVZL6MHFPQ"),
         { fee: "100", networkPassphrase: NETWORK }
       )
-        .addOperation(
-          new Contract(VERIFIER_ID).call("is_vk_registered", vkHashBytes)
-        )
+        .addOperation(new Contract(VERIFIER_ID).call("is_vk_registered", vkHashBytes))
         .setTimeout(30)
         .build()
     )
@@ -168,9 +173,7 @@ async function main() {
               xdr.ScVal.scvBytes(proofABytes),
               xdr.ScVal.scvBytes(proofBBytes),
               xdr.ScVal.scvBytes(proofCBytes),
-              xdr.ScVal.scvVec(
-                pubArgs.map((b: Buffer) => xdr.ScVal.scvBytes(b))
-              )
+              xdr.ScVal.scvVec(pubArgs.map((b: Buffer) => xdr.ScVal.scvBytes(b)))
             )
           )
           .setTimeout(30)

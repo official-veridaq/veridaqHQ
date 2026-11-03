@@ -1,133 +1,172 @@
 <!doctype html>
 <html>
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>VERIDAQ Panel</title>
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-  <div class="app panel-body" data-host="panel">
-    <header class="app-header">
-      <div class="brand">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-        </svg>
-        VERIDAQ
-      </div>
-      <button class="icon-btn" data-action="close-panel" title="Close panel">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="18" y1="6" x2="6" y2="18"/>
-          <line x1="6" y1="6" x2="18" y2="18"/>
-        </svg>
-      </button>
-    </header>
-
-    <section class="status" data-status>
-      <div class="status-indicator" data-status-indicator></div>
-      <div class="status-content">
-        <div class="status-label">Session</div>
-        <div class="status-value" data-status-text>Checking session...</div>
-        <div class="status-user" data-status-user></div>
-      </div>
-    </section>
-
-    <nav class="tabs">
-      <button class="tab active" data-tab="quick">Quick Actions</button>
-      <button class="tab" data-tab="dashboard">Dashboard</button>
-    </nav>
-
-    <section class="panel" data-panel="quick">
-      <!-- Credit balance card — shown for employers -->
-      <div class="panel-block credits-card" data-credits-card style="display:none">
-        <div class="panel-block-header">
-          <h3 class="flex items-center gap-1.5">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
-              <line x1="1" y1="10" x2="23" y2="10"/>
-            </svg>
-            Credits
-          </h3>
-          <span class="badge-info">Employer</span>
-        </div>
-        <div class="credits-row">
-          <div class="credit-metric">
-            <span class="credit-value" data-credit-free>0</span>
-            <span class="credit-label">Free</span>
-          </div>
-          <div class="credit-divider"></div>
-          <div class="credit-metric">
-            <span class="credit-value" data-credit-paid>0</span>
-            <span class="credit-label">Paid</span>
-          </div>
-          <div class="credit-divider"></div>
-          <div class="credit-metric">
-            <span class="credit-value accent" data-credit-total>0</span>
-            <span class="credit-label">Total</span>
-          </div>
-        </div>
-        <button class="primary" data-action="buy-credits" style="margin-top:4px">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"/>
-            <line x1="12" y1="8" x2="12" y2="16"/>
-            <line x1="8" y1="12" x2="16" y2="12"/>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VERIDAQ Panel</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app panel-body" data-host="panel">
+      <header class="app-header">
+        <div class="brand">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
           </svg>
-          Buy Credits
+          VERIDAQ
+        </div>
+        <button class="icon-btn" data-action="close-panel" title="Close panel">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
         </button>
-        <p class="status-msg" data-credit-status></p>
-      </div>
+      </header>
 
-      <div class="panel-block">
-        <div class="panel-block-header">
-          <h3>Upload Batch</h3>
-          <span class="badge-muted">Institution</span>
+      <section class="status" data-status>
+        <div class="status-indicator" data-status-indicator></div>
+        <div class="status-content">
+          <div class="status-label">Session</div>
+          <div class="status-value" data-status-text>Checking session...</div>
+          <div class="status-user" data-status-user></div>
         </div>
-        <div class="upload-zone" data-upload-zone>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-            <polyline points="17 8 12 3 7 8"/>
-            <line x1="12" y1="3" x2="12" y2="15"/>
-          </svg>
-          <span>Drop .xlsx file or <strong>browse</strong></span>
-          <input type="file" data-upload-file accept=".xlsx" class="file-input" />
-        </div>
-        <button class="primary" data-action="upload">Upload</button>
-        <p class="status-msg" data-upload-status></p>
-      </div>
+      </section>
 
-      <div class="panel-block">
-        <div class="panel-block-header">
-          <h3>Verify Credential</h3>
-          <span class="badge-info">Employer</span>
-        </div>
-        <input type="text" placeholder="Institution on-chain ID" data-verify-inst class="input" />
-        <input type="text" placeholder="Matric number" data-verify-matric class="input" />
-        <div class="input-row">
-          <input type="number" placeholder="Claim type" data-verify-claim class="input" />
-          <input type="number" placeholder="Threshold" data-verify-threshold class="input" />
-        </div>
-        <button class="primary" data-action="verify">Verify</button>
-        <p class="status-msg" data-verify-status></p>
-      </div>
-    </section>
+      <nav class="tabs">
+        <button class="tab active" data-tab="quick">Quick Actions</button>
+        <button class="tab" data-tab="dashboard">Dashboard</button>
+      </nav>
 
-    <section class="panel hidden" data-panel="dashboard">
-      <div class="panel-block">
-        <div class="panel-block-header">
-          <h3>Recent Activity</h3>
-          <button class="ghost-sm" data-action="refresh-dashboard">Refresh</button>
+      <section class="panel" data-panel="quick">
+        <!-- Credit balance card — shown for employers -->
+        <div class="panel-block credits-card" data-credits-card style="display: none">
+          <div class="panel-block-header">
+            <h3 class="flex items-center gap-1.5">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
+                <line x1="1" y1="10" x2="23" y2="10" />
+              </svg>
+              Credits
+            </h3>
+            <span class="badge-info">Employer</span>
+          </div>
+          <div class="credits-row">
+            <div class="credit-metric">
+              <span class="credit-value" data-credit-free>0</span>
+              <span class="credit-label">Free</span>
+            </div>
+            <div class="credit-divider"></div>
+            <div class="credit-metric">
+              <span class="credit-value" data-credit-paid>0</span>
+              <span class="credit-label">Paid</span>
+            </div>
+            <div class="credit-divider"></div>
+            <div class="credit-metric">
+              <span class="credit-value accent" data-credit-total>0</span>
+              <span class="credit-label">Total</span>
+            </div>
+          </div>
+          <button class="primary" data-action="buy-credits" style="margin-top: 4px">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="16" />
+              <line x1="8" y1="12" x2="16" y2="12" />
+            </svg>
+            Buy Credits
+          </button>
+          <p class="status-msg" data-credit-status></p>
         </div>
-        <ul class="list" data-dashboard-list></ul>
-      </div>
-    </section>
 
-    <footer class="app-footer">
-      <span>v1.0.0 · Stellar Soroban</span>
-      <a href="#" data-action="open-app">Open Dashboard</a>
-    </footer>
-  </div>
+        <div class="panel-block">
+          <div class="panel-block-header">
+            <h3>Upload Batch</h3>
+            <span class="badge-muted">Institution</span>
+          </div>
+          <div class="upload-zone" data-upload-zone>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="3" x2="12" y2="15" />
+            </svg>
+            <span>Drop .xlsx file or <strong>browse</strong></span>
+            <input type="file" data-upload-file accept=".xlsx" class="file-input" />
+          </div>
+          <button class="primary" data-action="upload">Upload</button>
+          <p class="status-msg" data-upload-status></p>
+        </div>
 
-  <script src="config.js"></script>
-  <script src="ui.js"></script>
-</body>
+        <div class="panel-block">
+          <div class="panel-block-header">
+            <h3>Verify Credential</h3>
+            <span class="badge-info">Employer</span>
+          </div>
+          <input type="text" placeholder="Institution on-chain ID" data-verify-inst class="input" />
+          <input type="text" placeholder="Matric number" data-verify-matric class="input" />
+          <div class="input-row">
+            <input type="number" placeholder="Claim type" data-verify-claim class="input" />
+            <input type="number" placeholder="Threshold" data-verify-threshold class="input" />
+          </div>
+          <button class="primary" data-action="verify">Verify</button>
+          <p class="status-msg" data-verify-status></p>
+        </div>
+      </section>
+
+      <section class="panel hidden" data-panel="dashboard">
+        <div class="panel-block">
+          <div class="panel-block-header">
+            <h3>Recent Activity</h3>
+            <button class="ghost-sm" data-action="refresh-dashboard">Refresh</button>
+          </div>
+          <ul class="list" data-dashboard-list></ul>
+        </div>
+      </section>
+
+      <footer class="app-footer">
+        <span>v1.0.0 · Stellar Soroban</span>
+        <a href="#" data-action="open-app">Open Dashboard</a>
+      </footer>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="ui.js"></script>
+  </body>
 </html>

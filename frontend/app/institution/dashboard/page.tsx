@@ -4,7 +4,15 @@ import { GuardKyc } from "@/components/ui/guard-kyc"
 import { StatCard } from "@/components/ui/stat-card"
 import { api } from "@/lib/api"
 import { useAuth } from "@/lib/auth"
-import { AlertCircle, ArrowRight, FileCheck2, RefreshCcw, ShieldCheck, Upload, Sparkles } from "lucide-react"
+import {
+  AlertCircle,
+  ArrowRight,
+  FileCheck2,
+  RefreshCcw,
+  ShieldCheck,
+  Upload,
+  Sparkles,
+} from "lucide-react"
 import { toast } from "@/components/ui/toast"
 import Link from "next/link"
 import { useEffect, useState } from "react"
@@ -53,14 +61,14 @@ export default function InstitutionDashboard() {
         <GuardKyc>
           <div className="animate-fade-in space-y-8">
             <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-              <h1 className="text-2xl font-semibold text-foreground">
+              <h1 className="text-foreground text-2xl font-semibold">
                 Welcome back, {stats?.name || "Institution"}!
               </h1>
 
               <div className="flex gap-2">
                 <Link
                   href="/institution/batches"
-                  className="bg-surface-border hover:bg-surface-border/80 flex items-center gap-2 rounded px-4 py-2 text-sm font-medium text-foreground transition-colors"
+                  className="bg-surface-border hover:bg-surface-border/80 text-foreground flex items-center gap-2 rounded px-4 py-2 text-sm font-medium transition-colors"
                 >
                   <Upload size={16} /> Upload Batch
                 </Link>
@@ -80,7 +88,9 @@ export default function InstitutionDashboard() {
               <div className="card bg-surface-card border-surface-border flex flex-col justify-between rounded-xl border p-4">
                 <p className="text-muted text-sm">Pending Manual Reviews</p>
                 <div className="mt-2 flex items-center justify-between">
-                  <p className="text-2xl font-semibold text-foreground">{stats?.pendingManual ?? 0}</p>
+                  <p className="text-foreground text-2xl font-semibold">
+                    {stats?.pendingManual ?? 0}
+                  </p>
                   {stats?.pendingManual > 0 && (
                     <Link
                       href="/institution/verifications?status=AWAITING_INSTITUTION"
@@ -121,7 +131,7 @@ export default function InstitutionDashboard() {
                 <button
                   onClick={syncBalance}
                   disabled={syncing}
-                  className="text-muted mt-3 inline-flex items-center gap-2 text-xs transition-colors hover:text-foreground"
+                  className="text-muted hover:text-foreground mt-3 inline-flex items-center gap-2 text-xs transition-colors"
                 >
                   <RefreshCcw size={12} className={syncing ? "animate-spin" : ""} />
                   {syncing ? "Syncing" : "Sync balance"}
@@ -129,30 +139,32 @@ export default function InstitutionDashboard() {
               </div>
             </div>
 
-            <div className="flex items-center justify-center gap-2 rounded-xl border border-dashed border-surface-border bg-surface-card/50 p-3">
+            <div className="border-surface-border bg-surface-card/50 flex items-center justify-center gap-2 rounded-xl border border-dashed p-3">
               <Sparkles className="text-muted h-4 w-4" />
               <span className="text-muted text-xs">Earnings & analytics coming soon</span>
             </div>
 
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-              <div className="card ">
-                <h3 className="mb-4 flex items-center gap-2 font-medium text-foreground">
+              <div className="card">
+                <h3 className="text-foreground mb-4 flex items-center gap-2 font-medium">
                   <FileCheck2 size={18} className="text-accent" /> Subscription & Last Batch
                 </h3>
                 <div className="space-y-4">
                   <div className="border-surface-border/50 flex items-center justify-between border-b py-2">
                     <span className="text-muted text-sm">Current Tier</span>
-                    <span className="text-sm font-medium text-foreground">{stats?.tier ?? "FREE"}</span>
+                    <span className="text-foreground text-sm font-medium">
+                      {stats?.tier ?? "FREE"}
+                    </span>
                   </div>
                   <div className="border-surface-border/50 flex items-center justify-between border-b py-2">
                     <span className="text-muted text-sm">Account Created</span>
-                    <span className="text-sm font-medium text-foreground">
+                    <span className="text-foreground text-sm font-medium">
                       {stats?.createdAt ? new Date(stats.createdAt).toLocaleDateString() : "-"}
                     </span>
                   </div>
                   <div className="flex items-center justify-between py-2">
                     <span className="text-muted text-sm">Last Upload Status</span>
-                    <span className="flex items-center gap-2 text-sm font-medium text-foreground">
+                    <span className="text-foreground flex items-center gap-2 text-sm font-medium">
                       {stats?.lastBatch ? (
                         <>
                           <span
@@ -171,7 +183,7 @@ export default function InstitutionDashboard() {
 
               <div className="card bg-accent/5 border-accent/20 relative flex max-h-64 flex-col items-center justify-center overflow-hidden border p-8 text-center backdrop-blur-sm">
                 <div className="bg-accent/10 pointer-events-none absolute right-0 top-0 -mr-10 -mt-10 min-h-[200px] min-w-[200px] rounded-full p-12 blur-3xl"></div>
-                <h3 className="z-10 mb-2 text-lg font-semibold text-foreground">
+                <h3 className="text-foreground z-10 mb-2 text-lg font-semibold">
                   Verification Requests
                 </h3>
                 <p className="text-muted z-10 mb-6 max-w-sm text-sm">

@@ -41,12 +41,7 @@ async function loadSession(root) {
   var response = await sendMessage({ type: "veridaq.session" })
   if (response && response.session && response.session.user) {
     var user = response.session.user
-    setStatus(
-      root,
-      "Signed in",
-      user.name + " · " + user.role,
-      "online"
-    )
+    setStatus(root, "Signed in", user.name + " · " + user.role, "online")
     root.dataset.role = user.role
     // Load credits for employer role
     if (user.role === "EMPLOYER") {
@@ -164,9 +159,9 @@ async function loadDashboard(root) {
       creditLi.innerHTML =
         '<span class="list-primary">' +
         (d.totalAvailable || 0) +
-        '</span> verifications available' +
+        "</span> verifications available" +
         (d.freeRemaining > 0
-          ? ' <span class="list-secondary">(' + d.freeRemaining + ' free)</span>'
+          ? ' <span class="list-secondary">(' + d.freeRemaining + " free)</span>"
           : "")
       list.appendChild(creditLi)
     }
@@ -208,13 +203,13 @@ async function loadDashboard(root) {
     list.innerHTML =
       '<li><span class="list-primary">' +
       (d.institutions || 0) +
-      '</span> institutions</li>' +
+      "</span> institutions</li>" +
       '<li><span class="list-primary">' +
       (d.employers || 0) +
-      '</span> employers</li>' +
+      "</span> employers</li>" +
       '<li><span class="list-primary">' +
       (d.confirmedBatches || 0) +
-      '</span> confirmed batches</li>' +
+      "</span> confirmed batches</li>" +
       '<li><span class="list-primary">' +
       (d.successfulVerifications || 0) +
       "</span> verifications</li>"
@@ -282,11 +277,7 @@ function bindActions(root) {
         options: { method: "POST", body: formData },
       })
       if (!res || !res.ok) {
-        setStatusMsg(
-          uploadStatus,
-          (res && res.data && res.data.error) || "Upload failed",
-          "error"
-        )
+        setStatusMsg(uploadStatus, (res && res.data && res.data.error) || "Upload failed", "error")
         return
       }
       setStatusMsg(uploadStatus, "Upload accepted! Job: " + (res.data.jobId || "queued"), "success")
@@ -323,11 +314,7 @@ function bindActions(root) {
         },
       })
       if (!res || !res.ok) {
-        setStatusMsg(
-          verifyStatus,
-          (res && res.data && res.data.error) || "Request failed",
-          "error"
-        )
+        setStatusMsg(verifyStatus, (res && res.data && res.data.error) || "Request failed", "error")
         return
       }
       setStatusMsg(

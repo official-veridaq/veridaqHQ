@@ -138,9 +138,7 @@ export class AdminService {
     if (!emp.walletAddress) return null
 
     try {
-      const alreadyInitialised = await this.blockchainSvc.isEmployerInitialised(
-        emp.walletAddress
-      )
+      const alreadyInitialised = await this.blockchainSvc.isEmployerInitialised(emp.walletAddress)
       if (!alreadyInitialised) {
         await this.blockchainSvc.initialiseEmployer(emp.walletAddress)
       }

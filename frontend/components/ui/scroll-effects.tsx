@@ -53,8 +53,11 @@ export function ScrollEffectsProvider() {
       stackItems.forEach((el) => {
         const rect = el.getBoundingClientRect()
         const viewportHeight = window.innerHeight
-        const progress = Math.min(1, Math.max(0, (viewportHeight - rect.top) / (viewportHeight + rect.height)))
-        el.style.setProperty('--stack-progress', progress.toFixed(3))
+        const progress = Math.min(
+          1,
+          Math.max(0, (viewportHeight - rect.top) / (viewportHeight + rect.height))
+        )
+        el.style.setProperty("--stack-progress", progress.toFixed(3))
       })
     }
 

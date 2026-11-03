@@ -62,7 +62,7 @@ function MarqueeItem({
       <span className="text-muted uppercase tracking-widest">{label}:</span>
       {status === "green" && <span className="h-2 w-2 animate-pulse rounded-full bg-[#00e699]" />}
       {status === "red" && <span className="h-2 w-2 animate-pulse rounded-full bg-red-500" />}
-      <span className="font-bold text-foreground">{value}</span>
+      <span className="text-foreground font-bold">{value}</span>
     </div>
   )
 }

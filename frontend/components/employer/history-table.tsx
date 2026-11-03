@@ -54,7 +54,7 @@ export function HistoryTable({ items }: { items: Item[] }) {
           {items.map((item) => (
             <tr key={item.id} className="table-row">
               <td className="text-muted py-3">{format(new Date(item.createdAt), "dd MMM yyyy")}</td>
-              <td className="py-3 text-foreground">{item.institution.name}</td>
+              <td className="text-foreground py-3">{item.institution.name}</td>
               <td className="text-muted py-3">Type {item.claimType}</td>
               <td className="py-3">
                 {item.result ? (

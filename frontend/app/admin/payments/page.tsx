@@ -46,10 +46,12 @@ export default function AdminPayments() {
       {loading ? (
         <div className="text-muted flex h-64 items-center justify-center text-sm">Loading…</div>
       ) : (
-          <div className="animate-fade-in space-y-6">
+        <div className="animate-fade-in space-y-6">
           {/* Filters — bento styled */}
           <div className="bg-surface-card border-surface-border flex flex-wrap items-center gap-2 rounded-lg border p-4">
-            <span className="font-display text-muted mr-2 text-xs font-semibold tracking-wide uppercase">Filter</span>
+            <span className="font-display text-muted mr-2 text-xs font-semibold uppercase tracking-wide">
+              Filter
+            </span>
             {["ALL", "PENDING", "COMPLETED", "FAILED", "REFUNDED"].map((s) => (
               <button
                 key={s}
@@ -57,7 +59,7 @@ export default function AdminPayments() {
                 className={`rounded px-3 py-1.5 text-xs font-medium transition-colors ${
                   filter === s
                     ? "bg-accent text-void"
-                    : "text-muted bg-surface-card border-surface-border border hover:text-foreground"
+                    : "text-muted bg-surface-card border-surface-border hover:text-foreground border"
                 }`}
               >
                 {s === "ALL" ? "All" : s.charAt(0) + s.slice(1).toLowerCase()}
@@ -66,17 +68,17 @@ export default function AdminPayments() {
           </div>
 
           {/* Table */}
-          <div className="bg-surface-card border-surface-border group [perspective:500px] hover:[transform:rotateX(0.5deg)] rounded-xl border transition-all duration-500 overflow-x-auto">
+          <div className="bg-surface-card border-surface-border group overflow-x-auto rounded-xl border transition-all duration-500 [perspective:500px] hover:[transform:rotateX(0.5deg)]">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="border-surface-border border-b text-xs text-muted">
+                <tr className="border-surface-border text-muted border-b text-xs">
                   <th className="p-3 font-medium">Reference</th>
-                  <th className="p-3 font-medium hidden md:table-cell">Type</th>
+                  <th className="hidden p-3 font-medium md:table-cell">Type</th>
                   <th className="p-3 font-medium">Status</th>
-                  <th className="p-3 font-medium hidden lg:table-cell">Amount</th>
-                  <th className="p-3 font-medium hidden lg:table-cell">Method</th>
-                  <th className="p-3 font-medium hidden md:table-cell">Payer</th>
-                  <th className="p-3 font-medium hidden md:table-cell">Date</th>
+                  <th className="hidden p-3 font-medium lg:table-cell">Amount</th>
+                  <th className="hidden p-3 font-medium lg:table-cell">Method</th>
+                  <th className="hidden p-3 font-medium md:table-cell">Payer</th>
+                  <th className="hidden p-3 font-medium md:table-cell">Date</th>
                 </tr>
               </thead>
               <tbody>
@@ -95,7 +97,7 @@ export default function AdminPayments() {
                     <td className="p-3">
                       <code className="text-foreground break-all text-xs">{p.referenceId}</code>
                     </td>
-                    <td className="p-3 text-foreground hidden md:table-cell">
+                    <td className="text-foreground hidden p-3 md:table-cell">
                       {p.type.replace(/_/g, " ")}
                     </td>
                     <td className="p-3">
@@ -107,16 +109,16 @@ export default function AdminPayments() {
                         {p.status}
                       </span>
                     </td>
-                    <td className="p-3 text-foreground hidden lg:table-cell">
+                    <td className="text-foreground hidden p-3 lg:table-cell">
                       {p.amountFiat
                         ? `${p.amountFiat} ${p.fiatCurrency ?? "USD"}`
                         : `${(Number(p.amount) / 1e7).toFixed(4)} XLM`}
                     </td>
-                    <td className="p-3 text-muted hidden lg:table-cell">{p.method ?? "—"}</td>
-                    <td className="p-3 text-muted hidden md:table-cell">
+                    <td className="text-muted hidden p-3 lg:table-cell">{p.method ?? "—"}</td>
+                    <td className="text-muted hidden p-3 md:table-cell">
                       {p.payerRole} / {p.payerId.slice(0, 8)}...
                     </td>
-                    <td className="p-3 text-muted hidden md:table-cell">
+                    <td className="text-muted hidden p-3 md:table-cell">
                       {new Date(p.createdAt).toLocaleDateString()}
                     </td>
                   </tr>

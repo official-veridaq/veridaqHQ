@@ -39,26 +39,39 @@ const nullifier = "0x" + F.toString(rawNullifier, 16).padStart(64, "0")
 console.log("Computed nullifier:", nullifier)
 
 // Generate proof
-const { proof, publicSignals } = await snarkjs.groth16.fullProve({
-  nameHash: F.toString(nameF),
-  matricHash: F.toString(matricF),
-  cgpa: cgpa,
-  classification: classification,
-  courseHash: F.toString(courseF),
-  graduationYear: graduationYear,
-  blindingFactor: blindingFactor,
-  institutionKey: F.toString(keyF),
-  commitment: commitment,
-  nullifier: nullifier,
-  claimType: "1",
-  threshold: "3",
-}, wasm, zkey)
+const { proof, publicSignals } = await snarkjs.groth16.fullProve(
+  {
+    nameHash: F.toString(nameF),
+    matricHash: F.toString(matricF),
+    cgpa: cgpa,
+    classification: classification,
+    courseHash: F.toString(courseF),
+    graduationYear: graduationYear,
+    blindingFactor: blindingFactor,
+    institutionKey: F.toString(keyF),
+    commitment: commitment,
+    nullifier: nullifier,
+    claimType: "1",
+    threshold: "3",
+  },
+  wasm,
+  zkey
+)
 
 console.log("Proof generated successfully")
 console.log("Public signals:", publicSignals)
-console.log("pi_a:", proof.pi_a.map(x => x.toString().slice(0, 20)))
-console.log("pi_b:", proof.pi_b.map(x => x.map(y => y.toString().slice(0, 20))))
-console.log("pi_c:", proof.pi_c.map(x => x.toString().slice(0, 20)))
+console.log(
+  "pi_a:",
+  proof.pi_a.map((x) => x.toString().slice(0, 20))
+)
+console.log(
+  "pi_b:",
+  proof.pi_b.map((x) => x.map((y) => y.toString().slice(0, 20)))
+)
+console.log(
+  "pi_c:",
+  proof.pi_c.map((x) => x.toString().slice(0, 20))
+)
 
 // Verify locally
 const vk = JSON.parse(readFileSync("circuits/build/verification_key.json", "utf8"))

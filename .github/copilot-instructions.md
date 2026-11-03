@@ -14,21 +14,21 @@ attribute ever appears on the public blockchain in any readable form at any stag
 
 ## Tech stack
 
-| Layer               | Technology                                   |
-| ------------------- | -------------------------------------------- |
-| Blockchain          | Stellar Soroban (Soroban testnet)             |
-| Smart Contracts     | Rust, Soroban SDK                             |
-| Account Abstraction | N/A (Soroban native fee model)               |
-| ZKP Circuit         | Circom 2.0.8, SnarkJS 0.7, Groth16           |
-| Commitment Hash     | Poseidon (circomlib)                         |
-| Backend             | Node.js 22, Fastify 5, TypeScript 5.8        |
-| Database            | PostgreSQL 16, Prisma 6                      |
-| Queue               | Redis 7, BullMQ 5                            |
-| Blockchain client   | @stellar/stellar-sdk                          |
-| Frontend            | Next.js 15 (App Router), React 19            |
-| Styling             | Tailwind CSS 3.4, shadcn/ui                  |
-| Package manager     | pnpm (monorepo, single root package.json)    |
-| Infrastructure      | Docker Compose (local Postgres + Redis)      |
+| Layer               | Technology                                |
+| ------------------- | ----------------------------------------- |
+| Blockchain          | Stellar Soroban (Soroban testnet)         |
+| Smart Contracts     | Rust, Soroban SDK                         |
+| Account Abstraction | N/A (Soroban native fee model)            |
+| ZKP Circuit         | Circom 2.0.8, SnarkJS 0.7, Groth16        |
+| Commitment Hash     | Poseidon (circomlib)                      |
+| Backend             | Node.js 22, Fastify 5, TypeScript 5.8     |
+| Database            | PostgreSQL 16, Prisma 6                   |
+| Queue               | Redis 7, BullMQ 5                         |
+| Blockchain client   | @stellar/stellar-sdk                      |
+| Frontend            | Next.js 15 (App Router), React 19         |
+| Styling             | Tailwind CSS 3.4, shadcn/ui               |
+| Package manager     | pnpm (monorepo, single root package.json) |
+| Infrastructure      | Docker Compose (local Postgres + Redis)   |
 
 ## Architecture in plain terms
 
@@ -36,7 +36,7 @@ Three actors use the system:
 
 1. INSTITUTION (a university registrar) — uploads an Excel file of graduating students.
    The backend computes a Poseidon commitment and nullifier for each student and submits
-    them on-chain via Soroban contract invocation.
+   them on-chain via Soroban contract invocation.
 
 2. EMPLOYER — selects an institution, enters a matriculation number, picks a claim (e.g.
    "Minimum Upper Second Class"). The backend generates a Groth16 ZKP proving that claim

@@ -78,7 +78,7 @@ export class CrossmintService {
       throw new Error(`Crossmint API error: ${response.status}`)
     }
 
-    const data = await response.json() as {
+    const data = (await response.json()) as {
       order?: { orderId: string; checkoutUrl?: string }
       checkoutUrl?: string
     }

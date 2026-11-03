@@ -1,4 +1,4 @@
-import { readFileSync }  from "fs"
+import { readFileSync } from "fs"
 import * as snarkjs from "snarkjs"
 import { buildPoseidon } from "circomlibjs"
 
@@ -19,17 +19,32 @@ async function main() {
   const blindingFactor = BigInt("0x1234567890abcdef1234567890abcdef") % FIELD
   const institutionKey = BigInt("0xdeadbeefcafebabedeadbeefcafebabe") % FIELD
 
-  const commitmentBig = poseidon([nameHash, matricHash, cgpa, classification, courseHash, graduationYear, blindingFactor])
+  const commitmentBig = poseidon([
+    nameHash,
+    matricHash,
+    cgpa,
+    classification,
+    courseHash,
+    graduationYear,
+    blindingFactor,
+  ])
   const commitment = poseidon.F.toString(commitmentBig)
   const nullifierBig = poseidon([matricHash, institutionKey])
   const nullifier = poseidon.F.toString(nullifierBig)
 
   const inputs = {
-    nameHash: nameHash.toString(), matricHash: matricHash.toString(),
-    cgpa: cgpa.toString(), classification: classification.toString(),
-    courseHash: courseHash.toString(), graduationYear: graduationYear.toString(),
-    blindingFactor: blindingFactor.toString(), institutionKey: institutionKey.toString(),
-    commitment, nullifier, claimType: "4", threshold: "0",
+    nameHash: nameHash.toString(),
+    matricHash: matricHash.toString(),
+    cgpa: cgpa.toString(),
+    classification: classification.toString(),
+    courseHash: courseHash.toString(),
+    graduationYear: graduationYear.toString(),
+    blindingFactor: blindingFactor.toString(),
+    institutionKey: institutionKey.toString(),
+    commitment,
+    nullifier,
+    claimType: "4",
+    threshold: "0",
   }
 
   const wasm = new Uint8Array(readFileSync(WASM))
@@ -39,13 +54,18 @@ async function main() {
   // Local verification
   const vkey = JSON.parse(readFileSync(VKEY, "utf8"))
   const localOk = await snarkjs.groth16.verify(vkey, publicSignals, rawProof)
-  if (!localOk) { console.error("LOCAL_VERIFY_FAILED"); process.exit(1) }
+  if (!localOk) {
+    console.error("LOCAL_VERIFY_FAILED")
+    process.exit(1)
+  }
 
   const proof = rawProof
-  const a0 = BigInt(proof.pi_a[0]), a1 = BigInt(proof.pi_a[1])
+  const a0 = BigInt(proof.pi_a[0]),
+    a1 = BigInt(proof.pi_a[1])
   const [x_re, x_im] = [BigInt(proof.pi_b[0][0]), BigInt(proof.pi_b[0][1])]
   const [y_re, y_im] = [BigInt(proof.pi_b[1][0]), BigInt(proof.pi_b[1][1])]
-  const c0 = BigInt(proof.pi_c[0]), c1 = BigInt(proof.pi_c[1])
+  const c0 = BigInt(proof.pi_c[0]),
+    c1 = BigInt(proof.pi_c[1])
 
   const toHex = (v: bigint, n: number) => v.toString(16).padStart(n * 2, "0")
 
@@ -60,11 +80,19 @@ async function main() {
   const b2 = toHex(y_im, 32)
   const b3 = toHex(y_re, 32)
 
-  console.log(JSON.stringify({
-    aHex, bHex, cHex, pubHex,
-    components: { b0, b1, b2, b3 },
-    localOk,
-  }))
+  console.log(
+    JSON.stringify({
+      aHex,
+      bHex,
+      cHex,
+      pubHex,
+      components: { b0, b1, b2, b3 },
+      localOk,
+    })
+  )
 }
 
-main().catch((e: Error) => { console.error(e.message); process.exit(1) })
+main().catch((e: Error) => {
+  console.error(e.message)
+  process.exit(1)
+})

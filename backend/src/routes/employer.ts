@@ -28,9 +28,7 @@ export const employerRoutes: FastifyPluginAsync = async (app) => {
     let onChainVerifications = 0
     if (emp.walletAddress) {
       try {
-        onChainVerifications = await bSvc.getRemainingFreeVerifications(
-            emp.walletAddress
-          )
+        onChainVerifications = await bSvc.getRemainingFreeVerifications(emp.walletAddress)
       } catch (err) {
         req.log.error({ err }, "Failed to fetch free verification balance")
       }
@@ -38,7 +36,10 @@ export const employerRoutes: FastifyPluginAsync = async (app) => {
 
     return {
       ...emp,
-      freeVerificationsRemaining: Math.max(Number(emp.freeVerificationsRemaining), onChainVerifications),
+      freeVerificationsRemaining: Math.max(
+        Number(emp.freeVerificationsRemaining),
+        onChainVerifications
+      ),
     }
   })
 

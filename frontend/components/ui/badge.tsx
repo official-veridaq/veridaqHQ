@@ -7,11 +7,11 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
-        green:  "bg-accent-muted text-accent ring-accent/20",
-        red:    "bg-error-bg text-error ring-error/20",
+        green: "bg-accent-muted text-accent ring-accent/20",
+        red: "bg-error-bg text-error ring-error/20",
         yellow: "bg-warning-bg text-warning ring-warning/20",
-        blue:   "bg-info-bg text-info ring-info/20",
-        muted:  "bg-surface text-muted ring-surface-border",
+        blue: "bg-info-bg text-info ring-info/20",
+        muted: "bg-surface text-muted ring-surface-border",
       },
     },
     defaultVariants: { variant: "muted" },
@@ -19,8 +19,7 @@ const badgeVariants = cva(
 )
 
 export interface BadgeProps
-  extends React.HTMLAttributes<HTMLSpanElement>,
-    VariantProps<typeof badgeVariants> {}
+  extends React.HTMLAttributes<HTMLSpanElement>, VariantProps<typeof badgeVariants> {}
 
 function Badge({ className, variant, ...props }: BadgeProps) {
   return <span className={cn(badgeVariants({ variant }), className)} {...props} />

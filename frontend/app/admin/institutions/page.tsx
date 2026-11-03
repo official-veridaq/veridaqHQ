@@ -92,11 +92,11 @@ export default function InstitutionsPage() {
         <div className="text-muted py-12 text-center text-sm">Loading institutions...</div>
       ) : data?.items?.length === 0 ? (
         <div className="border-surface-border bg-surface-card flex flex-col items-center border p-12 text-center">
-          <h3 className="mb-2 text-lg font-medium text-foreground">No Institutions Found</h3>
+          <h3 className="text-foreground mb-2 text-lg font-medium">No Institutions Found</h3>
         </div>
       ) : (
-        <div className="bg-surface-card border-surface-border group [perspective:500px] hover:[transform:rotateX(0.5deg)] overflow-x-auto rounded-xl border transition-all duration-500">
-          <table className="w-full text-left text-sm text-foreground">
+        <div className="bg-surface-card border-surface-border group overflow-x-auto rounded-xl border transition-all duration-500 [perspective:500px] hover:[transform:rotateX(0.5deg)]">
+          <table className="text-foreground w-full text-left text-sm">
             <thead className="text-muted border-surface-border border-b text-xs uppercase">
               <tr>
                 <th className="px-4 py-3 font-medium">Name</th>
@@ -112,7 +112,7 @@ export default function InstitutionsPage() {
               {data?.items?.map((inst: any) => (
                 <tr key={inst.id} className="hover:bg-void/30 transition-colors">
                   <td className="px-4 py-3">
-                    <div className="font-medium text-foreground">{inst.name}</div>
+                    <div className="text-foreground font-medium">{inst.name}</div>
                     <div className="text-muted text-xs">{inst.email}</div>
                   </td>
                   <td className="text-muted hidden max-w-[200px] truncate px-4 py-3 font-mono text-xs lg:table-cell">
@@ -120,7 +120,7 @@ export default function InstitutionsPage() {
                   </td>
                   <td className="px-4 py-3">
                     <span
-                      className={`${inst.tier === 'FREE' ? 'border-orange-500/20 bg-orange-500/10 text-orange-400' : 'border-blue-500/20 bg-blue-500/10 text-blue-400'} inline-block rounded-full border px-2.5 py-0.5 text-xs font-medium`}
+                      className={`${inst.tier === "FREE" ? "border-orange-500/20 bg-orange-500/10 text-orange-400" : "border-blue-500/20 bg-blue-500/10 text-blue-400"} inline-block rounded-full border px-2.5 py-0.5 text-xs font-medium`}
                     >
                       {inst.tier}
                     </span>
@@ -171,7 +171,7 @@ export default function InstitutionsPage() {
                           setFundError("")
                           setFundTxHash("")
                         }}
-                        className="bg-surface-border hover:bg-surface-border/80 rounded px-2 py-1.5 text-xs text-foreground"
+                        className="bg-surface-border hover:bg-surface-border/80 text-foreground rounded px-2 py-1.5 text-xs"
                       >
                         Fund
                       </button>
@@ -186,18 +186,23 @@ export default function InstitutionsPage() {
 
       {fundTarget && (
         <div className="bg-void/80 fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-          <div className="[perspective:500px] group w-full max-w-lg">
-            <div className="border-surface-border bg-surface-card hover:[transform:rotateX(0.5deg)] relative overflow-hidden rounded-xl border p-6 shadow-elevated transition-all duration-500">
+          <div className="group w-full max-w-lg [perspective:500px]">
+            <div className="border-surface-border bg-surface-card shadow-elevated relative overflow-hidden rounded-xl border p-6 transition-all duration-500 hover:[transform:rotateX(0.5deg)]">
               <div className="pointer-events-none absolute -inset-px opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                <div className="absolute inset-0 bg-gradient-to-br from-accent/[0.03] to-transparent" />
+                <div className="from-accent/[0.03] absolute inset-0 bg-gradient-to-br to-transparent" />
               </div>
               <div className="relative">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-foreground">
+                  <div className="text-foreground flex items-center gap-2">
                     <Wallet className="text-accent h-4 w-4" />
-                    <span className="font-display text-sm font-semibold tracking-wide">Fund Institution</span>
+                    <span className="font-display text-sm font-semibold tracking-wide">
+                      Fund Institution
+                    </span>
                   </div>
-                  <button onClick={() => setFundTarget(null)} className="text-muted hover:text-foreground transition-colors">
+                  <button
+                    onClick={() => setFundTarget(null)}
+                    className="text-muted hover:text-foreground transition-colors"
+                  >
                     <X className="h-4 w-4" />
                   </button>
                 </div>
@@ -208,18 +213,22 @@ export default function InstitutionsPage() {
                   <input
                     value={fundAmount}
                     onChange={(e) => setFundAmount(e.target.value)}
-                    className="border-surface-border bg-void mt-2 w-full rounded border px-3 py-2 text-sm text-foreground transition-colors focus:border-accent focus:outline-none"
+                    className="border-surface-border bg-void text-foreground focus:border-accent mt-2 w-full rounded border px-3 py-2 text-sm transition-colors focus:outline-none"
                     placeholder="0.01"
                   />
                 </div>
 
                 {fundError && <p className="mt-3 text-xs text-red-400">{fundError}</p>}
-                {fundTxHash && <p className="text-muted mt-3 text-xs font-mono">Tx: {fundTxHash.slice(0, 42)}...</p>}
+                {fundTxHash && (
+                  <p className="text-muted mt-3 font-mono text-xs">
+                    Tx: {fundTxHash.slice(0, 42)}...
+                  </p>
+                )}
 
                 <div className="mt-6 flex justify-end gap-3">
                   <button
                     onClick={() => setFundTarget(null)}
-                    className="border-surface-border rounded border px-3 py-2 text-xs text-foreground transition-colors hover:bg-surface"
+                    className="border-surface-border text-foreground hover:bg-surface rounded border px-3 py-2 text-xs transition-colors"
                   >
                     Cancel
                   </button>

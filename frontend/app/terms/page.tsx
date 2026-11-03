@@ -7,30 +7,30 @@ import { FloatingShapes } from "@/components/parallax/floating-shapes"
 
 export default function TermsOfServicePage() {
   return (
-    <div className="min-h-screen bg-void pb-16 text-muted">
+    <div className="bg-void text-muted min-h-screen pb-16">
       <AppHeader />
       <ParallaxBg opacity={0.25} />
       <FloatingShapes count={10} />
-      <div className="container mx-auto max-w-4xl px-4 md:px-6 pt-24">
-        <div className="mb-8 flex items-center gap-2 font-mono text-sm text-muted-subtle">
-          <Link href="/" className="transition-colors hover:text-foreground">
+      <div className="container mx-auto max-w-4xl px-4 pt-24 md:px-6">
+        <div className="text-muted-subtle mb-8 flex items-center gap-2 font-mono text-sm">
+          <Link href="/" className="hover:text-foreground transition-colors">
             Home
           </Link>
           <ChevronRight className="h-4 w-4" />
           <span className="text-accent uppercase">Terms of Service</span>
         </div>
 
-        <h1 className="mb-6 text-3xl font-black uppercase tracking-tight text-foreground md:text-4xl">
+        <h1 className="text-foreground mb-6 text-3xl font-black uppercase tracking-tight md:text-4xl">
           Terms of Service
         </h1>
 
-        <p className="border-surface-border mb-12 border-b pb-6 font-mono text-sm text-muted-subtle">
+        <p className="border-surface-border text-muted-subtle mb-12 border-b pb-6 font-mono text-sm">
           EFFECTIVE_DATE: 2026-03-23 | VERSION_REF: VERIDAQ_TOS_V1.0
         </p>
 
         <div className="prose prose-invert prose-headings:text-foreground max-w-none space-y-10 text-sm leading-relaxed md:text-base">
           <section>
-            <h2 className="mb-4 text-lg font-bold uppercase tracking-widest text-foreground">
+            <h2 className="text-foreground mb-4 text-lg font-bold uppercase tracking-widest">
               1. Acceptance of Protocol Terms
             </h2>
             <p>
@@ -42,7 +42,7 @@ export default function TermsOfServicePage() {
           </section>
 
           <section>
-            <h2 className="mb-4 text-lg font-bold uppercase tracking-widest text-foreground">
+            <h2 className="text-foreground mb-4 text-lg font-bold uppercase tracking-widest">
               2. Zero-Knowledge Cryptography Acknowledgment
             </h2>
             <p>
@@ -55,7 +55,7 @@ export default function TermsOfServicePage() {
           </section>
 
           <section>
-            <h2 className="mb-4 text-lg font-bold uppercase tracking-widest text-foreground">
+            <h2 className="text-foreground mb-4 text-lg font-bold uppercase tracking-widest">
               3. Data Non-Reversibility
             </h2>
             <p>
@@ -67,7 +67,7 @@ export default function TermsOfServicePage() {
           </section>
 
           <section>
-            <h2 className="mb-4 text-lg font-bold uppercase tracking-widest text-foreground">
+            <h2 className="text-foreground mb-4 text-lg font-bold uppercase tracking-widest">
               4. Institution & Verifier Obligations
             </h2>
             <p className="mb-2">
@@ -83,7 +83,7 @@ export default function TermsOfServicePage() {
           </section>
 
           <section>
-            <h2 className="mb-4 text-lg font-bold uppercase tracking-widest text-foreground">
+            <h2 className="text-foreground mb-4 text-lg font-bold uppercase tracking-widest">
               5. Disclaimer of Warranties
             </h2>
             <p className="text-xs uppercase leading-loose opacity-70">
