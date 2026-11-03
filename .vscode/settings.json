@@ -30,8 +30,8 @@
   },
   "css.customData": [".vscode/tailwind-custom-data.json"],
   "tailwindCSS.experimental.classRegex": [
-    ["clsx\(([^)]*)\)", "(?:'|"|`)([^']*)(?:'|"|`)"],
-    ["cn\(([^)]*)\)", "(?:'|"|`)([^']*)(?:'|"|`)"]
+    ["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
+    ["cn\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
   ],
   "github.copilot.chat.codeGeneration.useInstructionFiles": true,
   "github.copilot.chat.reviewSelection.enabled": true,
