@@ -38,10 +38,23 @@ fn test_register_reverts_duplicate() {
 
     env.mock_all_auths();
     client.initialize(&admin);
-    client.register(&admin, &inst_id, &String::from_str(&env, "Test U"), &inst_wallet);
+    client.register(
+        &admin,
+        &inst_id,
+        &String::from_str(&env, "Test U"),
+        &inst_wallet,
+    );
 
-    let result = client.try_register(&admin, &inst_id, &String::from_str(&env, "Again"), &inst_wallet);
-    assert_eq!(result.err().unwrap().unwrap(), InstitutionError::AlreadyRegistered);
+    let result = client.try_register(
+        &admin,
+        &inst_id,
+        &String::from_str(&env, "Again"),
+        &inst_wallet,
+    );
+    assert_eq!(
+        result.err().unwrap().unwrap(),
+        InstitutionError::AlreadyRegistered
+    );
 }
 
 #[test]
@@ -56,7 +69,12 @@ fn test_deactivate_and_reactivate() {
 
     env.mock_all_auths();
     client.initialize(&admin);
-    client.register(&admin, &inst_id, &String::from_str(&env, "Test U"), &inst_wallet);
+    client.register(
+        &admin,
+        &inst_id,
+        &String::from_str(&env, "Test U"),
+        &inst_wallet,
+    );
     client.deactivate(&admin, &inst_id);
     assert!(!client.is_active(&inst_id));
     client.reactivate(&admin, &inst_id);
@@ -75,7 +93,12 @@ fn test_earnings() {
 
     env.mock_all_auths();
     client.initialize(&admin);
-    client.register(&admin, &inst_id, &String::from_str(&env, "Test U"), &inst_wallet);
+    client.register(
+        &admin,
+        &inst_id,
+        &String::from_str(&env, "Test U"),
+        &inst_wallet,
+    );
     client.add_earnings(&inst_id, &1000i128);
     let inst = client.get_institution(&inst_id);
     assert_eq!(inst.total_earned, 1000);
@@ -93,6 +116,14 @@ fn test_non_admin_cannot_register() {
 
     env.mock_all_auths();
     client.initialize(&admin);
-    let result = client.try_register(&imposter, &inst_id, &String::from_str(&env, "Evil U"), &Address::generate(&env));
-    assert_eq!(result.err().unwrap().unwrap(), InstitutionError::Unauthorized);
+    let result = client.try_register(
+        &imposter,
+        &inst_id,
+        &String::from_str(&env, "Evil U"),
+        &Address::generate(&env),
+    );
+    assert_eq!(
+        result.err().unwrap().unwrap(),
+        InstitutionError::Unauthorized
+    );
 }

@@ -1,10 +1,10 @@
 #![cfg(test)]
+use crate::{Groth16Verifier, Groth16VerifierClient, Proof, VerificationKey, VerifierError};
 use soroban_sdk::{
-    testutils::Address as _, vec, U256,
     crypto::bn254::{Bn254Fr, Bn254G1Affine, Bn254G2Affine},
-    Address, BytesN, Env,
+    testutils::Address as _,
+    vec, Address, BytesN, Env, U256,
 };
-use crate::{Groth16VerifierClient, VerifierError, VerificationKey, Proof, Groth16Verifier};
 
 fn make_test_vk(env: &Env, num_public: u32) -> VerificationKey {
     let zero = Bn254G1Affine::from_bytes(BytesN::from_array(env, &[0u8; 64]));
@@ -16,8 +16,11 @@ fn make_test_vk(env: &Env, num_public: u32) -> VerificationKey {
     }
 
     VerificationKey {
-        alpha: zero.clone(), beta: zero_g2.clone(),
-        gamma: zero_g2.clone(), delta: zero_g2.clone(), ic,
+        alpha: zero.clone(),
+        beta: zero_g2.clone(),
+        gamma: zero_g2.clone(),
+        delta: zero_g2.clone(),
+        ic,
     }
 }
 
@@ -56,7 +59,10 @@ fn test_register_vk_reverts_non_admin() {
     let vk_hash = BytesN::from_array(&env, &[1u8; 32]);
     let vk = make_test_vk(&env, 2);
     let result = client.try_register_vk(&non_admin, &vk_hash, &vk);
-    assert_eq!(result.err().unwrap().unwrap(), VerifierError::MalformedVerifyingKey);
+    assert_eq!(
+        result.err().unwrap().unwrap(),
+        VerifierError::MalformedVerifyingKey
+    );
 }
 
 #[test]
@@ -75,13 +81,18 @@ fn test_verify_rejects_wrong_signal_count() {
 
     let zero = Bn254G1Affine::from_bytes(BytesN::from_array(&env, &[0u8; 64]));
     let zero_g2 = Bn254G2Affine::from_bytes(BytesN::from_array(&env, &[0u8; 128]));
-    let proof = Proof { a: zero.clone(), b: zero_g2, c: zero };
-    let signals = vec![
-        &env, zero_fr(&env), zero_fr(&env), zero_fr(&env),
-    ];
+    let proof = Proof {
+        a: zero.clone(),
+        b: zero_g2,
+        c: zero,
+    };
+    let signals = vec![&env, zero_fr(&env), zero_fr(&env), zero_fr(&env)];
 
     let result = client.try_verify(&vk_hash, &proof, &signals);
-    assert_eq!(result.err().unwrap().unwrap(), VerifierError::PublicSignalCountMismatch);
+    assert_eq!(
+        result.err().unwrap().unwrap(),
+        VerifierError::PublicSignalCountMismatch
+    );
 }
 
 #[test]
@@ -97,9 +108,16 @@ fn test_verify_rejects_unregistered_vk() {
     let vk_hash = BytesN::from_array(&env, &[99u8; 32]);
     let zero = Bn254G1Affine::from_bytes(BytesN::from_array(&env, &[0u8; 64]));
     let zero_g2 = Bn254G2Affine::from_bytes(BytesN::from_array(&env, &[0u8; 128]));
-    let proof = Proof { a: zero.clone(), b: zero_g2, c: zero };
+    let proof = Proof {
+        a: zero.clone(),
+        b: zero_g2,
+        c: zero,
+    };
     let signals = vec![&env, zero_fr(&env)];
 
     let result = client.try_verify(&vk_hash, &proof, &signals);
-    assert_eq!(result.err().unwrap().unwrap(), VerifierError::MalformedVerifyingKey);
+    assert_eq!(
+        result.err().unwrap().unwrap(),
+        VerifierError::MalformedVerifyingKey
+    );
 }

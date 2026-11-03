@@ -1,8 +1,8 @@
 #![no_std]
 use soroban_sdk::{
-    contract, contracterror, contractimpl, contracttype, U256,
+    contract, contracterror, contractimpl, contracttype,
     crypto::bn254::{Bn254Fr, Bn254G1Affine, Bn254G2Affine},
-    vec, Address, BytesN, Env, Vec,
+    vec, Address, BytesN, Env, Vec, U256,
 };
 
 fn neg_g1(env: &Env, p: &Bn254G1Affine) -> Bn254G1Affine {
@@ -13,10 +13,10 @@ fn neg_g1(env: &Env, p: &Bn254G1Affine) -> Bn254G1Affine {
     // U256::from_parts(part0=MSB, part1, part2, part3=LSB)
     let s = Bn254Fr::from_u256(U256::from_parts(
         env,
-        0x30644e72e131a029,  // MSB
+        0x30644e72e131a029, // MSB
         0xb85045b68181585d,
         0x2833e84879b97091,
-        0x43e1f593f0000000,  // LSB
+        0x43e1f593f0000000, // LSB
     ));
     bn254.g1_mul(p, &s)
 }
@@ -61,18 +61,28 @@ pub struct Groth16Verifier;
 #[contractimpl]
 impl Groth16Verifier {
     pub fn initialize(env: Env, admin: Address) {
-        if env.storage().instance().has(&VkKey::Admin) { panic!("init"); }
+        if env.storage().instance().has(&VkKey::Admin) {
+            panic!("init");
+        }
         admin.require_auth();
         env.storage().instance().set(&VkKey::Admin, &admin);
     }
 
     pub fn register_vk(
-        env: Env, caller: Address, vk_hash: BytesN<32>, vk: VerificationKey,
+        env: Env,
+        caller: Address,
+        vk_hash: BytesN<32>,
+        vk: VerificationKey,
     ) -> Result<(), VerifierError> {
-        let admin: Address = env.storage().instance().get(&VkKey::Admin)
+        let admin: Address = env
+            .storage()
+            .instance()
+            .get(&VkKey::Admin)
             .ok_or(VerifierError::MalformedVerifyingKey)?;
         caller.require_auth();
-        if caller != admin { return Err(VerifierError::MalformedVerifyingKey); }
+        if caller != admin {
+            return Err(VerifierError::MalformedVerifyingKey);
+        }
         env.storage().persistent().set(&VkKey::Vk(vk_hash), &vk);
         Ok(())
     }
@@ -81,14 +91,24 @@ impl Groth16Verifier {
     /// deserialization byte-ordering mismatch). G2 bytes must be in CAP-74 /
     /// EIP-197 format: x_c1 || x_c0 || y_c1 || y_c0.
     pub fn register_vk_raw(
-        env: Env, caller: Address, vk_hash: BytesN<32>,
-        alpha: BytesN<64>, beta: BytesN<128>, gamma: BytesN<128>, delta: BytesN<128>,
+        env: Env,
+        caller: Address,
+        vk_hash: BytesN<32>,
+        alpha: BytesN<64>,
+        beta: BytesN<128>,
+        gamma: BytesN<128>,
+        delta: BytesN<128>,
         ic: Vec<BytesN<64>>,
     ) -> Result<(), VerifierError> {
-        let admin: Address = env.storage().instance().get(&VkKey::Admin)
+        let admin: Address = env
+            .storage()
+            .instance()
+            .get(&VkKey::Admin)
             .ok_or(VerifierError::MalformedVerifyingKey)?;
         caller.require_auth();
-        if caller != admin { return Err(VerifierError::MalformedVerifyingKey); }
+        if caller != admin {
+            return Err(VerifierError::MalformedVerifyingKey);
+        }
 
         let vk = VerificationKey {
             alpha: Bn254G1Affine::from_bytes(alpha),
@@ -112,13 +132,22 @@ impl Groth16Verifier {
     }
 
     pub fn get_vk(env: Env, vk_hash: BytesN<32>) -> Result<VerificationKey, VerifierError> {
-        env.storage().persistent().get(&VkKey::Vk(vk_hash)).ok_or(VerifierError::MalformedVerifyingKey)
+        env.storage()
+            .persistent()
+            .get(&VkKey::Vk(vk_hash))
+            .ok_or(VerifierError::MalformedVerifyingKey)
     }
 
     pub fn verify(
-        env: Env, vk_hash: BytesN<32>, proof: Proof, public_signals: Vec<Bn254Fr>,
+        env: Env,
+        vk_hash: BytesN<32>,
+        proof: Proof,
+        public_signals: Vec<Bn254Fr>,
     ) -> Result<bool, VerifierError> {
-        let vk: VerificationKey = env.storage().persistent().get(&VkKey::Vk(vk_hash))
+        let vk: VerificationKey = env
+            .storage()
+            .persistent()
+            .get(&VkKey::Vk(vk_hash))
             .ok_or(VerifierError::MalformedVerifyingKey)?;
         if public_signals.len() + 1 != vk.ic.len() {
             return Err(VerifierError::PublicSignalCountMismatch);
@@ -143,11 +172,17 @@ impl Groth16Verifier {
     }
 
     pub fn verify_raw(
-        env: Env, vk_hash: BytesN<32>,
-        a_bytes: BytesN<64>, b_bytes: BytesN<128>, c_bytes: BytesN<64>,
+        env: Env,
+        vk_hash: BytesN<32>,
+        a_bytes: BytesN<64>,
+        b_bytes: BytesN<128>,
+        c_bytes: BytesN<64>,
         public_signal_bytes: Vec<BytesN<32>>,
     ) -> Result<bool, VerifierError> {
-        let vk: VerificationKey = env.storage().persistent().get(&VkKey::Vk(vk_hash))
+        let vk: VerificationKey = env
+            .storage()
+            .persistent()
+            .get(&VkKey::Vk(vk_hash))
             .ok_or(VerifierError::MalformedVerifyingKey)?;
         if public_signal_bytes.len() + 1 != vk.ic.len() {
             return Err(VerifierError::PublicSignalCountMismatch);
