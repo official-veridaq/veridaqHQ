@@ -96,5 +96,7 @@ jobs:
           workspaces: contracts
       # The Cargo workspace lives in contracts/, so this must run there: from the
       # repository root there is no Cargo.toml and cargo exits before testing.
+      - run: cargo fmt --check
+      - run: cargo clippy --all-targets -- -D warnings
       - run: cargo test --all-targets
       - run: cargo build --target wasm32-unknown-unknown --release
