@@ -65,6 +65,21 @@ jobs:
       - run: pnpm db:push
       - run: pnpm test:backend
 
+  build:
+    name: Production Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm db:generate
+      - run: pnpm build:backend
+      - run: pnpm build:frontend
+
   test-contracts:
     name: Contract Tests
     runs-on: ubuntu-latest
