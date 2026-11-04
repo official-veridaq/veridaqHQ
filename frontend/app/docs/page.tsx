@@ -578,7 +578,7 @@ export default function DocumentationPage() {
                     Smart Contracts Ledger.
                   </h1>
                   <p className="text-muted text-lg font-light leading-relaxed">
-                    Eight Soroban smart contracts written in Rust, compiled with the Stellar SDK and
+                    Three Soroban smart contracts written in Rust, compiled with the Stellar SDK and
                     deployed on Stellar testnet. Each contract handles a specific domain:
                     institution registry, credential management, revocation, and verification.
                   </p>
@@ -647,7 +647,7 @@ export default function DocumentationPage() {
                         <span className="text-muted-subtle">{"// The engine generates:"}</span>
                         <br />
                         <span className="text-accent whitespace-nowrap">
-                          target/veridaq_credential_verifier.wasm
+                          circuits/build/credential_js/credential.wasm
                         </span>
                       </div>
 
