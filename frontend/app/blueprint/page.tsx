@@ -1004,10 +1004,10 @@ export default function BlueprintPage() {
             <div className="space-y-6">
               <h2 className="text-2xl font-bold md:text-3xl">Stellar Soroban Fee Model</h2>
               <p className="text-muted text-sm leading-relaxed">
-                Veridaq uses Stellar Soroban's native fee model. Each contract invocation
-                requires a small XLM fee. For FREE tier institutions (up to 999 students per
-                batch), fees are paid from the platform's sponsored XLM pool. For PAID tier
-                institutions, fees are deducted from the institution's on-chain XLM balance.
+                Veridaq uses Stellar Soroban's native fee model. Each contract invocation requires a
+                small XLM fee. For FREE tier institutions (up to 999 students per batch), fees are
+                paid from the platform's sponsored XLM pool. For PAID tier institutions, fees are
+                deducted from the institution's on-chain XLM balance.
               </p>
               <div className="space-y-4 text-sm">
                 {[
@@ -1032,8 +1032,8 @@ export default function BlueprintPage() {
                 <table className="w-full text-left text-sm">
                   <thead>
                     <tr className="border-surface-border border-b bg-black/20">
-                      <th className="px-4 py-3 font-medium text-foreground">Component</th>
-                      <th className="px-4 py-3 font-medium text-foreground">Role</th>
+                      <th className="text-foreground px-4 py-3 font-medium">Component</th>
+                      <th className="text-foreground px-4 py-3 font-medium">Role</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1052,7 +1052,7 @@ export default function BlueprintPage() {
                       },
                     ].map((row, i) => (
                       <tr key={i} className="border-surface-border border-b last:border-0">
-                        <td className="px-4 py-3 font-mono text-foreground">{row.contract}</td>
+                        <td className="text-foreground px-4 py-3 font-mono">{row.contract}</td>
                         <td className="text-muted px-4 py-3">{row.role}</td>
                       </tr>
                     ))}

@@ -9,7 +9,7 @@ export class BlockchainService {
   async registerInstitution(
     _institutionId: string,
     _name: string,
-    _adminWallet: string,
+    _adminWallet: string
   ): Promise<string> {
     return "mock-tx-hash"
   }
@@ -24,7 +24,7 @@ export class BlockchainService {
     _nullifiers: string[],
     _graduationYear: number,
     _degreeTypeCode: number,
-    _txRef?: string,
+    _txRef?: string
   ): Promise<{ txHash: string }> {
     return { txHash: "mock-tx-hash" }
   }
@@ -59,7 +59,7 @@ export class BlockchainService {
   }
 
   async getEmployer(
-    _employerAddress: string,
+    _employerAddress: string
   ): Promise<{ free_remaining: number; total: number } | null> {
     return { free_remaining: 3, total: 0 }
   }
@@ -87,7 +87,7 @@ export class BlockchainService {
     _sigCommitment: string,
     _sigNullifier: string,
     _sigClaimType: string,
-    _sigThreshold: string,
+    _sigThreshold: string
   ): Promise<{ txHash: string; verified: boolean }> {
     return { txHash: "mock-tx-hash", verified: true }
   }

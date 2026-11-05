@@ -4,8 +4,13 @@ pragma circom 2.0.8;
 // Install with: pnpm install (circomlibjs is in root package.json).
 // The Circom templates are referenced here from the npm package path.
 
-include "../../node_modules/circomlib/circuits/poseidon.circom";
-include "../../node_modules/circomlib/circuits/comparators.circom";
+// circomlib is a peer dependency of circomlibjs and is hoisted by pnpm into
+// node_modules/.pnpm/circomlib@<ver>/node_modules/circomlib. The include path
+// must therefore use the pnpm-hoisted location rather than a top-level
+// node_modules/circomlib symlink (which does not exist in a pnpm install).
+// The single "../" resolves from circuits/ to the workspace root.
+include "../node_modules/.pnpm/circomlib@2.0.5/node_modules/circomlib/circuits/poseidon.circom";
+include "../node_modules/.pnpm/circomlib@2.0.5/node_modules/circomlib/circuits/comparators.circom";
 
 /// @title CredentialVerifier
 /// @notice Proves a specific academic claim about a committed credential

@@ -6,7 +6,9 @@ const KEY = Buffer.from("8fc4a34ea583018208afbf4581630e9d1eb6999a6e0715b0ee83126
 function decrypt(encryptedData: string, encryptedIv: string, encryptedTag: string): string {
   const decipher = createDecipheriv("aes-256-gcm", KEY, Buffer.from(encryptedIv, "hex"))
   decipher.setAuthTag(Buffer.from(encryptedTag, "hex"))
-  return decipher.update(Buffer.from(encryptedData, "hex"), undefined, "utf8") + decipher.final("utf8")
+  return (
+    decipher.update(Buffer.from(encryptedData, "hex"), undefined, "utf8") + decipher.final("utf8")
+  )
 }
 
 const prisma = new PrismaClient()

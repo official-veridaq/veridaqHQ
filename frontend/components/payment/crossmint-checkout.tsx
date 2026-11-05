@@ -12,7 +12,13 @@ type CrossmintCheckoutProps = {
   label?: string
 }
 
-export function CrossmintCheckout({ amountUsd, paymentType, onSuccess, onClose, label }: CrossmintCheckoutProps) {
+export function CrossmintCheckout({
+  amountUsd,
+  paymentType,
+  onSuccess,
+  onClose,
+  label,
+}: CrossmintCheckoutProps) {
   const [loading, setLoading] = useState(false)
   const [step, setStep] = useState<"init" | "waiting" | "completed" | "failed">("init")
   const [referenceId, setReferenceId] = useState<string | null>(null)
@@ -44,7 +50,7 @@ export function CrossmintCheckout({ amountUsd, paymentType, onSuccess, onClose, 
       const popup = window.open(
         data.checkoutUrl,
         "crossmint-checkout",
-        `width=${width},height=${height},left=${left},top=${top},popup=1`,
+        `width=${width},height=${height},left=${left},top=${top},popup=1`
       )
 
       if (!popup || popup.closed) {
@@ -100,9 +106,9 @@ export function CrossmintCheckout({ amountUsd, paymentType, onSuccess, onClose, 
   if (step === "waiting") {
     return (
       <div className="flex flex-col items-center gap-4 py-8">
-        <Loader2 className="h-10 w-10 animate-spin text-accent" />
+        <Loader2 className="text-accent h-10 w-10 animate-spin" />
         <p className="text-foreground font-medium">Waiting for payment...</p>
-        <p className="text-muted text-sm text-center">
+        <p className="text-muted text-center text-sm">
           Complete your purchase in the Crossmint window.
           <br />
           This page will update automatically once confirmed.
@@ -127,8 +133,8 @@ export function CrossmintCheckout({ amountUsd, paymentType, onSuccess, onClose, 
     return (
       <div className="flex flex-col items-center gap-4 py-8">
         <CheckCircle2 className="h-12 w-12 text-green-500" />
-        <p className="text-lg font-semibold text-foreground">Payment Confirmed!</p>
-        <p className="text-muted text-sm text-center">
+        <p className="text-foreground text-lg font-semibold">Payment Confirmed!</p>
+        <p className="text-muted text-center text-sm">
           Your payment of ${amountUsd} has been processed.
         </p>
         <button
@@ -145,8 +151,8 @@ export function CrossmintCheckout({ amountUsd, paymentType, onSuccess, onClose, 
     return (
       <div className="flex flex-col items-center gap-4 py-8">
         <XCircle className="h-12 w-12 text-red-500" />
-        <p className="text-lg font-semibold text-foreground">Payment Failed</p>
-        <p className="text-muted text-sm text-center">{error ?? "An error occurred"}</p>
+        <p className="text-foreground text-lg font-semibold">Payment Failed</p>
+        <p className="text-muted text-center text-sm">{error ?? "An error occurred"}</p>
         <div className="flex gap-3">
           <button
             onClick={startCheckout}
@@ -183,9 +189,7 @@ export function CrossmintCheckout({ amountUsd, paymentType, onSuccess, onClose, 
         Powered by Crossmint &middot; Pay with card, bank transfer, or Apple Pay
       </p>
       {amountUsd > 0 && (
-        <p className="text-muted text-center text-xs">
-          You will be charged ${amountUsd} USD
-        </p>
+        <p className="text-muted text-center text-xs">You will be charged ${amountUsd} USD</p>
       )}
     </div>
   )

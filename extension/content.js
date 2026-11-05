@@ -50,7 +50,9 @@ function togglePanel() {
   if (existing) {
     existing.style.opacity = "0"
     existing.style.transform = "translateY(8px) scale(0.98)"
-    setTimeout(function () { existing.remove() }, 150)
+    setTimeout(function () {
+      existing.remove()
+    }, 150)
     return
   }
 
@@ -88,7 +90,9 @@ function togglePanel() {
     if (event.data && event.data.type === "veridaq.close") {
       wrapper.style.opacity = "0"
       wrapper.style.transform = "translateY(8px) scale(0.98)"
-      setTimeout(function () { wrapper.remove() }, 150)
+      setTimeout(function () {
+        wrapper.remove()
+      }, 150)
       window.removeEventListener("message", handler)
     }
   })

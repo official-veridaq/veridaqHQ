@@ -8,7 +8,10 @@ import { BlockchainService } from "../src/services/blockchain.service.js"
 import { ProofService } from "../src/services/proof.service.js"
 
 const FIELD_MODULUS = 21888242871839275222246405757245275088548364400416034343698204186575808495617n
-const ENCRYPTION_KEY = Buffer.from("8fc4a34ea583018208afbf4581630e9d1eb6999a6e0715b0ee83126fe1a1cbd3", "hex")
+const ENCRYPTION_KEY = Buffer.from(
+  "8fc4a34ea583018208afbf4581630e9d1eb6999a6e0715b0ee83126fe1a1cbd3",
+  "hex"
+)
 
 function hashToField(value: string): bigint {
   const hash = keccak_256(new TextEncoder().encode(value))
@@ -19,13 +22,19 @@ function encrypt(plaintext: string): { data: string; iv: string; tag: string } {
   const iv = randomBytes(12)
   const cipher = createCipheriv("aes-256-gcm", ENCRYPTION_KEY, iv)
   const encrypted = Buffer.concat([cipher.update(plaintext, "utf8"), cipher.final()])
-  return { data: encrypted.toString("hex"), iv: iv.toString("hex"), tag: cipher.getAuthTag().toString("hex") }
+  return {
+    data: encrypted.toString("hex"),
+    iv: iv.toString("hex"),
+    tag: cipher.getAuthTag().toString("hex"),
+  }
 }
 
 function decrypt(encryptedData: string, encryptedIv: string, encryptedTag: string): string {
   const decipher = createDecipheriv("aes-256-gcm", ENCRYPTION_KEY, Buffer.from(encryptedIv, "hex"))
   decipher.setAuthTag(Buffer.from(encryptedTag, "hex"))
-  return decipher.update(Buffer.from(encryptedData, "hex"), undefined, "utf8") + decipher.final("utf8")
+  return (
+    decipher.update(Buffer.from(encryptedData, "hex"), undefined, "utf8") + decipher.final("utf8")
+  )
 }
 
 async function main() {
@@ -44,7 +53,7 @@ async function main() {
   const institutionKeyHex = decrypt(
     institution.institutionKeyEncrypted!,
     institution.institutionKeyIv!,
-    institution.institutionKeyTag!,
+    institution.institutionKeyTag!
   )
   const institutionKey = BigInt("0x" + institutionKeyHex) % FIELD_MODULUS
   console.log("Institution key loaded:", institutionKey.toString().slice(0, 20) + "...")
@@ -72,8 +81,13 @@ async function main() {
   const nullifier = "0x" + F.toString(rawNullifier, 16).padStart(64, "0")
 
   const rawCommitment = poseidon([
-    nameHash, matricHash, BigInt(cgpaInt), BigInt(classification),
-    courseHash, BigInt(graduationYear), blindingFactor,
+    nameHash,
+    matricHash,
+    BigInt(cgpaInt),
+    BigInt(classification),
+    courseHash,
+    BigInt(graduationYear),
+    blindingFactor,
   ])
   const commitment = "0x" + F.toString(rawCommitment, 16).padStart(64, "0")
 
@@ -120,7 +134,7 @@ async function main() {
     enc.iv,
     enc.tag,
     institutionKey.toString(),
-    { commitment, nullifier, claimType: 1, threshold: 0 },
+    { commitment, nullifier, claimType: 1, threshold: 0 }
   )
   console.log("Proof generated!")
 
@@ -144,15 +158,21 @@ async function main() {
   console.log("  1 (nullifier): ", publicSignals[1])
   console.log("  2 (claimType): ", publicSignals[2])
   console.log("  3 (threshold): ", publicSignals[3])
-  console.log("  Commitment matches:", "0x" + BigInt(publicSignals[0]).toString(16).padStart(64, "0") === commitment)
-  console.log("  Nullifier matches:", "0x" + BigInt(publicSignals[1]).toString(16).padStart(64, "0") === nullifier)
+  console.log(
+    "  Commitment matches:",
+    "0x" + BigInt(publicSignals[0]).toString(16).padStart(64, "0") === commitment
+  )
+  console.log(
+    "  Nullifier matches:",
+    "0x" + BigInt(publicSignals[1]).toString(16).padStart(64, "0") === nullifier
+  )
 
   // Verify locally first
   console.log("Verifying locally...")
   const localOk = await proofSvc.verifyProofLocally(
     proof,
     publicSignals,
-    "packages/circuits/build/verification_key.json",
+    "packages/circuits/build/verification_key.json"
   )
   console.log("Local verification:", localOk)
 

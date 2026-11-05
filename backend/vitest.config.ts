@@ -9,10 +9,7 @@ export default defineConfig({
       // Redirect blockchain service imports to the mock during tests so we
       // never attempt real RPC calls or private-key operations.
       "./blockchain.service.js": resolve(root, "src/test/mocks/blockchain.service.ts"),
-      "../services/blockchain.service.js": resolve(
-        root,
-        "src/test/mocks/blockchain.service.ts"
-      ),
+      "../services/blockchain.service.js": resolve(root, "src/test/mocks/blockchain.service.ts"),
     },
   },
   test: {

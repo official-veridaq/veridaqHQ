@@ -115,9 +115,10 @@ export default function ClaimsPage() {
 
       toast.success(editingClaim ? "Claim updated" : "Claim created")
     } catch (err: any) {
-      const msg = err?.response?.data?.error
-        ?? err?.response?.data?.details?.[0]?.message
-        ?? "Failed to save claim"
+      const msg =
+        err?.response?.data?.error ??
+        err?.response?.data?.details?.[0]?.message ??
+        "Failed to save claim"
       toast.error(msg)
     } finally {
       setIsSaving(false)
@@ -155,14 +156,14 @@ export default function ClaimsPage() {
       ) : claims.length === 0 ? (
         <div className="border-surface-border bg-surface-card flex flex-col items-center border p-12 text-center">
           <Settings className="text-muted mb-4 h-12 w-12 opacity-50" />
-          <h3 className="mb-2 text-lg font-medium text-foreground">No Claims Defined</h3>
+          <h3 className="text-foreground mb-2 text-lg font-medium">No Claims Defined</h3>
           <p className="text-muted mb-6 max-w-md text-sm">
             You have not defined any queryable claims yet. Create claims to allow employers to
             request verifications.
           </p>
           <button
             onClick={openCreateModal}
-            className="bg-surface-border px-6 py-2 text-sm font-medium text-foreground transition-colors hover:bg-opacity-80"
+            className="bg-surface-border text-foreground px-6 py-2 text-sm font-medium transition-colors hover:bg-opacity-80"
           >
             Create Your First Claim
           </button>
@@ -175,7 +176,9 @@ export default function ClaimsPage() {
               className="bg-surface-card border-surface-border group relative flex flex-col border p-5"
             >
               <div className="mb-3 flex items-start justify-between">
-                <h3 className="line-clamp-2 pr-4 text-base font-medium text-foreground">{c.label}</h3>
+                <h3 className="text-foreground line-clamp-2 pr-4 text-base font-medium">
+                  {c.label}
+                </h3>
 
                 {/* Status Indicator */}
                 <div
@@ -208,7 +211,7 @@ export default function ClaimsPage() {
                 </button>
                 <button
                   onClick={() => openEditModal(c)}
-                  className="hover:text-accent p-1 text-foreground transition-colors"
+                  className="hover:text-accent text-foreground p-1 transition-colors"
                 >
                   <Edit className="h-4 w-4" />
                 </button>
@@ -224,42 +227,44 @@ export default function ClaimsPage() {
           <div className="bg-surface-card border-surface-border animate-fade-in relative w-full max-w-md border p-6 shadow-2xl">
             <button
               onClick={() => setIsModalOpen(false)}
-              className="text-muted absolute right-4 top-4 hover:text-foreground"
+              className="text-muted hover:text-foreground absolute right-4 top-4"
             >
               <X className="h-5 w-5" />
             </button>
 
-            <h2 className="mb-6 text-xl font-semibold text-foreground">
+            <h2 className="text-foreground mb-6 text-xl font-semibold">
               {editingClaim ? "Edit Claim" : "Create Claim"}
             </h2>
 
             <div className="space-y-4">
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-foreground">Claim Label</label>
+                <label className="text-foreground mb-1.5 block text-sm font-medium">
+                  Claim Label
+                </label>
                 <input
                   type="text"
                   value={label}
                   onChange={handleLabelChange}
                   placeholder="e.g. Minimum Upper Second Class"
-                  className="bg-void border-surface-border focus:border-accent w-full border px-3 py-2 text-sm text-foreground focus:outline-none"
+                  className="bg-void border-surface-border focus:border-accent text-foreground w-full border px-3 py-2 text-sm focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-foreground">
+                <label className="text-foreground mb-1.5 block text-sm font-medium">
                   Description (Optional)
                 </label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Shown to employers when they request verification..."
-                  className="bg-void border-surface-border focus:border-accent h-20 w-full resize-none border px-3 py-2 text-sm text-foreground focus:outline-none"
+                  className="bg-void border-surface-border focus:border-accent text-foreground h-20 w-full resize-none border px-3 py-2 text-sm focus:outline-none"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="mb-1.5 block flex items-center gap-1 text-sm font-medium text-foreground">
+                  <label className="text-foreground mb-1.5 block flex items-center gap-1 text-sm font-medium">
                     Claim Type
                     <span title="AUTO is processed instantly via ZK. MANUAL enters a queue.">
                       <Info className="text-muted h-3 w-3" />
@@ -268,7 +273,7 @@ export default function ClaimsPage() {
                   <select
                     value={reviewType}
                     onChange={(e) => setReviewType(e.target.value)}
-                    className="bg-void border-surface-border focus:border-accent w-full appearance-none border px-3 py-2 text-sm text-foreground focus:outline-none disabled:opacity-50"
+                    className="bg-void border-surface-border focus:border-accent text-foreground w-full appearance-none border px-3 py-2 text-sm focus:outline-none disabled:opacity-50"
                     disabled={!!editingClaim}
                   >
                     <option value="AUTO">Automated (ZK Proof)</option>
@@ -276,7 +281,7 @@ export default function ClaimsPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="mb-1.5 block text-sm font-medium text-foreground">
+                  <label className="text-foreground mb-1.5 block text-sm font-medium">
                     Circuit Code
                   </label>
                   <input
@@ -299,7 +304,7 @@ export default function ClaimsPage() {
                   />
                   <label
                     htmlFor="active-toggle"
-                    className="cursor-pointer select-none text-sm text-foreground"
+                    className="text-foreground cursor-pointer select-none text-sm"
                   >
                     Claim is active and visible to employers
                   </label>
@@ -310,7 +315,7 @@ export default function ClaimsPage() {
             <div className="mt-8 flex justify-end gap-3">
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="border-surface-border hover:bg-surface-elevated border px-4 py-2 text-sm font-medium text-foreground transition-colors"
+                className="border-surface-border hover:bg-surface-elevated text-foreground border px-4 py-2 text-sm font-medium transition-colors"
               >
                 Cancel
               </button>

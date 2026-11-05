@@ -57,27 +57,30 @@ export default function AdminAudit() {
         <div className="text-muted flex h-64 items-center justify-center text-sm">Loading…</div>
       ) : (
         <div className="animate-fade-in space-y-6">
-          <div className="bg-surface-card border-surface-border group [perspective:500px] hover:[transform:rotateX(0.5deg)] rounded-lg border p-5 transition-all duration-500">
+          <div className="bg-surface-card border-surface-border group rounded-lg border p-5 transition-all duration-500 [perspective:500px] hover:[transform:rotateX(0.5deg)]">
             <div className="flex items-center gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent/10">
-                <Activity className="h-4 w-4 text-accent" />
+              <div className="bg-accent/10 flex h-8 w-8 items-center justify-center rounded-lg">
+                <Activity className="text-accent h-4 w-4" />
               </div>
               <div>
-                <p className="font-display text-sm font-semibold tracking-wide text-foreground">Audit Trail</p>
+                <p className="font-display text-foreground text-sm font-semibold tracking-wide">
+                  Audit Trail
+                </p>
                 <p className="text-muted text-xs">
-                  Every financial transaction, administrative action, and system event is recorded immutably.
+                  Every financial transaction, administrative action, and system event is recorded
+                  immutably.
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="bg-surface-card border-surface-border group [perspective:500px] hover:[transform:rotateX(0.5deg)] rounded-xl border transition-all duration-500 overflow-x-auto">
+          <div className="bg-surface-card border-surface-border group overflow-x-auto rounded-xl border transition-all duration-500 [perspective:500px] hover:[transform:rotateX(0.5deg)]">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="border-surface-border border-b text-xs text-muted">
+                <tr className="border-surface-border text-muted border-b text-xs">
                   <th className="p-3 font-medium">Action</th>
-                  <th className="p-3 font-medium hidden md:table-cell">Details</th>
-                  <th className="p-3 font-medium hidden lg:table-cell">Entity</th>
+                  <th className="hidden p-3 font-medium md:table-cell">Details</th>
+                  <th className="hidden p-3 font-medium lg:table-cell">Entity</th>
                   <th className="p-3 font-medium">Date</th>
                 </tr>
               </thead>
@@ -95,7 +98,7 @@ export default function AdminAudit() {
                     className="border-surface-border/50 border-b last:border-0 hover:bg-white/5"
                   >
                     <td className="p-3">{getActionBadge(entry.action)}</td>
-                    <td className="p-3 text-muted text-xs hidden md:table-cell max-w-xs truncate">
+                    <td className="text-muted hidden max-w-xs truncate p-3 text-xs md:table-cell">
                       {entry.action.startsWith("PAYMENT")
                         ? `Amount: ${(Number((entry.details as any)?.amount ?? 0) / 1e7).toFixed(4)} XLM`
                         : entry.action.startsWith("BATCH")
@@ -104,7 +107,7 @@ export default function AdminAudit() {
                             ? `→ ${(entry.details as any)?.newTier ?? "?"}`
                             : JSON.stringify(entry.details).slice(0, 80)}
                     </td>
-                    <td className="p-3 text-muted text-xs hidden lg:table-cell">
+                    <td className="text-muted hidden p-3 text-xs lg:table-cell">
                       {entry.institutionId
                         ? `Inst: ${entry.institutionId.slice(0, 8)}...`
                         : entry.employerId
@@ -113,7 +116,7 @@ export default function AdminAudit() {
                             ? `Admin: ${entry.adminId.slice(0, 8)}...`
                             : "System"}
                     </td>
-                    <td className="p-3 text-muted text-xs">
+                    <td className="text-muted p-3 text-xs">
                       {new Date(entry.createdAt).toLocaleString()}
                     </td>
                   </tr>

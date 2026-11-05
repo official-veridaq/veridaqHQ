@@ -52,35 +52,35 @@ export default function AdminDashboard() {
       {loading ? (
         <div className="text-muted py-12 text-center text-sm">Loading telemetry...</div>
       ) : (
-          <div className="animate-fade-in space-y-8">
+        <div className="animate-fade-in space-y-8">
           {/* Bento grid — Main Key Stats */}
           <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-            <div className="group [perspective:500px] hover:[transform:rotateX(0.5deg)] transition-transform duration-300">
+            <div className="group transition-transform duration-300 [perspective:500px] hover:[transform:rotateX(0.5deg)]">
               <StatCard label="Total Institutions" value={stats?.institutions ?? 0} />
             </div>
-            <div className="group [perspective:500px] hover:[transform:rotateX(0.5deg)] transition-transform duration-300">
+            <div className="group transition-transform duration-300 [perspective:500px] hover:[transform:rotateX(0.5deg)]">
               <StatCard label="Total Employers" value={stats?.employers ?? 0} />
             </div>
-            <div className="group [perspective:500px] hover:[transform:rotateX(0.5deg)] transition-transform duration-300">
+            <div className="group transition-transform duration-300 [perspective:500px] hover:[transform:rotateX(0.5deg)]">
               <StatCard label="Confirmed Batches" value={stats?.confirmedBatches ?? 0} />
             </div>
-            <div className="group [perspective:500px] hover:[transform:rotateX(0.5deg)] transition-transform duration-300">
+            <div className="group transition-transform duration-300 [perspective:500px] hover:[transform:rotateX(0.5deg)]">
               <StatCard
                 label="Total Verified Proofs"
                 value={stats?.successfulVerifications ?? 0}
                 accent
               />
             </div>
-            <div className="group [perspective:500px] hover:[transform:rotateX(0.5deg)] bg-surface-card border-surface-border relative flex items-center justify-center rounded-xl border p-4 transition-all duration-300">
+            <div className="bg-surface-card border-surface-border group relative flex items-center justify-center rounded-xl border p-4 transition-all duration-300 [perspective:500px] hover:[transform:rotateX(0.5deg)]">
               <Sparkles className="text-muted h-4 w-4" />
               <span className="text-muted ml-2 text-xs">Earnings coming soon</span>
             </div>
           </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-            <div className="group [perspective:500px] hover:[transform:rotateX(0.5deg)] transition-transform duration-300">
+            <div className="group transition-transform duration-300 [perspective:500px] hover:[transform:rotateX(0.5deg)]">
               <StatCard label="Total Credentials" value={stats?.totalCredentials ?? 0} />
             </div>
-            <div className="group [perspective:500px] hover:[transform:rotateX(0.5deg)] transition-transform duration-300">
+            <div className="group transition-transform duration-300 [perspective:500px] hover:[transform:rotateX(0.5deg)]">
               <StatCard label="Revoked Credentials" value={stats?.revokedCredentials ?? 0} />
             </div>
           </div>
@@ -88,20 +88,24 @@ export default function AdminDashboard() {
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {/* Wallet Info — glass card with 3D tilt */}
             <div
-              className={`group [perspective:500px] hover:[transform:rotateX(1deg)] overflow-hidden border transition-all duration-500 ${
-                isLowBalance ? 'border-red-500/50 bg-red-500/5' : 'bg-surface-card border-surface-border'
+              className={`group overflow-hidden border transition-all duration-500 [perspective:500px] hover:[transform:rotateX(1deg)] ${
+                isLowBalance
+                  ? "border-red-500/50 bg-red-500/5"
+                  : "bg-surface-card border-surface-border"
               } relative flex flex-col justify-center p-6`}
             >
               <div className="pointer-events-none absolute -inset-px opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                <div className="absolute inset-0 bg-gradient-to-br from-accent/[0.03] to-transparent" />
+                <div className="from-accent/[0.03] absolute inset-0 bg-gradient-to-br to-transparent" />
               </div>
               <div className="relative">
                 <div className="mb-4 flex items-center justify-between">
-                  <h3 className="font-display flex items-center gap-2 text-sm font-semibold tracking-wide text-foreground">
+                  <h3 className="font-display text-foreground flex items-center gap-2 text-sm font-semibold tracking-wide">
                     <ShieldCheck className="text-accent h-4 w-4" />
                     Admin Wallet
                   </h3>
-                  <span className="rounded-full bg-accent/10 px-2 py-0.5 text-[10px] font-medium text-accent">STELLAR SOROBAN</span>
+                  <span className="bg-accent/10 text-accent rounded-full px-2 py-0.5 text-[10px] font-medium">
+                    STELLAR SOROBAN
+                  </span>
                 </div>
                 <p className="mb-2 font-mono text-3xl tracking-tight">
                   {adminBalance.toFixed(4)} <span className="text-muted text-sm">XLM</span>
@@ -119,13 +123,13 @@ export default function AdminDashboard() {
             </div>
 
             {/* Gas Vault Info — glass card with 3D tilt */}
-            <div className="group [perspective:500px] hover:[transform:rotateX(1deg)] bg-surface-card border-surface-border relative overflow-hidden border p-6 transition-all duration-500">
+            <div className="bg-surface-card border-surface-border group relative overflow-hidden border p-6 transition-all duration-500 [perspective:500px] hover:[transform:rotateX(1deg)]">
               <div className="pointer-events-none absolute -inset-px opacity-0 transition-opacity duration-500 group-hover:opacity-100">
                 <div className="absolute inset-0 bg-gradient-to-br from-orange-500/[0.03] to-transparent" />
               </div>
               <div className="relative">
                 <div className="mb-4 flex items-center justify-between">
-                  <h3 className="font-display flex items-center gap-2 text-sm font-semibold tracking-wide text-foreground">
+                  <h3 className="font-display text-foreground flex items-center gap-2 text-sm font-semibold tracking-wide">
                     <Activity className="h-4 w-4 text-orange-400" />
                     Gas Vault
                   </h3>
@@ -134,7 +138,9 @@ export default function AdminDashboard() {
                   <div className="flex items-baseline justify-between rounded bg-black/20 px-3 py-2">
                     <span className="text-muted text-xs">Sponsored Pool</span>
                     <span className="font-mono text-xl tracking-tight">
-                      {stats?.sponsoredPoolEth ? parseFloat(stats.sponsoredPoolEth).toFixed(4) : "0"}{" "}
+                      {stats?.sponsoredPoolEth
+                        ? parseFloat(stats.sponsoredPoolEth).toFixed(4)
+                        : "0"}{" "}
                       <span className="text-muted text-xs">XLM</span>
                     </span>
                   </div>
@@ -147,8 +153,10 @@ export default function AdminDashboard() {
                   </div>
                   <div className="flex items-baseline justify-between rounded bg-black/20 px-3 py-2">
                     <span className="text-muted text-xs">Contract Balance</span>
-                    <span className="font-mono text-sm text-muted">
-                      {stats?.paymasterBalance ? parseFloat(stats.paymasterBalance).toFixed(4) : "0"}{" "}
+                    <span className="text-muted font-mono text-sm">
+                      {stats?.paymasterBalance
+                        ? parseFloat(stats.paymasterBalance).toFixed(4)
+                        : "0"}{" "}
                       <span className="text-xs">XLM</span>
                     </span>
                   </div>
@@ -162,11 +170,11 @@ export default function AdminDashboard() {
 
           {/* Active Institutions — bento pill display */}
           {stats?.activeInstitutionNames?.length > 0 && (
-            <div className="bg-surface-card border-surface-border group [perspective:500px] hover:[transform:rotateX(0.5deg)] overflow-hidden rounded-lg border p-6 transition-all duration-500">
+            <div className="bg-surface-card border-surface-border group overflow-hidden rounded-lg border p-6 transition-all duration-500 [perspective:500px] hover:[transform:rotateX(0.5deg)]">
               <div className="pointer-events-none absolute -inset-px opacity-0 transition-opacity duration-500 group-hover:opacity-100">
                 <div className="absolute inset-0 bg-gradient-to-br from-green-500/[0.02] to-transparent" />
               </div>
-              <h3 className="font-display mb-4 flex items-center gap-2 text-sm font-semibold tracking-wide text-foreground">
+              <h3 className="font-display text-foreground mb-4 flex items-center gap-2 text-sm font-semibold tracking-wide">
                 <Activity className="h-4 w-4 text-green-400" />
                 Active Institutions ({stats.activeInstitutionNames.length})
               </h3>
@@ -174,7 +182,7 @@ export default function AdminDashboard() {
                 {stats.activeInstitutionNames.map((name: string) => (
                   <span
                     key={name}
-                    className="bg-accent/10 text-accent rounded-full border border-accent/20 px-3 py-1 text-xs font-medium"
+                    className="bg-accent/10 text-accent border-accent/20 rounded-full border px-3 py-1 text-xs font-medium"
                   >
                     {name}
                   </span>
@@ -187,9 +195,9 @@ export default function AdminDashboard() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <Link
               href="/admin/institutions"
-              className="group [perspective:500px] hover:[transform:rotateX(1deg)] border-surface-border bg-void hover:bg-surface-card block rounded border p-6 transition-all duration-300"
+              className="border-surface-border bg-void hover:bg-surface-card group block rounded border p-6 transition-all duration-300 [perspective:500px] hover:[transform:rotateX(1deg)]"
             >
-              <h3 className="font-display group-hover:text-accent mb-2 flex items-center gap-2 text-sm font-semibold tracking-wide text-foreground transition-colors">
+              <h3 className="font-display group-hover:text-accent text-foreground mb-2 flex items-center gap-2 text-sm font-semibold tracking-wide transition-colors">
                 <Settings className="h-4 w-4" /> Institutions
               </h3>
               <p className="text-muted text-sm leading-relaxed">
@@ -199,9 +207,9 @@ export default function AdminDashboard() {
 
             <Link
               href="/admin/employers"
-              className="group [perspective:500px] hover:[transform:rotateX(1deg)] border-surface-border bg-void hover:bg-surface-card block rounded border p-6 transition-all duration-300"
+              className="border-surface-border bg-void hover:bg-surface-card group block rounded border p-6 transition-all duration-300 [perspective:500px] hover:[transform:rotateX(1deg)]"
             >
-              <h3 className="font-display group-hover:text-accent mb-2 flex items-center gap-2 text-sm font-semibold tracking-wide text-foreground transition-colors">
+              <h3 className="font-display group-hover:text-accent text-foreground mb-2 flex items-center gap-2 text-sm font-semibold tracking-wide transition-colors">
                 <Settings className="h-4 w-4" /> Employers
               </h3>
               <p className="text-muted text-sm leading-relaxed">
@@ -211,9 +219,9 @@ export default function AdminDashboard() {
 
             <Link
               href="/admin/payments"
-              className="group [perspective:500px] hover:[transform:rotateX(1deg)] border-surface-border bg-void hover:bg-surface-card block rounded border p-6 transition-all duration-300"
+              className="border-surface-border bg-void hover:bg-surface-card group block rounded border p-6 transition-all duration-300 [perspective:500px] hover:[transform:rotateX(1deg)]"
             >
-              <h3 className="font-display group-hover:text-accent mb-2 flex items-center gap-2 text-sm font-semibold tracking-wide text-foreground transition-colors">
+              <h3 className="font-display group-hover:text-accent text-foreground mb-2 flex items-center gap-2 text-sm font-semibold tracking-wide transition-colors">
                 <Settings className="h-4 w-4" /> Payments
               </h3>
               <p className="text-muted text-sm leading-relaxed">
@@ -223,9 +231,9 @@ export default function AdminDashboard() {
 
             <Link
               href="/admin/audit"
-              className="group [perspective:500px] hover:[transform:rotateX(1deg)] border-surface-border bg-void hover:bg-surface-card block rounded border p-6 transition-all duration-300"
+              className="border-surface-border bg-void hover:bg-surface-card group block rounded border p-6 transition-all duration-300 [perspective:500px] hover:[transform:rotateX(1deg)]"
             >
-              <h3 className="font-display group-hover:text-accent mb-2 flex items-center gap-2 text-sm font-semibold tracking-wide text-foreground transition-colors">
+              <h3 className="font-display group-hover:text-accent text-foreground mb-2 flex items-center gap-2 text-sm font-semibold tracking-wide transition-colors">
                 <Settings className="h-4 w-4" /> Audit
               </h3>
               <p className="text-muted text-sm leading-relaxed">

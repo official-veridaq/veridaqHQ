@@ -1,7 +1,13 @@
 import { readFileSync } from "fs"
 import {
-  rpc, nativeToScVal, scValToNative, Contract,
-  TransactionBuilder, BASE_FEE, Keypair, xdr,
+  rpc,
+  nativeToScVal,
+  scValToNative,
+  Contract,
+  TransactionBuilder,
+  BASE_FEE,
+  Keypair,
+  xdr,
 } from "@stellar/stellar-sdk"
 
 const RPC_URL = "https://soroban-testnet.stellar.org"
@@ -26,12 +32,14 @@ function g2Bytes(coords: string[][]): Buffer {
 }
 
 async function main() {
-  const vkJson = JSON.parse(readFileSync(process.argv[2] || "circuits/build/verification_key.json", "utf8"))
+  const vkJson = JSON.parse(
+    readFileSync(process.argv[2] || "circuits/build/verification_key.json", "utf8")
+  )
   const alpha = g1Bytes(vkJson.vk_alpha_1[0], vkJson.vk_alpha_1[1])
-  const beta  = g2Bytes(vkJson.vk_beta_2)
+  const beta = g2Bytes(vkJson.vk_beta_2)
   const gamma = g2Bytes(vkJson.vk_gamma_2)
   const delta = g2Bytes(vkJson.vk_delta_2)
-  const ic    = vkJson.IC.map((p: string[]) => g1Bytes(p[0], p[1]))
+  const ic = vkJson.IC.map((p: string[]) => g1Bytes(p[0], p[1]))
 
   console.log("Alpha:", alpha.toString("hex"))
   console.log("Beta:", beta.toString("hex").slice(0, 64) + "...")
@@ -47,7 +55,7 @@ async function main() {
 
   // Get account via Horizon (RpcServer.getAccount may fail)
   const horizonRes = await fetch(`https://horizon-testnet.stellar.org/accounts/${source}`)
-  const accData = await horizonRes.json() as { id: string; sequence: string }
+  const accData = (await horizonRes.json()) as { id: string; sequence: string }
   const account = new Account(accData.id, accData.sequence)
 
   const server = new rpc.Server(RPC_URL, { allowHttp: true })
@@ -55,15 +63,18 @@ async function main() {
   // Step 1: Simulate register_vk_raw
   console.log("\n=== Simulating register_vk_raw ===")
   const tx1 = new TransactionBuilder(account, { fee: BASE_FEE, networkPassphrase: NETWORK })
-    .addOperation(contract.call(
-      "register_vk_raw",
-      auth, vkHash,
-      xdr.ScVal.scvBytes(alpha),
-      xdr.ScVal.scvBytes(beta),
-      xdr.ScVal.scvBytes(gamma),
-      xdr.ScVal.scvBytes(delta),
-      xdr.ScVal.scvVec(ic.map(b => xdr.ScVal.scvBytes(b))),
-    ))
+    .addOperation(
+      contract.call(
+        "register_vk_raw",
+        auth,
+        vkHash,
+        xdr.ScVal.scvBytes(alpha),
+        xdr.ScVal.scvBytes(beta),
+        xdr.ScVal.scvBytes(gamma),
+        xdr.ScVal.scvBytes(delta),
+        xdr.ScVal.scvVec(ic.map((b) => xdr.ScVal.scvBytes(b)))
+      )
+    )
     .setTimeout(30)
     .build()
 
@@ -89,9 +100,15 @@ async function main() {
   // Step 3: Poll
   for (let i = 0; i < 30; i++) {
     const r = await server.getTransaction(send1.hash!)
-    if (r.status === "SUCCESS") { console.log("VK registered!"); break }
-    if (r.status === "FAILED") { console.error("Tx FAILED:", JSON.stringify(r)); process.exit(1) }
-    await new Promise(r => setTimeout(r, 1000))
+    if (r.status === "SUCCESS") {
+      console.log("VK registered!")
+      break
+    }
+    if (r.status === "FAILED") {
+      console.error("Tx FAILED:", JSON.stringify(r))
+      process.exit(1)
+    }
+    await new Promise((r) => setTimeout(r, 1000))
   }
 
   // Step 4: Test verify_raw with all-zero proof
@@ -102,17 +119,20 @@ async function main() {
 
   // Re-fetch account with updated sequence
   const horizonRes2 = await fetch(`https://horizon-testnet.stellar.org/accounts/${source}`)
-  const accData2 = await horizonRes2.json() as { id: string; sequence: string }
+  const accData2 = (await horizonRes2.json()) as { id: string; sequence: string }
   const account2 = new Account(accData2.id, accData2.sequence)
 
   const tx2 = new TransactionBuilder(account2, { fee: BASE_FEE, networkPassphrase: NETWORK })
-    .addOperation(contract.call(
-      "verify_raw", vkHash,
-      xdr.ScVal.scvBytes(Z64),
-      xdr.ScVal.scvBytes(Z128),
-      xdr.ScVal.scvBytes(Z64),
-      xdr.ScVal.scvVec([Z32, Z32, Z32, Z32].map(b => xdr.ScVal.scvBytes(b))),
-    ))
+    .addOperation(
+      contract.call(
+        "verify_raw",
+        vkHash,
+        xdr.ScVal.scvBytes(Z64),
+        xdr.ScVal.scvBytes(Z128),
+        xdr.ScVal.scvBytes(Z64),
+        xdr.ScVal.scvVec([Z32, Z32, Z32, Z32].map((b) => xdr.ScVal.scvBytes(b)))
+      )
+    )
     .setTimeout(30)
     .build()
 

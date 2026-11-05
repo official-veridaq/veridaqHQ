@@ -363,9 +363,9 @@ export default function LandingPage() {
                     Immutable Verification
                   </h3>
                   <p className="text-muted max-w-md text-sm leading-relaxed">
-                    Employers request proof executions, receiving strictly boolean
-                    assertions without exposing any raw student data. Powered by Groth16
-                    zero-knowledge proofs on Stellar.
+                    Employers request proof executions, receiving strictly boolean assertions
+                    without exposing any raw student data. Powered by Groth16 zero-knowledge proofs
+                    on Stellar.
                   </p>
                 </div>
               </div>
@@ -430,9 +430,7 @@ export default function LandingPage() {
                   <div className="bg-error/60 h-2.5 w-2.5 rounded-full" />
                   <div className="bg-warning/60 h-2.5 w-2.5 rounded-full" />
                   <div className="bg-success/60 h-2.5 w-2.5 rounded-full" />
-                  <span className="text-muted ml-3 text-xs">
-                    circuits/credential.circom
-                  </span>
+                  <span className="text-muted ml-3 text-xs">circuits/credential.circom</span>
                 </div>
                 <pre className="text-muted min-w-max text-xs leading-relaxed sm:text-sm">
                   {`pragma circom 2.0.0;

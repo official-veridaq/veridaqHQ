@@ -7,12 +7,10 @@ export default function ComingSoon() {
         <div className="bg-accent/10 mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full">
           <span className="text-accent text-3xl font-bold">!</span>
         </div>
-        <h1 className="mb-2 text-2xl font-bold text-foreground">
-          Coming soon
-        </h1>
+        <h1 className="text-foreground mb-2 text-2xl font-bold">Coming soon</h1>
         <p className="text-muted mb-8 text-sm leading-relaxed">
-          This feature is under development and will be available in an upcoming
-          release. Check back later.
+          This feature is under development and will be available in an upcoming release. Check back
+          later.
         </p>
         <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
           <Link

@@ -35,11 +35,11 @@ export default function AdminLogin() {
   }
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-void px-4">
+    <div className="bg-void relative flex min-h-screen items-center justify-center overflow-hidden px-4">
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-1/4 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-warning/[0.03] blur-[120px]" />
-        <div className="absolute bottom-0 right-1/4 h-[300px] w-[300px] rounded-full bg-accent/[0.02] blur-[80px]" />
-        <div className="absolute inset-0 bg-grid-pattern bg-grid opacity-30" />
+        <div className="bg-warning/[0.03] absolute left-1/2 top-1/4 h-[500px] w-[500px] -translate-x-1/2 rounded-full blur-[120px]" />
+        <div className="bg-accent/[0.02] absolute bottom-0 right-1/4 h-[300px] w-[300px] rounded-full blur-[80px]" />
+        <div className="bg-grid-pattern bg-grid absolute inset-0 opacity-30" />
       </div>
 
       <div className="relative z-10 w-full max-w-md">
@@ -51,14 +51,14 @@ export default function AdminLogin() {
           <ThemeToggle />
         </div>
 
-        <div className="border-surface-border bg-surface-card/80 rounded-2xl border p-8 shadow-elevated backdrop-blur-sm">
+        <div className="border-surface-border bg-surface-card/80 shadow-elevated rounded-2xl border p-8 backdrop-blur-sm">
           <div className="mb-6 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-warning/10">
-              <Shield className="h-5 w-5 text-warning" />
+            <div className="bg-warning/10 flex h-10 w-10 items-center justify-center rounded-xl">
+              <Shield className="text-warning h-5 w-5" />
             </div>
             <div>
-              <h1 className="text-lg font-semibold text-foreground">Platform Admin</h1>
-              <p className="text-xs text-muted">Restricted access — admin personnel only</p>
+              <h1 className="text-foreground text-lg font-semibold">Platform Admin</h1>
+              <p className="text-muted text-xs">Restricted access — admin personnel only</p>
             </div>
           </div>
 
@@ -98,7 +98,7 @@ export default function AdminLogin() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted transition-colors hover:text-foreground"
+                  className="text-muted hover:text-foreground absolute right-3 top-1/2 -translate-y-1/2 transition-colors"
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
@@ -106,12 +106,12 @@ export default function AdminLogin() {
             </div>
             <button
               type="submit"
-              className="bg-accent mt-2 flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-void transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-50"
+              className="bg-accent text-void mt-2 flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-50"
               disabled={loading}
             >
               {loading ? (
                 <span className="flex items-center gap-2">
-                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-void/30 border-t-void" />
+                  <span className="border-void/30 border-t-void h-4 w-4 animate-spin rounded-full border-2" />
                   Signing in…
                 </span>
               ) : (
@@ -124,10 +124,14 @@ export default function AdminLogin() {
           </form>
         </div>
 
-        <div className="mt-6 flex items-center justify-center gap-4 text-[10px] text-muted/60">
-          <Link href="/" className="transition-colors hover:text-foreground">Home</Link>
+        <div className="text-muted/60 mt-6 flex items-center justify-center gap-4 text-[10px]">
+          <Link href="/" className="hover:text-foreground transition-colors">
+            Home
+          </Link>
           <span>·</span>
-          <Link href="/docs" className="transition-colors hover:text-foreground">Docs</Link>
+          <Link href="/docs" className="hover:text-foreground transition-colors">
+            Docs
+          </Link>
         </div>
       </div>
     </div>

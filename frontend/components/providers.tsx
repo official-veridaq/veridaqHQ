@@ -19,9 +19,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     >
       <AuthProvider>
         <QueryClientProvider client={queryClient}>
-          <WalletProvider>
-            {children}
-          </WalletProvider>
+          <WalletProvider>{children}</WalletProvider>
         </QueryClientProvider>
       </AuthProvider>
     </ThemeProvider>

@@ -26,19 +26,24 @@ export default function InstitutionBilling() {
 
   function load() {
     if (!user) return
-    api.get("/institution/billing")
+    api
+      .get("/institution/billing")
       .then((res) => setData(res.data))
       .catch(() => toast.error("Failed to load billing data"))
       .finally(() => setLoading(false))
   }
 
-  useEffect(() => { load() }, [user])
+  useEffect(() => {
+    load()
+  }, [user])
 
   async function syncBalance() {
     setSyncing(true)
     try {
       const { data: res } = await api.post("/institution/billing/sync")
-      setData((prev) => prev ? { ...prev, paymasterBalance: res.paymasterBalance ?? prev.paymasterBalance } : prev)
+      setData((prev) =>
+        prev ? { ...prev, paymasterBalance: res.paymasterBalance ?? prev.paymasterBalance } : prev
+      )
       toast.success("Paymaster balance synced from chain")
     } catch {
       toast.error("Failed to sync paymaster balance")
@@ -61,16 +66,16 @@ export default function InstitutionBilling() {
 
           <div className="animate-fade-in space-y-6">
             {/* Tier Status */}
-            <div className="relative overflow-hidden rounded-xl border border-surface-border bg-gradient-to-br from-surface-card to-void p-6">
+            <div className="border-surface-border from-surface-card to-void relative overflow-hidden rounded-xl border bg-gradient-to-br p-6">
               <div className="bg-accent/5 pointer-events-none absolute right-0 top-0 h-40 w-40 rounded-full blur-3xl" />
               <div className="relative z-10 flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-accent/10">
-                    <Shield className="h-7 w-7 text-accent" />
+                  <div className="bg-accent/10 flex h-14 w-14 items-center justify-center rounded-2xl">
+                    <Shield className="text-accent h-7 w-7" />
                   </div>
                   <div>
                     <p className="text-muted text-sm">Current Tier</p>
-                    <p className="text-2xl font-bold text-foreground">{data?.tier ?? "FREE"}</p>
+                    <p className="text-foreground text-2xl font-bold">{data?.tier ?? "FREE"}</p>
                   </div>
                 </div>
                 <span
@@ -85,10 +90,10 @@ export default function InstitutionBilling() {
               </div>
 
               {data?.tier === "FREE" ? (
-                <div className="mt-6 border-t border-surface-border pt-4">
+                <div className="border-surface-border mt-6 border-t pt-4">
                   <p className="text-muted mb-3 text-sm">
-                    Upgrade to PAID tier to enable sponsored gas for batch submissions.
-                    Pay with crypto or fiat via Crossmint.
+                    Upgrade to PAID tier to enable sponsored gas for batch submissions. Pay with
+                    crypto or fiat via Crossmint.
                   </p>
                   <button
                     onClick={() => setShowUpgrade(true)}
@@ -98,10 +103,10 @@ export default function InstitutionBilling() {
                   </button>
                 </div>
               ) : (
-                <div className="mt-6 border-t border-surface-border pt-4">
+                <div className="border-surface-border mt-6 border-t pt-4">
                   <p className="text-muted mb-3 text-sm">
-                    Your institution is on the PAID tier. Deposit XLM to fund batch submissions
-                    and sponsored gas via Crossmint or direct crypto transfer.
+                    Your institution is on the PAID tier. Deposit XLM to fund batch submissions and
+                    sponsored gas via Crossmint or direct crypto transfer.
                   </p>
                   <button
                     onClick={() => setShowDeposit(true)}
@@ -115,36 +120,38 @@ export default function InstitutionBilling() {
 
             {/* Balance Cards */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              <div className="relative overflow-hidden rounded-xl border border-surface-border bg-surface-card p-5">
+              <div className="border-surface-border bg-surface-card relative overflow-hidden rounded-xl border p-5">
                 <div className="flex items-start justify-between">
                   <p className="text-muted text-sm">Paymaster Credit</p>
-                  <Wallet className="h-4 w-4 text-accent" />
+                  <Wallet className="text-accent h-4 w-4" />
                 </div>
-                <p className={`mt-2 text-3xl font-bold ${isLowBalance ? "text-error" : "text-foreground"}`}>
+                <p
+                  className={`mt-2 text-3xl font-bold ${isLowBalance ? "text-error" : "text-foreground"}`}
+                >
                   {currentBalance.toFixed(4)}
                   <span className="text-muted ml-1 text-sm font-normal">XLM</span>
                 </p>
                 {isLowBalance && (
-                  <p className="mt-1 flex items-center gap-1 text-xs text-error">
+                  <p className="text-error mt-1 flex items-center gap-1 text-xs">
                     Low balance — deposit XLM to continue batch submissions
                   </p>
                 )}
                 <button
                   onClick={syncBalance}
                   disabled={syncing}
-                  className="text-muted mt-3 inline-flex items-center gap-2 text-xs transition-colors hover:text-foreground"
+                  className="text-muted hover:text-foreground mt-3 inline-flex items-center gap-2 text-xs transition-colors"
                 >
                   <RefreshCcw size={12} className={syncing ? "animate-spin" : ""} />
                   {syncing ? "Syncing" : "Sync from chain"}
                 </button>
               </div>
 
-              <div className="rounded-xl border border-surface-border bg-surface-card p-5">
+              <div className="border-surface-border bg-surface-card rounded-xl border p-5">
                 <div className="flex items-start justify-between">
                   <p className="text-muted text-sm">Institution Balance (On-Chain)</p>
-                  <ArrowUpCircle className="h-4 w-4 text-accent" />
+                  <ArrowUpCircle className="text-accent h-4 w-4" />
                 </div>
-                <p className="mt-2 text-3xl font-bold text-foreground">
+                <p className="text-foreground mt-2 text-3xl font-bold">
                   {Number(data?.institutionBalance || 0).toFixed(4)}
                   <span className="text-muted ml-1 text-sm font-normal">XLM</span>
                 </p>
@@ -158,12 +165,12 @@ export default function InstitutionBilling() {
                 )}
               </div>
 
-              <div className="rounded-xl border border-surface-border bg-surface-card p-5">
+              <div className="border-surface-border bg-surface-card rounded-xl border p-5">
                 <div className="flex items-start justify-between">
                   <p className="text-muted text-sm">Sponsored Pool</p>
-                  <Shield className="h-4 w-4 text-accent" />
+                  <Shield className="text-accent h-4 w-4" />
                 </div>
-                <p className="mt-2 text-3xl font-bold text-foreground">
+                <p className="text-foreground mt-2 text-3xl font-bold">
                   {Number(data?.sponsoredPoolBalance || 0).toFixed(4)}
                   <span className="text-muted ml-1 text-sm font-normal">XLM</span>
                 </p>
@@ -172,14 +179,14 @@ export default function InstitutionBilling() {
             </div>
 
             {/* Payment History Link */}
-            <div className="rounded-xl border border-surface-border bg-surface-card p-5">
+            <div className="border-surface-border bg-surface-card rounded-xl border p-5">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/10">
-                    <Sparkles className="h-5 w-5 text-accent" />
+                  <div className="bg-accent/10 flex h-10 w-10 items-center justify-center rounded-xl">
+                    <Sparkles className="text-accent h-5 w-5" />
                   </div>
                   <div>
-                    <p className="font-medium text-foreground">Payments accepted</p>
+                    <p className="text-foreground font-medium">Payments accepted</p>
                     <p className="text-muted text-xs">Crossmint — Card, Bank Transfer, Apple Pay</p>
                   </div>
                 </div>

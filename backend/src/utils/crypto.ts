@@ -17,39 +17,27 @@ const KEY = Buffer.from(config.ENCRYPTION_KEY, "hex")
 
 export function encrypt(plaintext: string): {
   encryptedData: string
-  encryptedIv:   string
-  encryptedTag:  string
+  encryptedIv: string
+  encryptedTag: string
 } {
-  const iv     = randomBytes(12)
+  const iv = randomBytes(12)
   const cipher = createCipheriv(ALGORITHM, KEY, iv)
 
-  const encrypted = Buffer.concat([
-    cipher.update(plaintext, "utf8"),
-    cipher.final(),
-  ])
+  const encrypted = Buffer.concat([cipher.update(plaintext, "utf8"), cipher.final()])
 
   return {
     encryptedData: encrypted.toString("hex"),
-    encryptedIv:   iv.toString("hex"),
-    encryptedTag:  cipher.getAuthTag().toString("hex"),
+    encryptedIv: iv.toString("hex"),
+    encryptedTag: cipher.getAuthTag().toString("hex"),
   }
 }
 
-export function decrypt(
-  encryptedData: string,
-  encryptedIv:   string,
-  encryptedTag:  string
-): string {
-  const decipher = createDecipheriv(
-    ALGORITHM,
-    KEY,
-    Buffer.from(encryptedIv, "hex")
-  )
+export function decrypt(encryptedData: string, encryptedIv: string, encryptedTag: string): string {
+  const decipher = createDecipheriv(ALGORITHM, KEY, Buffer.from(encryptedIv, "hex"))
 
   decipher.setAuthTag(Buffer.from(encryptedTag, "hex"))
 
   return (
-    decipher.update(Buffer.from(encryptedData, "hex"), undefined, "utf8") +
-    decipher.final("utf8")
+    decipher.update(Buffer.from(encryptedData, "hex"), undefined, "utf8") + decipher.final("utf8")
   )
 }

@@ -24,7 +24,10 @@ vi.mock("../services/proof.service.js", () => ({
       return {
         proof: {
           pi_a: ["1", "2"],
-          pi_b: [["3", "4"], ["5", "6"]],
+          pi_b: [
+            ["3", "4"],
+            ["5", "6"],
+          ],
           pi_c: ["7", "8"],
         },
         publicSignals: ["1", "2", "3", "4"],
@@ -61,7 +64,8 @@ beforeAll(async () => {
     if (!emp) throw new Error("Seed employer not found — run pnpm db:seed first")
     employerId = emp.id
 
-    const mockBlockchain = new BlockchainService() as unknown as import("../services/blockchain.service.js").BlockchainService
+    const mockBlockchain =
+      new BlockchainService() as unknown as import("../services/blockchain.service.js").BlockchainService
     verifySvc = new VerificationService(prisma, mockBlockchain)
   } catch {
     // Database not available — tests silently skip

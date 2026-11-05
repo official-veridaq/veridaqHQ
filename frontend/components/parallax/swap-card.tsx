@@ -24,11 +24,7 @@ const views = [
     email: "firstbank@veridaq.xyz",
     tier: "3 Free",
     balance: "0 verifications",
-    actions: [
-      { label: "Verify Now", accent: true },
-      { label: "History" },
-      { label: "Account" },
-    ],
+    actions: [{ label: "Verify Now", accent: true }, { label: "History" }, { label: "Account" }],
     color: "error",
   },
 ]
@@ -70,15 +66,13 @@ export function SwapCard() {
 
   return (
     <div className="relative mx-auto w-full max-w-sm">
-      <div
-        className="border-surface-border bg-surface-card rounded-2xl border p-1 shadow-elevated-lg [perspective:800px] transition-shadow duration-500 hover:shadow-[0_0_40px_var(--color-accent-glow)]"
-      >
+      <div className="border-surface-border bg-surface-card shadow-elevated-lg rounded-2xl border p-1 transition-shadow duration-500 [perspective:800px] hover:shadow-[0_0_40px_var(--color-accent-glow)]">
         <div className="border-surface-border rounded-xl border p-4">
           {/* Header */}
           <div className="mb-4 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <LogoMark className="h-5 w-5" />
-              <span className="text-xs font-bold tracking-wider text-foreground">VERIDAQ</span>
+              <span className="text-foreground text-xs font-bold tracking-wider">VERIDAQ</span>
             </div>
             <div className="flex items-center gap-2">
               <div
@@ -90,7 +84,7 @@ export function SwapCard() {
               >
                 {view.badge}
               </div>
-              <span className="text-[10px] text-muted">Companion v0.1</span>
+              <span className="text-muted text-[10px]">Companion v0.1</span>
             </div>
           </div>
 
@@ -115,11 +109,16 @@ export function SwapCard() {
                     border: `1px solid rgb(var(--color-${view.color}) / 0.1)`,
                   }}
                 >
-                  <div className="text-[10px] uppercase tracking-wider text-muted">Signed in as</div>
-                  <div className="mt-0.5 text-sm font-semibold text-foreground">{view.role}</div>
+                  <div className="text-muted text-[10px] uppercase tracking-wider">
+                    Signed in as
+                  </div>
+                  <div className="text-foreground mt-0.5 text-sm font-semibold">{view.role}</div>
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-muted">{view.email}</span>
-                    <span className="text-[10px] font-mono" style={{ color: `rgb(var(--color-${view.color}))` }}>
+                    <span className="text-muted text-xs">{view.email}</span>
+                    <span
+                      className="font-mono text-[10px]"
+                      style={{ color: `rgb(var(--color-${view.color}))` }}
+                    >
                       {view.tier}
                     </span>
                   </div>
@@ -143,9 +142,7 @@ export function SwapCard() {
                       <div
                         className="text-[9px] font-bold uppercase tracking-wider"
                         style={{
-                          color: action.accent
-                            ? `rgb(var(--color-${view.color}))`
-                            : undefined,
+                          color: action.accent ? `rgb(var(--color-${view.color}))` : undefined,
                         }}
                       >
                         {action.label}
@@ -159,18 +156,18 @@ export function SwapCard() {
                   <input
                     readOnly
                     placeholder="Institution on-chain ID"
-                    className="bg-surface border-surface-border w-full rounded-lg border px-3 py-2 text-xs text-muted placeholder:text-muted-subtle"
+                    className="bg-surface border-surface-border text-muted placeholder:text-muted-subtle w-full rounded-lg border px-3 py-2 text-xs"
                   />
                   <input
                     readOnly
                     placeholder="Matric number"
-                    className="bg-surface border-surface-border w-full rounded-lg border px-3 py-2 text-xs text-muted placeholder:text-muted-subtle"
+                    className="bg-surface border-surface-border text-muted placeholder:text-muted-subtle w-full rounded-lg border px-3 py-2 text-xs"
                   />
                 </div>
               </motion.div>
             </AnimatePresence>
             <div
-              className={`pointer-events-none absolute inset-0 border-2 rounded-xl transition-opacity duration-300 ${
+              className={`pointer-events-none absolute inset-0 rounded-xl border-2 transition-opacity duration-300 ${
                 flash ? "opacity-100" : "opacity-0"
               }`}
               style={{ borderColor: `rgb(var(--color-${view.color}) / 0.35)` }}
@@ -191,23 +188,21 @@ export function SwapCard() {
                   style={{
                     width: i === current ? 16 : 6,
                     backgroundColor:
-                      i === current
-                        ? "rgb(var(--color-accent))"
-                        : "rgb(var(--color-muted-subtle))",
+                      i === current ? "rgb(var(--color-accent))" : "rgb(var(--color-muted-subtle))",
                   }}
                 />
               ))}
             </div>
-            <span className="text-[10px] text-muted">
-              <span style={{ color: "rgb(var(--color-accent))" }}>{view.role}</span>
-              {" "}· click dot to swap
+            <span className="text-muted text-[10px]">
+              <span style={{ color: "rgb(var(--color-accent))" }}>{view.role}</span> · click dot to
+              swap
             </span>
           </div>
         </div>
       </div>
 
       {/* Ambient glow */}
-      <div className="absolute -inset-4 rounded-3xl bg-gradient-to-br from-accent/10 to-error/10 blur-2xl pointer-events-none" />
+      <div className="from-accent/10 to-error/10 pointer-events-none absolute -inset-4 rounded-3xl bg-gradient-to-br blur-2xl" />
     </div>
   )
 }

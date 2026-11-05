@@ -1,11 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Exo+2:wght@300;400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Exo+2:wght@300;400;500;600;700&display=swap");
 
 :root {
   color-scheme: dark;
   font-family: "Exo 2", system-ui, sans-serif;
   --accent: #22d3ee;
   --accent-dim: #06b6d4;
-  --accent-muted: rgba(34,211,238,0.08);
+  --accent-muted: rgba(34, 211, 238, 0.08);
   --bg: #05050a;
   --surface: #0c0c14;
   --surface-card: #111119;
@@ -17,7 +17,11 @@
   --info: #6366f1;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
 body {
   background: var(--bg);
@@ -82,14 +86,14 @@ body {
 
 .icon-btn:hover {
   color: var(--text);
-  border-color: rgba(255,255,255,0.1);
-  background: rgba(255,255,255,0.03);
+  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .icon-btn.danger:hover {
   color: var(--error);
-  border-color: rgba(239,68,68,0.2);
-  background: rgba(239,68,68,0.05);
+  border-color: rgba(239, 68, 68, 0.2);
+  background: rgba(239, 68, 68, 0.05);
 }
 
 /* ─── Status ─── */
@@ -113,11 +117,21 @@ body {
   flex-shrink: 0;
 }
 
-.status-indicator.online { background: var(--success); }
-.status-indicator.offline { background: var(--error); }
-.status-indicator.loading { background: var(--accent); animation: pulse 1.5s infinite; }
+.status-indicator.online {
+  background: var(--success);
+}
+.status-indicator.offline {
+  background: var(--error);
+}
+.status-indicator.loading {
+  background: var(--accent);
+  animation: pulse 1.5s infinite;
+}
 
-.status-content { flex: 1; min-width: 0; }
+.status-content {
+  flex: 1;
+  min-width: 0;
+}
 
 .status-label {
   font-size: 10px;
@@ -162,11 +176,13 @@ body {
   transition: all 0.15s;
 }
 
-.tab:hover { color: var(--text); }
+.tab:hover {
+  color: var(--text);
+}
 
 .tab.active {
   color: var(--accent);
-  border-color: rgba(34,211,238,0.3);
+  border-color: rgba(34, 211, 238, 0.3);
   background: var(--accent-muted);
 }
 
@@ -199,7 +215,8 @@ body {
   font-weight: 600;
 }
 
-.badge-muted, .badge-info {
+.badge-muted,
+.badge-info {
   font-size: 9px;
   padding: 2px 6px;
   border-radius: 4px;
@@ -209,12 +226,12 @@ body {
 }
 
 .badge-muted {
-  background: rgba(113,113,122,0.1);
+  background: rgba(113, 113, 122, 0.1);
   color: var(--text-muted);
 }
 
 .badge-info {
-  background: rgba(99,102,241,0.1);
+  background: rgba(99, 102, 241, 0.1);
   color: var(--info);
 }
 
@@ -320,7 +337,9 @@ body {
   transition: color 0.15s;
 }
 
-.ghost-sm:hover { color: var(--text); }
+.ghost-sm:hover {
+  color: var(--text);
+}
 
 /* ─── List ─── */
 
@@ -343,8 +362,13 @@ body {
   text-overflow: ellipsis;
 }
 
-.list li .list-primary { color: var(--text); font-weight: 500; }
-.list li .list-secondary { color: var(--text-muted); }
+.list li .list-primary {
+  color: var(--text);
+  font-weight: 500;
+}
+.list li .list-secondary {
+  color: var(--text-muted);
+}
 
 /* ─── Status Messages ─── */
 
@@ -354,9 +378,15 @@ body {
   min-height: 16px;
 }
 
-.status-msg.success { color: var(--success); }
-.status-msg.error { color: var(--error); }
-.status-msg.loading { color: var(--accent); }
+.status-msg.success {
+  color: var(--success);
+}
+.status-msg.error {
+  color: var(--error);
+}
+.status-msg.loading {
+  color: var(--accent);
+}
 
 /* ─── Footer ─── */
 
@@ -376,13 +406,15 @@ body {
   text-decoration: none;
 }
 
-.app-footer a:hover { text-decoration: underline; }
+.app-footer a:hover {
+  text-decoration: underline;
+}
 
 /* ─── Credits Card ─── */
 
 .credits-card {
   background: linear-gradient(135deg, var(--surface-card), var(--surface));
-  border-color: rgba(34,211,238,0.15);
+  border-color: rgba(34, 211, 238, 0.15);
 }
 
 .credits-row {
@@ -427,14 +459,28 @@ body {
 
 /* ─── Utilities ─── */
 
-.hidden { display: none; }
+.hidden {
+  display: none;
+}
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
 }
 
 /* Scrollbar */
-.app::-webkit-scrollbar { width: 4px; }
-.app::-webkit-scrollbar-track { background: transparent; }
-.app::-webkit-scrollbar-thumb { background: var(--surface-border); border-radius: 4px; }
+.app::-webkit-scrollbar {
+  width: 4px;
+}
+.app::-webkit-scrollbar-track {
+  background: transparent;
+}
+.app::-webkit-scrollbar-thumb {
+  background: var(--surface-border);
+  border-radius: 4px;
+}

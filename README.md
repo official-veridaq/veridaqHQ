@@ -135,21 +135,21 @@ veridaq/
 
 ## Tech Stack
 
-| Layer                   | Technology              |
-| ----------------------- | ----------------------- |
-| Blockchain              | Stellar Soroban Testnet |
-| Smart Contract          | Rust, Soroban SDK       |
-| Zero-Knowledge Proof    | Circom 2, SnarkJS       |
-| Commitment Hash         | Poseidon (circomlib)    |
-| Backend                 | Fastify 5, TypeScript   |
-| ORM                     | Prisma 6                |
-| Database                | PostgreSQL 16           |
-| Queue                   | Redis, BullMQ           |
-| Blockchain Client       | @stellar/stellar-sdk    |
-| Frontend                | Next.js 15, React 19    |
-| Styling                 | Tailwind CSS, shadcn/ui |
-| Package Manager         | pnpm                    |
-| Infrastructure          | Docker Compose          |
+| Layer                | Technology              |
+| -------------------- | ----------------------- |
+| Blockchain           | Stellar Soroban Testnet |
+| Smart Contract       | Rust, Soroban SDK       |
+| Zero-Knowledge Proof | Circom 2, SnarkJS       |
+| Commitment Hash      | Poseidon (circomlib)    |
+| Backend              | Fastify 5, TypeScript   |
+| ORM                  | Prisma 6                |
+| Database             | PostgreSQL 16           |
+| Queue                | Redis, BullMQ           |
+| Blockchain Client    | @stellar/stellar-sdk    |
+| Frontend             | Next.js 15, React 19    |
+| Styling              | Tailwind CSS, shadcn/ui |
+| Package Manager      | pnpm                    |
+| Infrastructure       | Docker Compose          |
 
 ---
 
@@ -157,15 +157,15 @@ veridaq/
 
 ### Prerequisites
 
-| Tool | Version | Purpose |
-|------|---------|---------|
-| Node.js | 22+ | Runtime |
-| pnpm | 9+ | Package manager |
-| Docker Desktop | Latest | PostgreSQL 16 + Redis 7 |
-| Rust + wasm32 | Latest stable | Soroban contract compilation |
-| stellar CLI | Latest | Contract deployment & invocation |
-| Circom 2 | 2.0.8+ | ZKP circuit compilation (optimistic) |
-| Freighter | Latest | Stellar wallet browser extension |
+| Tool           | Version       | Purpose                              |
+| -------------- | ------------- | ------------------------------------ |
+| Node.js        | 22+           | Runtime                              |
+| pnpm           | 9+            | Package manager                      |
+| Docker Desktop | Latest        | PostgreSQL 16 + Redis 7              |
+| Rust + wasm32  | Latest stable | Soroban contract compilation         |
+| stellar CLI    | Latest        | Contract deployment & invocation     |
+| Circom 2       | 2.0.8+        | ZKP circuit compilation (optimistic) |
+| Freighter      | Latest        | Stellar wallet browser extension     |
 
 ### Quick Start (Local Development — No Blockchain Required)
 
@@ -227,14 +227,14 @@ cp .env.example .env
 
 Fill in the following variables in `.env`:
 
-| Variable | Value / How to Get |
-|----------|-------------------|
-| `JWT_SECRET` | `openssl rand -base64 64` |
-| `REFRESH_SECRET` | `openssl rand -base64 64` |
-| `ENCRYPTION_KEY` | `openssl rand -hex 32` |
-| `USE_MOCK_BLOCKCHAIN` | `false` |
+| Variable                    | Value / How to Get                  |
+| --------------------------- | ----------------------------------- |
+| `JWT_SECRET`                | `openssl rand -base64 64`           |
+| `REFRESH_SECRET`            | `openssl rand -base64 64`           |
+| `ENCRYPTION_KEY`            | `openssl rand -hex 32`              |
+| `USE_MOCK_BLOCKCHAIN`       | `false`                             |
 | `PLATFORM_ADMIN_SECRET_KEY` | Your Stellar secret key (see below) |
-| `PLATFORM_ADMIN_PUBLIC_KEY` | Corresponding public key |
+| `PLATFORM_ADMIN_PUBLIC_KEY` | Corresponding public key            |
 
 **Generate a Stellar admin keypair:**
 
@@ -332,11 +332,11 @@ ZK_VERIFIER_ID=$ZK_VER
 
 **Pre-deployed contract IDs** (current admin keypair):
 
-| Contract | Address |
-|----------|---------|
+| Contract             | Address                                                    |
+| -------------------- | ---------------------------------------------------------- |
 | Institution Registry | `CDX674MGO7EAYPFIRGWZEXDN2JTVUT2GMSJQA5DFKGCEIIATG2MOAALW` |
-| Credential Registry | `CD33Q52CNAQJGSDBOTSR2DYGEG4775SCLPHRGHLAXRAMAKAWRZQEDQB2` |
-| Groth16 Verifier | `CDV5XY4N3E7NPEVHK7ZARVOYQJ4VF3VCYPR7NRX64JMGO74GHY54ZA24` |
+| Credential Registry  | `CD33Q52CNAQJGSDBOTSR2DYGEG4775SCLPHRGHLAXRAMAKAWRZQEDQB2` |
+| Groth16 Verifier     | `CDV5XY4N3E7NPEVHK7ZARVOYQJ4VF3VCYPR7NRX64JMGO74GHY54ZA24` |
 
 **Register the test institution on-chain** (required for batch upload):
 
@@ -362,6 +362,7 @@ pnpm circuit:setup
 ```
 
 This downloads a ~230 MB Powers of Tau file, runs phase 2 setup, and exports:
+
 - `packages/circuits/build/credential_final.zkey` — proving key
 - `packages/circuits/build/credential_js/credential.wasm` — witness generator
 
@@ -388,19 +389,19 @@ pnpm dev:frontend
 
 The frontend starts on port 3000. Three portals available:
 
-| Portal      | URL                                                |
-|-------------|----------------------------------------------------|
-| Institution | http://localhost:3000/institution/login            |
-| Employer    | http://localhost:3000/employer/login               |
-| Admin       | http://localhost:3000/admin/login                  |
+| Portal      | URL                                     |
+| ----------- | --------------------------------------- |
+| Institution | http://localhost:3000/institution/login |
+| Employer    | http://localhost:3000/employer/login    |
+| Admin       | http://localhost:3000/admin/login       |
 
 ### Default Login Credentials
 
-| Portal      | Email                    | Password    |
-|-------------|--------------------------|-------------|
-| Institution | futminna@veridaq.xyz     | Inst@2026!  |
-| Employer    | firstbank@veridaq.xyz    | Emp@2026!   |
-| Admin       | admin@veridaq.xyz        | Admin@2026! |
+| Portal      | Email                 | Password    |
+| ----------- | --------------------- | ----------- |
+| Institution | futminna@veridaq.xyz  | Inst@2026!  |
+| Employer    | firstbank@veridaq.xyz | Emp@2026!   |
+| Admin       | admin@veridaq.xyz     | Admin@2026! |
 
 ### Testing the Batch Upload Flow (Real On-Chain)
 
@@ -494,6 +495,7 @@ The frontend sends XLM amounts like `"0.01"` which caused a `BigInt` parse error
 ### "Batch validation fails — GraduationYear error"
 
 The XLSX template expects 6 columns in this order:
+
 1. MatricNumber
 2. StudentName
 3. CGPA

@@ -102,12 +102,8 @@ export function PortalBg() {
       {/* Base gradient */}
       <div className="absolute inset-0">
         <div className="bg-void absolute inset-0" />
-        <div
-          className="absolute -left-[10%] top-[20%] h-[400px] w-[400px] rounded-full bg-accent/4 blur-[120px]"
-        />
-        <div
-          className="absolute -right-[10%] bottom-[30%] h-[350px] w-[350px] rounded-full bg-info/3 blur-[100px]"
-        />
+        <div className="bg-accent/4 absolute -left-[10%] top-[20%] h-[400px] w-[400px] rounded-full blur-[120px]" />
+        <div className="bg-info/3 absolute -right-[10%] bottom-[30%] h-[350px] w-[350px] rounded-full blur-[100px]" />
       </div>
       {/* Subtle grid */}
       <div className="bg-grid-pattern bg-grid absolute inset-0 opacity-20" />

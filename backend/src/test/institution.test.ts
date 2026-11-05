@@ -30,7 +30,8 @@ beforeAll(async () => {
     if (!inst) throw new Error("Seed institution not found — run pnpm db:seed first")
     institutionId = inst.id
 
-    const mockBlockchain = new BlockchainService() as unknown as import("../services/blockchain.service.js").BlockchainService
+    const mockBlockchain =
+      new BlockchainService() as unknown as import("../services/blockchain.service.js").BlockchainService
     instSvc = new InstitutionService(prisma, mockBlockchain)
   } catch {
     // Database not available — tests silently skip
@@ -43,7 +44,9 @@ afterAll(async () => {
     await prisma.claimDefinition.deleteMany({ where: { id: testClaimId } }).catch(() => {})
   }
   if (testCredentialNullifier) {
-    await prisma.credential.deleteMany({ where: { nullifier: testCredentialNullifier } }).catch(() => {})
+    await prisma.credential
+      .deleteMany({ where: { nullifier: testCredentialNullifier } })
+      .catch(() => {})
   }
   await prisma.$disconnect()
 })
@@ -172,11 +175,7 @@ describe("InstitutionService.revokeCredential", () => {
 
   it("returns an error when the nullifier does not exist", async () => {
     if (!instSvc) return
-    const result = await instSvc.revokeCredential(
-      institutionId,
-      "0x" + "00".repeat(32),
-      1
-    )
+    const result = await instSvc.revokeCredential(institutionId, "0x" + "00".repeat(32), 1)
     expect(result.ok).toBe(false)
     expect(result.error).toMatch(/not found/i)
   })

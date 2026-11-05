@@ -8,7 +8,7 @@ function ResetPasswordForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const token = searchParams.get("token")
-  
+
   const [password, setPassword] = useState("")
   const [confirm, setConfirm] = useState("")
   const [loading, setLoading] = useState(false)
@@ -27,19 +27,20 @@ function ResetPasswordForm() {
     }
     setError("")
     setLoading(true)
-    
+
     try {
       await api.post("/auth/password/reset", {
         token,
         newPassword: password,
-        role: "INSTITUTION"
+        role: "INSTITUTION",
       })
       setSuccess(true)
     } catch (err: unknown) {
       const msg =
         typeof err === "object" && err !== null
-          ? ((err as Record<string, unknown>)["response"] as Record<string, unknown> | undefined)
-              ?.["data"] as Record<string, unknown> | undefined
+          ? ((
+              (err as Record<string, unknown>)["response"] as Record<string, unknown> | undefined
+            )?.["data"] as Record<string, unknown> | undefined)
           : null
       setError(
         (typeof msg?.["error"] === "string" ? msg["error"] : null) ||
@@ -54,7 +55,7 @@ function ResetPasswordForm() {
     return (
       <div className="flex min-h-screen items-center justify-center p-4">
         <div className="w-full max-w-md space-y-4 text-center">
-          <h1 className="text-2xl font-bold text-foreground">Invalid Link</h1>
+          <h1 className="text-foreground text-2xl font-bold">Invalid Link</h1>
           <p className="text-muted">This password reset link is invalid or missing the token.</p>
         </div>
       </div>
@@ -63,20 +64,20 @@ function ResetPasswordForm() {
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-6 rounded-xl border border-surface-border bg-surface-card p-8">
+      <div className="border-surface-border bg-surface-card w-full max-w-md space-y-6 rounded-xl border p-8">
         <div className="text-center">
-          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-surface-border text-muted">
+          <div className="bg-surface-border text-muted mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full">
             <LockKeyhole size={24} />
           </div>
-          <h2 className="text-2xl font-bold text-foreground">Reset Password</h2>
-          <p className="mt-2 text-sm text-muted">Enter your new password below</p>
+          <h2 className="text-foreground text-2xl font-bold">Reset Password</h2>
+          <p className="text-muted mt-2 text-sm">Enter your new password below</p>
         </div>
 
         {success ? (
           <div className="flex flex-col items-center gap-4 py-6 text-center">
             <CheckCircle2 size={48} className="text-green-500" />
-            <p className="font-medium text-foreground">Password successfully reset!</p>
-            <button 
+            <p className="text-foreground font-medium">Password successfully reset!</p>
+            <button
               onClick={() => router.push("/institution/login")}
               className="btn-primary mt-4 w-full justify-center"
             >
@@ -86,7 +87,7 @@ function ResetPasswordForm() {
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
-              <div className="rounded-lg border border-error/20 bg-error/5 p-3 text-sm text-red-400">
+              <div className="border-error/20 bg-error/5 rounded-lg border p-3 text-sm text-red-400">
                 {error}
               </div>
             )}
@@ -110,7 +111,11 @@ function ResetPasswordForm() {
                 required
               />
             </div>
-            <button type="submit" disabled={loading} className="btn-primary mt-2 w-full justify-center">
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn-primary mt-2 w-full justify-center"
+            >
               {loading ? "Resetting..." : "Reset Password"}
             </button>
           </form>
@@ -122,11 +127,13 @@ function ResetPasswordForm() {
 
 export default function ResetPasswordPage() {
   return (
-    <Suspense fallback={
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-accent/30 border-t-accent" />
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center">
+          <div className="border-accent/30 border-t-accent h-8 w-8 animate-spin rounded-full border-2" />
+        </div>
+      }
+    >
       <ResetPasswordForm />
     </Suspense>
   )
