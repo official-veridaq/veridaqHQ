@@ -17,13 +17,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
-        with:
-          version: 9
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # The Prisma client is generated code, not a dependency: without this step
+      # every @prisma/client type import resolves to the empty stub and the
+      # typecheck fails on a clean checkout.
+      - run: pnpm db:generate
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm format:check
@@ -55,8 +57,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
-        with:
-          version: 9
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -65,12 +65,41 @@ jobs:
       - run: pnpm db:push
       - run: pnpm test:backend
 
-  test-contracts:
-    name: Contract Tests
+  build:
+    name: Production Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: stellar/actions@v2
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
         with:
-          soroban-version: latest
-      - run: cargo test
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm db:generate
+      - run: pnpm build:backend
+      - run: pnpm build:frontend
+
+  test-contracts:
+    name: Contract Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: contracts
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          # Soroban SDK 26 requires wasm32v1-none. The legacy wasm32-unknown-unknown
+          # target is rejected by Rust 1.82+ because it enables reference-types
+          # and multi-value, which the Soroban Environment does not support.
+          targets: wasm32v1-none
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: contracts
+      # The Cargo workspace lives in contracts/, so this must run there: from the
+      # repository root there is no Cargo.toml and cargo exits before testing.
+      - run: cargo fmt --check
+      - run: cargo clippy --all-targets -- -D warnings
+      - run: cargo test --all-targets
+      - run: cargo build --target wasm32v1-none --release

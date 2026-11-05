@@ -65,7 +65,11 @@ impl InstitutionRegistry {
             return Err(InstitutionError::Unauthorized);
         }
 
-        if env.storage().persistent().has(&DataKey::Institution(id.clone())) {
+        if env
+            .storage()
+            .persistent()
+            .has(&DataKey::Institution(id.clone()))
+        {
             return Err(InstitutionError::AlreadyRegistered);
         }
 
@@ -79,7 +83,9 @@ impl InstitutionRegistry {
             wallet: admin_wallet,
         };
 
-        env.storage().persistent().set(&DataKey::Institution(id.clone()), &inst);
+        env.storage()
+            .persistent()
+            .set(&DataKey::Institution(id.clone()), &inst);
 
         let mut ids: Vec<BytesN<32>> = env
             .storage()
@@ -95,7 +101,9 @@ impl InstitutionRegistry {
             .instance()
             .get(&DataKey::InstitutionCount)
             .unwrap_or(0);
-        env.storage().instance().set(&DataKey::InstitutionCount, &(count + 1));
+        env.storage()
+            .instance()
+            .set(&DataKey::InstitutionCount, &(count + 1));
 
         Ok(())
     }
@@ -119,7 +127,9 @@ impl InstitutionRegistry {
             .ok_or(InstitutionError::NotFound)?;
 
         inst.active = false;
-        env.storage().persistent().set(&DataKey::Institution(id), &inst);
+        env.storage()
+            .persistent()
+            .set(&DataKey::Institution(id), &inst);
         Ok(())
     }
 
@@ -142,52 +152,82 @@ impl InstitutionRegistry {
             .ok_or(InstitutionError::NotFound)?;
 
         inst.active = true;
-        env.storage().persistent().set(&DataKey::Institution(id), &inst);
+        env.storage()
+            .persistent()
+            .set(&DataKey::Institution(id), &inst);
         Ok(())
     }
 
     pub fn update_wallet(
-        env: Env, caller: Address, id: BytesN<32>, new_wallet: Address,
+        env: Env,
+        caller: Address,
+        id: BytesN<32>,
+        new_wallet: Address,
     ) -> Result<(), InstitutionError> {
         let mut inst: Institution = env
-            .storage().persistent().get(&DataKey::Institution(id.clone()))
+            .storage()
+            .persistent()
+            .get(&DataKey::Institution(id.clone()))
             .ok_or(InstitutionError::NotFound)?;
         caller.require_auth();
-        if caller != inst.admin { return Err(InstitutionError::Unauthorized); }
+        if caller != inst.admin {
+            return Err(InstitutionError::Unauthorized);
+        }
         inst.admin = new_wallet.clone();
         inst.wallet = new_wallet;
-        env.storage().persistent().set(&DataKey::Institution(id), &inst);
+        env.storage()
+            .persistent()
+            .set(&DataKey::Institution(id), &inst);
         Ok(())
     }
 
     pub fn add_earnings(env: Env, id: BytesN<32>, amount: i128) -> Result<(), InstitutionError> {
         let mut inst: Institution = env
-            .storage().persistent().get(&DataKey::Institution(id.clone()))
+            .storage()
+            .persistent()
+            .get(&DataKey::Institution(id.clone()))
             .ok_or(InstitutionError::NotFound)?;
         inst.total_earned += amount;
-        env.storage().persistent().set(&DataKey::Institution(id), &inst);
+        env.storage()
+            .persistent()
+            .set(&DataKey::Institution(id), &inst);
         Ok(())
     }
 
     pub fn is_active(env: Env, id: BytesN<32>) -> bool {
-        env.storage().persistent().get::<_, Institution>(&DataKey::Institution(id))
-            .map(|i| i.active).unwrap_or(false)
+        env.storage()
+            .persistent()
+            .get::<_, Institution>(&DataKey::Institution(id))
+            .map(|i| i.active)
+            .unwrap_or(false)
     }
 
     pub fn get_institution(env: Env, id: BytesN<32>) -> Result<Institution, InstitutionError> {
-        env.storage().persistent().get(&DataKey::Institution(id)).ok_or(InstitutionError::NotFound)
+        env.storage()
+            .persistent()
+            .get(&DataKey::Institution(id))
+            .ok_or(InstitutionError::NotFound)
     }
 
     pub fn get_admin(env: Env) -> Result<Address, InstitutionError> {
-        env.storage().instance().get(&DataKey::Admin).ok_or(InstitutionError::NotFound)
+        env.storage()
+            .instance()
+            .get(&DataKey::Admin)
+            .ok_or(InstitutionError::NotFound)
     }
 
     pub fn get_all_ids(env: Env) -> Vec<BytesN<32>> {
-        env.storage().instance().get(&DataKey::InstitutionIds).unwrap_or(vec![&env])
+        env.storage()
+            .instance()
+            .get(&DataKey::InstitutionIds)
+            .unwrap_or(vec![&env])
     }
 
     pub fn count(env: Env) -> u32 {
-        env.storage().instance().get(&DataKey::InstitutionCount).unwrap_or(0)
+        env.storage()
+            .instance()
+            .get(&DataKey::InstitutionCount)
+            .unwrap_or(0)
     }
 }
 
