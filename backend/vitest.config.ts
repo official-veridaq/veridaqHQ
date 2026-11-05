@@ -17,10 +17,14 @@ export default defineConfig({
       NODE_ENV: "test",
       FRONTEND_URL: "http://localhost:3000",
       BACKEND_URL: "http://localhost:4000",
-      DATABASE_URL: "postgresql://test:test@localhost:5432/veridaq_test",
-      REDIS_URL: "redis://localhost:6379/1",
-      JWT_SECRET: "test_jwt_secret_key_min_32_chars_long_for_sure",
-      REFRESH_SECRET: "test_refresh_secret_min_32_chars_long_yes",
+      // Honour DATABASE_URL when the runner exports one (CI provides the
+      // postgres service credentials). Only fall back to the local default
+      // when it is unset, so a clean checkout still works.
+      DATABASE_URL:
+        process.env.DATABASE_URL ?? "postgresql://test:test@localhost:5432/veridaq_test",
+      REDIS_URL: process.env.REDIS_URL ?? "redis://localhost:6379/1",
+      JWT_SECRET: process.env.JWT_SECRET ?? "test_jwt_secret_key_min_32_chars_long_for_sure",
+      REFRESH_SECRET: process.env.REFRESH_SECRET ?? "test_refresh_secret_min_32_chars_long_yes",
       STELLAR_RPC_URL: "https://soroban-testnet.stellar.org",
       STELLAR_NETWORK_PASSPHRASE: "Test SDF Network ; September 2015",
       PLATFORM_ADMIN_SECRET_KEY: "SAKJGCYSE3GSBGGCGHGYFSXFDUHWC2FZ6JEMBLJ5TMRRH7C3J6ZD3X3Y",
