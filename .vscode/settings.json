@@ -9,7 +9,11 @@
   "editor.rulers": [100],
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
-  "eslint.workingDirectories": [{ "mode": "auto" }],
+  "eslint.workingDirectories": [
+    {
+      "mode": "auto"
+    }
+  ],
   "files.exclude": {
     "**/node_modules": true,
     "circuits/build": true
