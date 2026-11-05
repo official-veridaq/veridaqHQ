@@ -9,8 +9,15 @@ import { readFileSync } from "fs"
 import * as snarkjs from "snarkjs"
 import { buildPoseidon } from "circomlibjs"
 import {
-  rpc, nativeToScVal, scValToNative, Contract,
-  Keypair, TransactionBuilder, BASE_FEE, xdr, Account,
+  rpc,
+  nativeToScVal,
+  scValToNative,
+  Contract,
+  Keypair,
+  TransactionBuilder,
+  BASE_FEE,
+  xdr,
+  Account,
 } from "@stellar/stellar-sdk"
 
 const VERIFIER_ID = "CDMHFJNHJCUI2A54LY4LMVYBE7IO3BDDIH4STNJGMU2PQIMNVXJOXMI3"
@@ -32,10 +39,17 @@ function permute4(arr: Buffer[]): Buffer[][] {
   const result: Buffer[][] = []
   const used = new Array(arr.length).fill(false)
   function backtrack(path: Buffer[]) {
-    if (path.length === arr.length) { result.push([...path]); return }
+    if (path.length === arr.length) {
+      result.push([...path])
+      return
+    }
     for (let i = 0; i < arr.length; i++) {
       if (used[i]) continue
-      used[i] = true; path.push(arr[i]!); backtrack(path); path.pop(); used[i] = false
+      used[i] = true
+      path.push(arr[i]!)
+      backtrack(path)
+      path.pop()
+      used[i] = false
     }
   }
   backtrack([])
@@ -46,7 +60,7 @@ async function simulate(server: rpc.Server, contractId: string, method: string, 
   const keypair = Keypair.fromSecret(ADMIN_SECRET)
   const source = keypair.publicKey()
   const res = await fetch(`https://horizon-testnet.stellar.org/accounts/${source}`)
-  const accData = await res.json() as { id: string; sequence: string }
+  const accData = (await res.json()) as { id: string; sequence: string }
   const account = new Account(accData.id, accData.sequence)
 
   const contract = new Contract(contractId)
@@ -67,7 +81,7 @@ function describe(label: string, fn: () => Promise<void>) {
       const msg = err instanceof Error ? err.message : String(err)
       console.log(`✘ FAIL: ${msg}`)
       throw err
-    },
+    }
   )
 }
 
@@ -95,22 +109,30 @@ async function main() {
 
   const nameHash = BigInt("12345678901234567890") % FIELD_MODULUS
   const matricHash = BigInt("98765432109876543210") % FIELD_MODULUS
-  const cgpa = BigInt(450)                     // 4.50 CGPA
-  const classification = BigInt(4)              // First Class
+  const cgpa = BigInt(450) // 4.50 CGPA
+  const classification = BigInt(4) // First Class
   const courseHash = BigInt("42") % FIELD_MODULUS
   const graduationYear = BigInt(2024)
   const blindingFactor = BigInt("0x1234567890abcdef1234567890abcdef") % FIELD_MODULUS
   const institutionKey = BigInt("0xdeadbeefcafebabedeadbeefcafebabe") % FIELD_MODULUS
 
   // Compute commitment = Poseidon(nameHash, matricHash, cgpa, classification, courseHash, graduationYear, blindingFactor)
-  const commitmentBig = poseidon([nameHash, matricHash, cgpa, classification, courseHash, graduationYear, blindingFactor])
+  const commitmentBig = poseidon([
+    nameHash,
+    matricHash,
+    cgpa,
+    classification,
+    courseHash,
+    graduationYear,
+    blindingFactor,
+  ])
   const commitment = poseidon.F.toString(commitmentBig)
 
   // Compute nullifier = Poseidon(matricHash, institutionKey)
   const nullifierBig = poseidon([matricHash, institutionKey])
   const nullifier = poseidon.F.toString(nullifierBig)
 
-  const claimType = 4   // First Class
+  const claimType = 4 // First Class
   const threshold = 0
 
   console.log("  commitment:    ", commitment.toString().slice(0, 40) + "...")
@@ -134,16 +156,32 @@ async function main() {
   }
 
   const { proof: rawProof, publicSignals } = await snarkjs.groth16.fullProve(
-    circuitInputs, wasmBuffer, zkeyBuffer,
+    circuitInputs,
+    wasmBuffer,
+    zkeyBuffer
   )
   const proof = rawProof as {
-    pi_a: [string, string]; pi_b: [[string, string], [string, string]]; pi_c: [string, string]
+    pi_a: [string, string]
+    pi_b: [[string, string], [string, string]]
+    pi_c: [string, string]
   }
 
-  console.log("  Proof A:", proof.pi_a[0].slice(0, 20) + "..., " + proof.pi_a[1].slice(0, 20) + "...")
-  console.log("  Proof B:", proof.pi_b[0][0].slice(0, 20) + "..., " + proof.pi_b[0][1].slice(0, 20) + "...")
-  console.log("  Proof C:", proof.pi_c[0].slice(0, 20) + "..., " + proof.pi_c[1].slice(0, 20) + "...")
-  console.log("  Public signals:", publicSignals.map(s => s.slice(0, 20) + "..."))
+  console.log(
+    "  Proof A:",
+    proof.pi_a[0].slice(0, 20) + "..., " + proof.pi_a[1].slice(0, 20) + "..."
+  )
+  console.log(
+    "  Proof B:",
+    proof.pi_b[0][0].slice(0, 20) + "..., " + proof.pi_b[0][1].slice(0, 20) + "..."
+  )
+  console.log(
+    "  Proof C:",
+    proof.pi_c[0].slice(0, 20) + "..., " + proof.pi_c[1].slice(0, 20) + "..."
+  )
+  console.log(
+    "  Public signals:",
+    publicSignals.map((s) => s.slice(0, 20) + "...")
+  )
 
   // ── 2. Local verification ────────────────────────────────────────────────
   console.log("\n--- Test 1: Local verification (SnarkJS) ---")
@@ -172,20 +210,20 @@ async function main() {
   // Proof B: SnarkJS format is [[x_re, x_im], [y_re, y_im]]
   // We swap to create [[x_im, x_re], [y_im, y_re]] like the backend does:
   const b_im_re = [
-    [BigInt(bRaw[0][1]), BigInt(bRaw[0][0])],   // [x_im, x_re]
-    [BigInt(bRaw[1][1]), BigInt(bRaw[1][0])],   // [y_im, y_re]
+    [BigInt(bRaw[0][1]), BigInt(bRaw[0][0])], // [x_im, x_re]
+    [BigInt(bRaw[1][1]), BigInt(bRaw[1][0])], // [y_im, y_re]
   ] as [[bigint, bigint], [bigint, bigint]]
 
-  const b0 = bigintToBytesBE(b_im_re[0][0], 32)  // x_im
-  const b1 = bigintToBytesBE(b_im_re[0][1], 32)  // x_re
-  const b2 = bigintToBytesBE(b_im_re[1][0], 32)  // y_im
-  const b3 = bigintToBytesBE(b_im_re[1][1], 32)  // y_re
+  const b0 = bigintToBytesBE(b_im_re[0][0], 32) // x_im
+  const b1 = bigintToBytesBE(b_im_re[0][1], 32) // x_re
+  const b2 = bigintToBytesBE(b_im_re[1][0], 32) // y_im
+  const b3 = bigintToBytesBE(b_im_re[1][1], 32) // y_re
 
   const permutations = permute4([b0, b1, b2, b3])
   console.log(`  Testing ${permutations.length} permutations...`)
 
   // Public signals as bytes (field elements)
-  const pubSigBytes = publicSignals.map(s => bigintToBytesBE(BigInt(s), 32))
+  const pubSigBytes = publicSignals.map((s) => bigintToBytesBE(BigInt(s), 32))
 
   let permutationPassed = false
   let firstResult: boolean | null = null
@@ -194,20 +232,21 @@ async function main() {
     const perm = permutations[idx]!
     const proofBBytes = Buffer.concat(perm)
 
-    const sim = await simulate(
-      server, VERIFIER_ID, "verify_raw",
-      [
-        xdr.ScVal.scvBytes(Buffer.from("0000000000000000000000000000000000000000000000000000000000000002", "hex")),
-        xdr.ScVal.scvBytes(proofABytes),
-        xdr.ScVal.scvBytes(proofBBytes),
-        xdr.ScVal.scvBytes(proofCBytes),
-        xdr.ScVal.scvVec(pubSigBytes.map(b => xdr.ScVal.scvBytes(b))),
-      ],
-    )
+    const sim = await simulate(server, VERIFIER_ID, "verify_raw", [
+      xdr.ScVal.scvBytes(
+        Buffer.from("0000000000000000000000000000000000000000000000000000000000000002", "hex")
+      ),
+      xdr.ScVal.scvBytes(proofABytes),
+      xdr.ScVal.scvBytes(proofBBytes),
+      xdr.ScVal.scvBytes(proofCBytes),
+      xdr.ScVal.scvVec(pubSigBytes.map((b) => xdr.ScVal.scvBytes(b))),
+    ])
 
     if (rpc.Api.isSimulationError(sim)) {
       const errStr = typeof sim.error === "string" ? sim.error : JSON.stringify(sim.error)
-      const isOnCurveErr = errStr.toLowerCase().includes("point not on curve") || errStr.toLowerCase().includes("bn254 g2")
+      const isOnCurveErr =
+        errStr.toLowerCase().includes("point not on curve") ||
+        errStr.toLowerCase().includes("bn254 g2")
       if (isOnCurveErr) {
         console.log(`    perm #${idx}: G2 point not on curve: ${errStr.slice(0, 100)}`)
         continue
@@ -247,22 +286,23 @@ async function main() {
   await describe("wrong VK hash should error with MalformedVerifyingKey", async () => {
     const wrongVkHash = "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
     const firstPerm = Buffer.concat([b0, b1, b2, b3])
-    const sim = await simulate(
-      server, VERIFIER_ID, "verify_raw",
-      [
-        xdr.ScVal.scvBytes(Buffer.from(wrongVkHash, "hex")),
-        xdr.ScVal.scvBytes(proofABytes),
-        xdr.ScVal.scvBytes(firstPerm),
-        xdr.ScVal.scvBytes(proofCBytes),
-        xdr.ScVal.scvVec(pubSigBytes.map(b => xdr.ScVal.scvBytes(b))),
-      ],
-    )
+    const sim = await simulate(server, VERIFIER_ID, "verify_raw", [
+      xdr.ScVal.scvBytes(Buffer.from(wrongVkHash, "hex")),
+      xdr.ScVal.scvBytes(proofABytes),
+      xdr.ScVal.scvBytes(firstPerm),
+      xdr.ScVal.scvBytes(proofCBytes),
+      xdr.ScVal.scvVec(pubSigBytes.map((b) => xdr.ScVal.scvBytes(b))),
+    ])
     if (rpc.Api.isSimulationSuccess(sim)) {
       throw new Error("Simulation should have failed for unknown VK hash")
     }
     // Expected: simulation error about MalformedVerifyingKey
     const errStr = typeof sim.error === "string" ? sim.error : JSON.stringify(sim.error)
-    if (!errStr.includes("MalformedVerifyingKey") && !errStr.includes("HostError") && !errStr.includes("HostError")) {
+    if (
+      !errStr.includes("MalformedVerifyingKey") &&
+      !errStr.includes("HostError") &&
+      !errStr.includes("HostError")
+    ) {
       // It's ok if it's a different error as long as it's not a success
     }
   })
@@ -275,16 +315,15 @@ async function main() {
       bigintToBytesBE(BigInt("3"), 32),
       bigintToBytesBE(BigInt("4"), 32),
     ]
-    const sim = await simulate(
-      server, VERIFIER_ID, "verify_raw",
-      [
-        xdr.ScVal.scvBytes(Buffer.from("0000000000000000000000000000000000000000000000000000000000000002", "hex")),
-        xdr.ScVal.scvBytes(proofABytes),
-        xdr.ScVal.scvBytes(firstPerm),
-        xdr.ScVal.scvBytes(proofCBytes),
-        xdr.ScVal.scvVec(wrongPubSigBytes.map(b => xdr.ScVal.scvBytes(b))),
-      ],
-    )
+    const sim = await simulate(server, VERIFIER_ID, "verify_raw", [
+      xdr.ScVal.scvBytes(
+        Buffer.from("0000000000000000000000000000000000000000000000000000000000000002", "hex")
+      ),
+      xdr.ScVal.scvBytes(proofABytes),
+      xdr.ScVal.scvBytes(firstPerm),
+      xdr.ScVal.scvBytes(proofCBytes),
+      xdr.ScVal.scvVec(wrongPubSigBytes.map((b) => xdr.ScVal.scvBytes(b))),
+    ])
     if (rpc.Api.isSimulationSuccess(sim) && sim.result?.retval) {
       const result = scValToNative(sim.result.retval) as boolean
       if (result === true) throw new Error("Wrong public inputs returned true!")
@@ -297,16 +336,15 @@ async function main() {
   await describe("invalid proof A point (zero G1) should return false", async () => {
     const zero64 = Buffer.alloc(64)
     const firstPerm = Buffer.concat([b0, b1, b2, b3])
-    const sim = await simulate(
-      server, VERIFIER_ID, "verify_raw",
-      [
-        xdr.ScVal.scvBytes(Buffer.from("0000000000000000000000000000000000000000000000000000000000000002", "hex")),
-        xdr.ScVal.scvBytes(zero64),
-        xdr.ScVal.scvBytes(firstPerm),
-        xdr.ScVal.scvBytes(proofCBytes),
-        xdr.ScVal.scvVec(pubSigBytes.map(b => xdr.ScVal.scvBytes(b))),
-      ],
-    )
+    const sim = await simulate(server, VERIFIER_ID, "verify_raw", [
+      xdr.ScVal.scvBytes(
+        Buffer.from("0000000000000000000000000000000000000000000000000000000000000002", "hex")
+      ),
+      xdr.ScVal.scvBytes(zero64),
+      xdr.ScVal.scvBytes(firstPerm),
+      xdr.ScVal.scvBytes(proofCBytes),
+      xdr.ScVal.scvVec(pubSigBytes.map((b) => xdr.ScVal.scvBytes(b))),
+    ])
     if (rpc.Api.isSimulationSuccess(sim) && sim.result?.retval) {
       const result = scValToNative(sim.result.retval) as boolean
       // Zero A at infinity should make pairing check return false
@@ -314,7 +352,9 @@ async function main() {
     } else if (rpc.Api.isSimulationError(sim)) {
       const errStr = typeof sim.error === "string" ? sim.error : JSON.stringify(sim.error)
       if (errStr.includes("point not on curve") || errStr.includes("bn254")) {
-        throw new Error(`Should not error with 'point not on curve' for zero/valid points: ${errStr.slice(0, 100)}`)
+        throw new Error(
+          `Should not error with 'point not on curve' for zero/valid points: ${errStr.slice(0, 100)}`
+        )
       }
       console.log("      (simulation error — investigating)")
     }
@@ -329,16 +369,15 @@ async function main() {
       bigintToBytesBE(BigInt(4), 32),
       bigintToBytesBE(BigInt(5), 32),
     ]
-    const sim = await simulate(
-      server, VERIFIER_ID, "verify_raw",
-      [
-        xdr.ScVal.scvBytes(Buffer.from("0000000000000000000000000000000000000000000000000000000000000002", "hex")),
-        xdr.ScVal.scvBytes(proofABytes),
-        xdr.ScVal.scvBytes(firstPerm),
-        xdr.ScVal.scvBytes(proofCBytes),
-        xdr.ScVal.scvVec(tooMany.map(b => xdr.ScVal.scvBytes(b))),
-      ],
-    )
+    const sim = await simulate(server, VERIFIER_ID, "verify_raw", [
+      xdr.ScVal.scvBytes(
+        Buffer.from("0000000000000000000000000000000000000000000000000000000000000002", "hex")
+      ),
+      xdr.ScVal.scvBytes(proofABytes),
+      xdr.ScVal.scvBytes(firstPerm),
+      xdr.ScVal.scvBytes(proofCBytes),
+      xdr.ScVal.scvVec(tooMany.map((b) => xdr.ScVal.scvBytes(b))),
+    ])
     if (rpc.Api.isSimulationSuccess(sim)) {
       throw new Error("Should have errored for public signal count mismatch")
     }
@@ -347,11 +386,15 @@ async function main() {
   // ── 5. Summary ────────────────────────────────────────────────────────────
   console.log("\n=== Summary ===")
   console.log(`  Local verification: PASS`)
-  console.log(`  On-chain verify_raw: ${permutationPassed ? "FOUND WORKING FORMAT" : "NO WORKING FORMAT"}`)
-  console.log(`  Correct permutation index: ${permutations.findIndex(p => {
-    // We can't easily check this inline, so we check firstResult
-    return false
-  })}`)
+  console.log(
+    `  On-chain verify_raw: ${permutationPassed ? "FOUND WORKING FORMAT" : "NO WORKING FORMAT"}`
+  )
+  console.log(
+    `  Correct permutation index: ${permutations.findIndex((p) => {
+      // We can't easily check this inline, so we check firstResult
+      return false
+    })}`
+  )
 
   if (permutationPassed) {
     process.exit(0)

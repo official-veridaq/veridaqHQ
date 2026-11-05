@@ -30,24 +30,24 @@ export default function TechnicalResourcesPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-void pb-16 text-muted">
+    <div className="bg-void text-muted min-h-screen pb-16">
       <AppHeader />
       <ParallaxBg opacity={0.25} />
       <FloatingShapes count={10} />
-      <div className="container mx-auto max-w-5xl px-4 md:px-6 pt-24">
-        <div className="mb-8 flex items-center gap-2 font-mono text-sm text-muted-subtle">
-          <Link href="/" className="transition-colors hover:text-foreground">
+      <div className="container mx-auto max-w-5xl px-4 pt-24 md:px-6">
+        <div className="text-muted-subtle mb-8 flex items-center gap-2 font-mono text-sm">
+          <Link href="/" className="hover:text-foreground transition-colors">
             Home
           </Link>
           <ChevronRight className="h-4 w-4" />
           <span className="text-accent uppercase">Technical Resources</span>
         </div>
 
-        <h1 className="mb-6 text-3xl font-black uppercase tracking-tight text-foreground md:text-5xl">
+        <h1 className="text-foreground mb-6 text-3xl font-black uppercase tracking-tight md:text-5xl">
           Technical Resources
         </h1>
 
-        <p className="border-surface-border mb-12 max-w-2xl border-b pb-6 font-mono text-sm text-muted-subtle">
+        <p className="border-surface-border text-muted-subtle mb-12 max-w-2xl border-b pb-6 font-mono text-sm">
           Veridaq is built completely open-core on bleeding-edge modern web protocols. Access
           architecture whitepapers, circuit repositories, and external scanners below.
         </p>
@@ -59,10 +59,10 @@ export default function TechnicalResourcesPage() {
             className="border-surface-border bg-surface-card hover:border-accent/50 group flex items-start gap-4 rounded-lg border p-6 transition-colors"
           >
             <div className="bg-void border-surface-border group-hover:bg-accent/10 rounded border p-3 transition-colors">
-              <Layers className="group-hover:text-accent h-6 w-6 text-foreground" />
+              <Layers className="group-hover:text-accent text-foreground h-6 w-6" />
             </div>
             <div>
-              <h3 className="group-hover:text-accent mb-1 font-bold text-foreground transition-colors">
+              <h3 className="group-hover:text-accent text-foreground mb-1 font-bold transition-colors">
                 Protocol Blueprint
               </h3>
               <p className="text-sm">
@@ -77,10 +77,10 @@ export default function TechnicalResourcesPage() {
             className="border-surface-border bg-surface-card hover:border-accent/50 group flex items-start gap-4 rounded-lg border p-6 transition-colors"
           >
             <div className="bg-void border-surface-border group-hover:bg-accent/10 rounded border p-3 transition-colors">
-              <BookOpen className="group-hover:text-accent h-6 w-6 text-foreground" />
+              <BookOpen className="group-hover:text-accent text-foreground h-6 w-6" />
             </div>
             <div>
-              <h3 className="group-hover:text-accent mb-1 font-bold text-foreground transition-colors">
+              <h3 className="group-hover:text-accent text-foreground mb-1 font-bold transition-colors">
                 Official Documentation
               </h3>
               <p className="text-sm">
@@ -95,10 +95,10 @@ export default function TechnicalResourcesPage() {
             className="border-surface-border bg-surface-card hover:border-accent/50 group flex items-start gap-4 rounded-lg border p-6 transition-colors"
           >
             <div className="bg-void border-surface-border group-hover:bg-accent/10 rounded border p-3 transition-colors">
-              <Layers className="group-hover:text-accent h-6 w-6 text-foreground" />
+              <Layers className="group-hover:text-accent text-foreground h-6 w-6" />
             </div>
             <div>
-              <h3 className="group-hover:text-accent mb-1 font-bold text-foreground transition-colors">
+              <h3 className="group-hover:text-accent text-foreground mb-1 font-bold transition-colors">
                 ZKP Circom Definitions
               </h3>
               <p className="text-sm">
@@ -113,18 +113,18 @@ export default function TechnicalResourcesPage() {
             className="border-surface-border bg-surface-card hover:border-accent/50 group flex cursor-not-allowed items-start gap-4 rounded-lg border p-6 opacity-70 transition-colors"
           >
             <div className="bg-void border-surface-border rounded border p-3">
-              <Github className="h-6 w-6 text-foreground" />
+              <Github className="text-foreground h-6 w-6" />
             </div>
             <div>
-              <h3 className="mb-1 flex items-center gap-2 font-bold text-foreground">
+              <h3 className="text-foreground mb-1 flex items-center gap-2 font-bold">
                 GitHub Contracts Repo{" "}
-                <span className="bg-surface-border rounded px-2 py-0.5 font-mono text-[10px] text-foreground">
+                <span className="bg-surface-border text-foreground rounded px-2 py-0.5 font-mono text-[10px]">
                   COMING SOON
                 </span>
               </h3>
               <p className="text-sm">
-                The Soroban-based smart contract repository covering Credential Registries,
-                and Paymaster Vaults.
+                The Soroban-based smart contract repository covering Credential Registries, and
+                Paymaster Vaults.
               </p>
             </div>
           </a>
@@ -136,12 +136,12 @@ export default function TechnicalResourcesPage() {
             className="border-surface-border bg-surface-card hover:border-accent/50 group flex items-start gap-4 rounded-lg border p-6 transition-colors"
           >
             <div className="bg-void border-surface-border group-hover:bg-accent/10 rounded border p-3 transition-colors">
-              <Database className="group-hover:text-accent h-6 w-6 text-foreground" />
+              <Database className="group-hover:text-accent text-foreground h-6 w-6" />
             </div>
             <div>
-              <h3 className="group-hover:text-accent mb-1 flex items-center gap-2 font-bold text-foreground transition-colors">
+              <h3 className="group-hover:text-accent text-foreground mb-1 flex items-center gap-2 font-bold transition-colors">
                 Stellar Expert Explorer{" "}
-                <span className="bg-surface-border rounded px-2 py-0.5 font-mono text-[10px] text-foreground">
+                <span className="bg-surface-border text-foreground rounded px-2 py-0.5 font-mono text-[10px]">
                   EXTERNAL
                 </span>
               </h3>
@@ -154,18 +154,18 @@ export default function TechnicalResourcesPage() {
         </div>
 
         {/* Stack Overview */}
-        <h2 className="border-surface-border mb-6 border-t pt-12 text-2xl font-bold uppercase tracking-widest text-foreground">
+        <h2 className="border-surface-border text-foreground mb-6 border-t pt-12 text-2xl font-bold uppercase tracking-widest">
           Protocol Stack Architecture
         </h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {stacks.map((stack, i) => (
-            <div key={i} className="border-surface-border rounded border bg-surface-card p-5">
+            <div key={i} className="border-surface-border bg-surface-card rounded border p-5">
               <div className="mb-2 flex items-center gap-2">
                 <CodeSquare className="text-accent h-4 w-4" />
-                <span className="font-mono text-xs text-muted-subtle">{stack.category}</span>
+                <span className="text-muted-subtle font-mono text-xs">{stack.category}</span>
               </div>
-              <h3 className="mb-2 text-lg font-bold text-foreground">{stack.tech}</h3>
-              <p className="text-sm leading-relaxed text-muted">{stack.desc}</p>
+              <h3 className="text-foreground mb-2 text-lg font-bold">{stack.tech}</h3>
+              <p className="text-muted text-sm leading-relaxed">{stack.desc}</p>
             </div>
           ))}
         </div>

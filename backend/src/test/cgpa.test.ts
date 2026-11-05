@@ -89,15 +89,22 @@ describe("isCgpaInRange", () => {
   it("rejects CGPA 1.49 (149) for Third Class", () => expect(isCgpaInRange(149, 1)).toBe(false))
 
   // ── Second Class Lower (2) ──────────────────────────────────────────────────
-  it("accepts CGPA 2.50 (250) for Second Class Lower", () => expect(isCgpaInRange(250, 2)).toBe(true))
-  it("accepts CGPA 3.49 (349) for Second Class Lower", () => expect(isCgpaInRange(349, 2)).toBe(true))
-  it("rejects CGPA 3.50 (350) for Second Class Lower", () => expect(isCgpaInRange(350, 2)).toBe(false))
+  it("accepts CGPA 2.50 (250) for Second Class Lower", () =>
+    expect(isCgpaInRange(250, 2)).toBe(true))
+  it("accepts CGPA 3.49 (349) for Second Class Lower", () =>
+    expect(isCgpaInRange(349, 2)).toBe(true))
+  it("rejects CGPA 3.50 (350) for Second Class Lower", () =>
+    expect(isCgpaInRange(350, 2)).toBe(false))
 
   // ── Second Class Upper (3) ──────────────────────────────────────────────────
-  it("accepts CGPA 3.50 (350) for Second Class Upper", () => expect(isCgpaInRange(350, 3)).toBe(true))
-  it("accepts CGPA 4.49 (449) for Second Class Upper", () => expect(isCgpaInRange(449, 3)).toBe(true))
-  it("rejects CGPA 4.50 (450) for Second Class Upper", () => expect(isCgpaInRange(450, 3)).toBe(false))
-  it("rejects CGPA 3.49 (349) for Second Class Upper", () => expect(isCgpaInRange(349, 3)).toBe(false))
+  it("accepts CGPA 3.50 (350) for Second Class Upper", () =>
+    expect(isCgpaInRange(350, 3)).toBe(true))
+  it("accepts CGPA 4.49 (449) for Second Class Upper", () =>
+    expect(isCgpaInRange(449, 3)).toBe(true))
+  it("rejects CGPA 4.50 (450) for Second Class Upper", () =>
+    expect(isCgpaInRange(450, 3)).toBe(false))
+  it("rejects CGPA 3.49 (349) for Second Class Upper", () =>
+    expect(isCgpaInRange(349, 3)).toBe(false))
 
   // ── First Class (4) ─────────────────────────────────────────────────────────
   it("accepts CGPA 4.50 (450) for First Class", () => expect(isCgpaInRange(450, 4)).toBe(true))

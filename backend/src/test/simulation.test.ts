@@ -27,13 +27,18 @@ vi.mock("../services/proof.service.js", () => ({
       return {
         proof: {
           pi_a: ["1", "2"],
-          pi_b: [["3", "4"], ["5", "6"]],
+          pi_b: [
+            ["3", "4"],
+            ["5", "6"],
+          ],
           pi_c: ["7", "8"],
         },
         publicSignals: ["1", "2", "3", "4"],
       }
     }
-    async verifyProofLocally() { return true }
+    async verifyProofLocally() {
+      return true
+    }
   },
 }))
 
@@ -61,7 +66,8 @@ beforeAll(async () => {
     return
   }
 
-  const mockBlockchain = new BlockchainService() as unknown as import("../services/blockchain.service.js").BlockchainService
+  const mockBlockchain =
+    new BlockchainService() as unknown as import("../services/blockchain.service.js").BlockchainService
 
   authSvc = new AuthService(prisma)
   adminSvc = new AdminService(prisma, mockBlockchain)
@@ -205,7 +211,9 @@ describe("Institution Flow", () => {
       if (result.items.length > 0) {
         const batch = result.items[0]!
         expect(batch.id).toBeTruthy()
-        expect(Object.values(BatchStatus as unknown as Record<string, string>)).toContain(batch.status)
+        expect(Object.values(BatchStatus as unknown as Record<string, string>)).toContain(
+          batch.status
+        )
         expect(typeof batch.studentCount).toBe("number")
       }
     })
@@ -342,7 +350,9 @@ describe("Institution Flow", () => {
     })
 
     it("cleans up test data", async () => {
-      await prisma.credential.deleteMany({ where: { nullifier: credentialNullifier } }).catch(() => {})
+      await prisma.credential
+        .deleteMany({ where: { nullifier: credentialNullifier } })
+        .catch(() => {})
       await prisma.batch.deleteMany({ where: { id: batchId } }).catch(() => {})
     })
   })
@@ -428,7 +438,9 @@ describe("Employer Flow", () => {
       expect("requestId" in result).toBe(true)
       if ("requestId" in result) {
         expect(result.requestId).toBeTruthy()
-        expect(["PROCESSING", "AWAITING_INSTITUTION", "VERIFIED", "NOT_VERIFIED"]).toContain(result.status)
+        expect(["PROCESSING", "AWAITING_INSTITUTION", "VERIFIED", "NOT_VERIFIED"]).toContain(
+          result.status
+        )
         await prisma.verificationRequest.delete({ where: { id: result.requestId } }).catch(() => {})
       }
     })
@@ -477,7 +489,9 @@ describe("Employer Flow", () => {
     })
 
     it("cleans up the test credential", async () => {
-      await prisma.credential.deleteMany({ where: { nullifier: credentialNullifier } }).catch(() => {})
+      await prisma.credential
+        .deleteMany({ where: { nullifier: credentialNullifier } })
+        .catch(() => {})
     })
   })
 
@@ -540,7 +554,11 @@ describe("Admin Flow", () => {
     })
 
     it("deactivates an institution", async () => {
-      const result = await adminSvc.deactivateInstitution(institutionId, adminId, "Testing deactivation")
+      const result = await adminSvc.deactivateInstitution(
+        institutionId,
+        adminId,
+        "Testing deactivation"
+      )
       expect(result).not.toBeNull()
 
       const inst = await prisma.institution.findUnique({ where: { id: institutionId } })
@@ -707,7 +725,10 @@ describe("Payment Flow", () => {
 
   describe("Payment listing", () => {
     it("lists payments for an institution", async () => {
-      const result = await paymentSvc.listPayments({ payerId: institutionId, payerRole: "INSTITUTION" })
+      const result = await paymentSvc.listPayments({
+        payerId: institutionId,
+        payerRole: "INSTITUTION",
+      })
       expect(typeof result.total).toBe("number")
       expect(Array.isArray(result.items)).toBe(true)
     })
@@ -733,7 +754,10 @@ describe("Edge Cases & Error Handling", () => {
     })
 
     it("returns empty payment list for unknown payer", async () => {
-      const result = await paymentSvc.listPayments({ payerId: "unknown-payer", payerRole: "INSTITUTION" })
+      const result = await paymentSvc.listPayments({
+        payerId: "unknown-payer",
+        payerRole: "INSTITUTION",
+      })
       expect(result.total).toBe(0)
     })
 
@@ -760,7 +784,10 @@ describe("Edge Cases & Error Handling", () => {
       const mock = new BlockchainService()
       const result = await mock.verifyProof(
         [1n, 2n],
-        [[3n, 4n], [5n, 6n]],
+        [
+          [3n, 4n],
+          [5n, 6n],
+        ],
         [7n, 8n],
         [1n, 2n, 3n, 4n]
       )

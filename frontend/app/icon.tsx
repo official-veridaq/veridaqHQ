@@ -14,47 +14,43 @@ export default async function Icon() {
     const logoData = await fetch(logoUrl).then((res) => res.arrayBuffer())
 
     return new ImageResponse(
-      (
-        <div
-          style={{
-            width: "100%",
-            height: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "#05050a",
-            borderRadius: "6px",
-          }}
-        >
-          {/* @ts-expect-error - ImageResponse img type */}
-          <img src={logoData} width="28" height="28" alt="VERIDAQ" />
-        </div>
-      ),
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#05050a",
+          borderRadius: "6px",
+        }}
+      >
+        {/* @ts-expect-error - ImageResponse img type */}
+        <img src={logoData} width="28" height="28" alt="VERIDAQ" />
+      </div>,
       {
         ...size,
       }
     )
   } catch {
     return new ImageResponse(
-      (
-        <div
-          style={{
-            width: "100%",
-            height: "100%",
-            backgroundColor: "#05050a",
-            borderRadius: "6px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "#22d3ee",
-            fontSize: "18px",
-            fontWeight: "bold",
-            fontFamily: "system-ui",
-          }}
-        >
-          V
-        </div>
-      ),
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          backgroundColor: "#05050a",
+          borderRadius: "6px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: "#22d3ee",
+          fontSize: "18px",
+          fontWeight: "bold",
+          fontFamily: "system-ui",
+        }}
+      >
+        V
+      </div>,
       { ...size }
     )
   }

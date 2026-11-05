@@ -137,10 +137,7 @@ export const paymentRoutes: FastifyPluginAsync = async (app) => {
 
   app.post("/complete/crypto", async (req, rep) => {
     const body = completeCryptoSchema.parse(req.body)
-    const result = await paymentSvc.completeCryptoPayment(
-      body.referenceId,
-      body.txHash,
-    )
+    const result = await paymentSvc.completeCryptoPayment(body.referenceId, body.txHash)
     if ("error" in result) {
       if (result.error === "NOT_FOUND") return rep.code(404).send({ error: "Payment not found" })
       return rep.code(400).send({ error: result.error })

@@ -169,7 +169,7 @@ export class VerificationService {
       const locallyVerified = await this.proofSvc.verifyProofLocally(
         proof,
         publicSignals,
-        config.VERIFICATION_KEY_PATH,
+        config.VERIFICATION_KEY_PATH
       )
       if (!locallyVerified) {
         throw new Error("Local proof verification failed — proof is invalid or VK mismatch")

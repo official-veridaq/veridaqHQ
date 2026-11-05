@@ -61,7 +61,7 @@ export default function EmployersPage() {
       {loading ? (
         <div className="text-muted py-12 text-center text-sm">Loading…</div>
       ) : (
-        <div className="bg-surface-card border-surface-border group [perspective:500px] hover:[transform:rotateX(0.5deg)] rounded-xl border transition-all duration-500 overflow-x-auto">
+        <div className="bg-surface-card border-surface-border group overflow-x-auto rounded-xl border transition-all duration-500 [perspective:500px] hover:[transform:rotateX(0.5deg)]">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-surface-border border-b text-left">
@@ -76,24 +76,32 @@ export default function EmployersPage() {
             <tbody>
               {data?.items?.map((emp: any) => (
                 <tr key={emp.id} className="table-row">
-                  <td className="py-3 text-foreground">{emp.name}</td>
+                  <td className="text-foreground py-3">{emp.name}</td>
                   <td className="text-muted hidden py-3 md:table-cell">{emp.email}</td>
-                  <td className="text-muted hidden py-3 font-mono text-xs lg:table-cell">{emp.cacNumber}</td>
-                  <td className="py-3 text-foreground">{emp.freeVerificationsRemaining}</td>
+                  <td className="text-muted hidden py-3 font-mono text-xs lg:table-cell">
+                    {emp.cacNumber}
+                  </td>
+                  <td className="text-foreground py-3">{emp.freeVerificationsRemaining}</td>
                   <td className="py-3">
                     {!emp.active ? (
-                      <span className="inline-block rounded-full border border-red-500/20 bg-red-500/10 px-2.5 py-0.5 text-xs font-medium text-red-400">Deactivated</span>
+                      <span className="inline-block rounded-full border border-red-500/20 bg-red-500/10 px-2.5 py-0.5 text-xs font-medium text-red-400">
+                        Deactivated
+                      </span>
                     ) : emp.kycApproved ? (
-                      <span className="inline-block rounded-full border border-accent/20 bg-accent/10 px-2.5 py-0.5 text-xs font-medium text-accent">Approved</span>
+                      <span className="border-accent/20 bg-accent/10 text-accent inline-block rounded-full border px-2.5 py-0.5 text-xs font-medium">
+                        Approved
+                      </span>
                     ) : (
-                      <span className="inline-block rounded-full border border-orange-500/20 bg-orange-500/10 px-2.5 py-0.5 text-xs font-medium text-orange-400">Pending</span>
+                      <span className="inline-block rounded-full border border-orange-500/20 bg-orange-500/10 px-2.5 py-0.5 text-xs font-medium text-orange-400">
+                        Pending
+                      </span>
                     )}
                   </td>
                   <td className="py-3">
                     <div className="flex items-center space-x-3">
                       {!emp.kycApproved && emp.active && (
                         <button
-                          className="text-accent rounded bg-accent/10 px-2.5 py-1 text-xs font-medium transition-colors hover:bg-accent/20"
+                          className="text-accent bg-accent/10 hover:bg-accent/20 rounded px-2.5 py-1 text-xs font-medium transition-colors"
                           onClick={() => approve(emp.id)}
                         >
                           Approve
@@ -116,7 +124,7 @@ export default function EmployersPage() {
                         <input
                           type="text"
                           placeholder="Reason (min 10 chars)..."
-                          className="border-surface-border bg-void mb-3 w-full rounded border px-3 py-2 text-xs text-foreground transition-colors focus:border-red-400 focus:outline-none"
+                          className="border-surface-border bg-void text-foreground mb-3 w-full rounded border px-3 py-2 text-xs transition-colors focus:border-red-400 focus:outline-none"
                           value={deactivateReason}
                           onChange={(e) => setDeactivateReason(e.target.value)}
                         />
@@ -129,7 +137,7 @@ export default function EmployersPage() {
                           </button>
                           <button
                             onClick={() => setDeactivatingId(null)}
-                            className="text-muted rounded px-3 py-1.5 text-xs transition-colors hover:text-foreground"
+                            className="text-muted hover:text-foreground rounded px-3 py-1.5 text-xs transition-colors"
                           >
                             Cancel
                           </button>

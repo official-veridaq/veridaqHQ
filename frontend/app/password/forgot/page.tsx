@@ -21,12 +21,12 @@ export default function ForgotPasswordPage() {
     } catch (err: unknown) {
       const msg =
         typeof err === "object" && err !== null
-          ? ((err as Record<string, unknown>)["response"] as Record<string, unknown> | undefined)
-              ?.["data"] as Record<string, unknown> | undefined
+          ? ((
+              (err as Record<string, unknown>)["response"] as Record<string, unknown> | undefined
+            )?.["data"] as Record<string, unknown> | undefined)
           : null
       setError(
-        (typeof msg?.["error"] === "string" ? msg["error"] : null) ||
-          "Failed to process request"
+        (typeof msg?.["error"] === "string" ? msg["error"] : null) || "Failed to process request"
       )
     } finally {
       setLoading(false)
@@ -37,7 +37,7 @@ export default function ForgotPasswordPage() {
     return (
       <div className="bg-void flex min-h-screen flex-col items-center justify-center p-4">
         <div className="bg-surface-card border-surface-border animate-fade-in w-full max-w-md rounded-xl border p-8 text-center shadow-lg">
-          <h2 className="mb-4 text-2xl font-bold text-foreground">Check Your Email</h2>
+          <h2 className="text-foreground mb-4 text-2xl font-bold">Check Your Email</h2>
           <p className="text-muted mb-6 text-sm">
             If an account exists for that email, we have sent a reset link to it. The link will
             expire in 15 minutes.
@@ -53,7 +53,7 @@ export default function ForgotPasswordPage() {
   return (
     <div className="bg-void flex min-h-screen flex-col items-center justify-center p-4">
       <div className="bg-surface-card border-surface-border animate-fade-in w-full max-w-md rounded-xl border p-8 shadow-lg">
-        <h2 className="mb-2 text-2xl font-bold text-foreground">Reset Password</h2>
+        <h2 className="text-foreground mb-2 text-2xl font-bold">Reset Password</h2>
         <p className="text-muted mb-6 text-sm">
           Enter your email and select your portal to receive a reset link.
         </p>
@@ -64,11 +64,11 @@ export default function ForgotPasswordPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="mb-1 block text-sm font-medium text-foreground">Email Code</label>
+            <label className="text-foreground mb-1 block text-sm font-medium">Email Code</label>
             <input
               type="email"
               required
-              className="border-surface-border placeholder-muted focus:border-accent w-full rounded border bg-[#0a0a0f] p-2 text-foreground outline-none"
+              className="border-surface-border placeholder-muted focus:border-accent text-foreground w-full rounded border bg-[#0a0a0f] p-2 outline-none"
               placeholder="name@company.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -76,9 +76,9 @@ export default function ForgotPasswordPage() {
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-foreground">Portal</label>
+            <label className="text-foreground mb-1 block text-sm font-medium">Portal</label>
             <select
-              className="border-surface-border focus:border-accent w-full rounded border bg-[#0a0a0f] p-2 text-foreground outline-none"
+              className="border-surface-border focus:border-accent text-foreground w-full rounded border bg-[#0a0a0f] p-2 outline-none"
               value={role}
               onChange={(e) => setRole(e.target.value as "institution" | "employer" | "admin")}
             >
@@ -98,7 +98,7 @@ export default function ForgotPasswordPage() {
         </form>
 
         <div className="mt-6 text-center">
-          <Link href="/" className="text-muted text-xs transition hover:text-foreground">
+          <Link href="/" className="text-muted hover:text-foreground text-xs transition">
             &larr; Back to login selection
           </Link>
         </div>

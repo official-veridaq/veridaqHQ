@@ -53,14 +53,14 @@ export class PaymentService {
       },
     })
 
-    log.info({ referenceId, type: data.type, payerId: data.payerId, method: data.method }, "Payment created")
+    log.info(
+      { referenceId, type: data.type, payerId: data.payerId, method: data.method },
+      "Payment created"
+    )
     return payment
   }
 
-  async completeCryptoPayment(
-    referenceId: string,
-    txHash: string,
-  ) {
+  async completeCryptoPayment(referenceId: string, txHash: string) {
     const payment = await this.prisma.payment.findUnique({ where: { referenceId } })
     if (!payment) return { error: "NOT_FOUND" as const }
     if (payment.status !== "PENDING") return { error: "ALREADY_PROCESSED" as const }
@@ -154,7 +154,7 @@ export class PaymentService {
 
   private calculateCreditsForAmount(amountStr: string): number {
     const pack = CREDIT_PACKS.find(
-      (p) => p.amountXlm === amountStr || String(Number(p.amountXlm) / 100) === amountStr,
+      (p) => p.amountXlm === amountStr || String(Number(p.amountXlm) / 100) === amountStr
     )
     return pack?.credits ?? 10
   }

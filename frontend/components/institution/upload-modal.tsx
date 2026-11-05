@@ -101,7 +101,10 @@ function StepIndicator({ current }: { current: Step }) {
             <div className="flex w-full items-center">
               {i > 0 && (
                 <div
-                  className={["h-px flex-1 transition-colors", done ? "bg-accent" : "bg-surface-border"].join(" ")}
+                  className={[
+                    "h-px flex-1 transition-colors",
+                    done ? "bg-accent" : "bg-surface-border",
+                  ].join(" ")}
                 />
               )}
               <div
@@ -118,7 +121,10 @@ function StepIndicator({ current }: { current: Step }) {
               </div>
               {i < STEPS.length - 1 && (
                 <div
-                  className={["h-px flex-1 transition-colors", done ? "bg-accent" : "bg-surface-border"].join(" ")}
+                  className={[
+                    "h-px flex-1 transition-colors",
+                    done ? "bg-accent" : "bg-surface-border",
+                  ].join(" ")}
                 />
               )}
             </div>
@@ -140,15 +146,19 @@ function StepIndicator({ current }: { current: Step }) {
 function Spinner({ label }: { label?: string }) {
   return (
     <div className="flex flex-col items-center gap-3 py-12">
-      <Loader2 size={28} className="animate-spin text-accent" />
-      {label && (
-        <p className="font-mono text-xs uppercase tracking-widest text-muted">{label}</p>
-      )}
+      <Loader2 size={28} className="text-accent animate-spin" />
+      {label && <p className="text-muted font-mono text-xs uppercase tracking-widest">{label}</p>}
     </div>
   )
 }
 
-function Alert({ variant, children }: { variant: "error" | "warn" | "ok"; children: React.ReactNode }) {
+function Alert({
+  variant,
+  children,
+}: {
+  variant: "error" | "warn" | "ok"
+  children: React.ReactNode
+}) {
   const styles = {
     error: "border-error/20 bg-error/5 text-red-400",
     warn: "border-warning/20 bg-warning/5 text-yellow-400",
@@ -160,7 +170,11 @@ function Alert({ variant, children }: { variant: "error" | "warn" | "ok"; childr
     ok: <CheckCircle2 size={14} className="mt-0.5 shrink-0" />,
   }
   return (
-    <div className={["flex items-start gap-2 rounded-lg border p-3 text-sm", styles[variant]].join(" ")}>
+    <div
+      className={["flex items-start gap-2 rounded-lg border p-3 text-sm", styles[variant]].join(
+        " "
+      )}
+    >
       {icons[variant]}
       <div>{children}</div>
     </div>
@@ -195,7 +209,7 @@ export function UploadModal({ onDismiss, onSuccess }: UploadModalProps) {
 
   const needsTopUp = Boolean(
     validation?.simulation &&
-      (!validation.simulation.hasEnoughFunds || !validation.simulation.hasEnoughEntryPointDeposit)
+    (!validation.simulation.hasEnoughFunds || !validation.simulation.hasEnoughEntryPointDeposit)
   )
 
   const onDrop = useCallback((accepted: File[]) => {
@@ -365,13 +379,13 @@ export function UploadModal({ onDismiss, onSuccess }: UploadModalProps) {
         {/* Header */}
         <div className="border-surface-border flex shrink-0 items-center justify-between border-b px-6 py-4">
           <div>
-            <h2 className="text-base font-semibold text-foreground">Batch Upload</h2>
-            <p className="mt-0.5 text-xs text-muted">Commit student credentials to Stellar</p>
+            <h2 className="text-foreground text-base font-semibold">Batch Upload</h2>
+            <p className="text-muted mt-0.5 text-xs">Commit student credentials to Stellar</p>
           </div>
           <button
             onClick={handleDismiss}
             disabled={busy}
-            className="text-muted transition-colors hover:text-foreground disabled:opacity-30"
+            className="text-muted hover:text-foreground transition-colors disabled:opacity-30"
             aria-label="Close"
           >
             <X size={20} />
@@ -389,20 +403,20 @@ export function UploadModal({ onDismiss, onSuccess }: UploadModalProps) {
                 <FileUp size={24} className="text-muted" />
               </div>
               <div>
-                <h3 className="font-medium text-foreground">Download the required template</h3>
+                <h3 className="text-foreground font-medium">Download the required template</h3>
                 <p className="text-muted mx-auto mt-2 max-w-sm text-sm">
                   Use the official Excel template. Do not modify column headers or sheet names.
                 </p>
               </div>
               <button
                 onClick={downloadTemplate}
-                className="border-surface-border flex items-center gap-2 rounded-lg border px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:border-white/30"
+                className="border-surface-border text-foreground flex items-center gap-2 rounded-lg border px-5 py-2.5 text-sm font-medium transition-colors hover:border-white/30"
               >
                 <Download size={16} /> Download Template
               </button>
               <button
                 onClick={() => setStep("UPLOAD")}
-                className="bg-accent w-full max-w-xs rounded-lg py-2.5 text-sm font-semibold text-void transition-opacity hover:opacity-90"
+                className="bg-accent text-void w-full max-w-xs rounded-lg py-2.5 text-sm font-semibold transition-opacity hover:opacity-90"
               >
                 I have the template — Continue
               </button>
@@ -422,17 +436,14 @@ export function UploadModal({ onDismiss, onSuccess }: UploadModalProps) {
                 ].join(" ")}
               >
                 <input {...getInputProps()} />
-                <Upload
-                  size={32}
-                  className={isDragActive ? "text-accent" : "text-muted"}
-                />
+                <Upload size={32} className={isDragActive ? "text-accent" : "text-muted"} />
                 <div className="text-center">
-                  <p className="text-sm font-medium text-foreground">
+                  <p className="text-foreground text-sm font-medium">
                     {isDragActive
                       ? "Drop the file here"
                       : "Drag & drop an .xlsx file, or click to select"}
                   </p>
-                  <p className="mt-1 text-xs text-muted">Max 10 MB · .xlsx only</p>
+                  <p className="text-muted mt-1 text-xs">Max 10 MB · .xlsx only</p>
                 </div>
               </div>
 
@@ -441,12 +452,10 @@ export function UploadModal({ onDismiss, onSuccess }: UploadModalProps) {
               {file && (
                 <div className="border-surface-border flex items-center justify-between rounded-lg border p-3">
                   <div className="flex items-center gap-3">
-                    <FileUp size={18} className="shrink-0 text-accent" />
+                    <FileUp size={18} className="text-accent shrink-0" />
                     <div>
-                      <p className="text-sm font-medium text-foreground">{file.name}</p>
-                      <p className="text-xs text-muted">
-                        {(file.size / 1024).toFixed(1)} KB
-                      </p>
+                      <p className="text-foreground text-sm font-medium">{file.name}</p>
+                      <p className="text-muted text-xs">{(file.size / 1024).toFixed(1)} KB</p>
                     </div>
                   </div>
                   <button
@@ -464,14 +473,14 @@ export function UploadModal({ onDismiss, onSuccess }: UploadModalProps) {
               <div className="flex justify-end gap-3 pt-2">
                 <button
                   onClick={() => setStep("TEMPLATE")}
-                  className="border-surface-border rounded-lg border px-4 py-2 text-sm text-foreground transition-colors hover:bg-surface"
+                  className="border-surface-border text-foreground hover:bg-surface rounded-lg border px-4 py-2 text-sm transition-colors"
                 >
                   Back
                 </button>
                 <button
                   onClick={validateFile}
                   disabled={!file || !!fileError}
-                  className="bg-accent rounded-lg px-4 py-2 text-sm font-semibold text-void transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+                  className="bg-accent text-void rounded-lg px-4 py-2 text-sm font-semibold transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   Validate File
                 </button>
@@ -488,7 +497,7 @@ export function UploadModal({ onDismiss, onSuccess }: UploadModalProps) {
                 <div className="flex flex-col gap-4">
                   <Alert variant="ok">
                     <span className="font-medium">Validation passed</span>
-                    <span className="ml-2 text-xs text-muted">
+                    <span className="text-muted ml-2 text-xs">
                       {validation.totalRecords} valid records
                     </span>
                   </Alert>
@@ -496,10 +505,7 @@ export function UploadModal({ onDismiss, onSuccess }: UploadModalProps) {
                   <div className="border-surface-border grid grid-cols-2 gap-px overflow-hidden rounded-lg border">
                     {[
                       ["Records", String(validation.totalRecords)],
-                      [
-                        "Gas",
-                        validation.gasSponsored ? "Sponsored" : "Institution funded",
-                      ],
+                      ["Gas", validation.gasSponsored ? "Sponsored" : "Institution funded"],
                       ...(validation.simulation
                         ? [
                             [
@@ -512,8 +518,7 @@ export function UploadModal({ onDismiss, onSuccess }: UploadModalProps) {
                             ],
                             [
                               "Available",
-                              Number(validation.simulation.availableFundsXlm).toFixed(6) +
-                                " XLM",
+                              Number(validation.simulation.availableFundsXlm).toFixed(6) + " XLM",
                             ],
                             [
                               "EntryPoint",
@@ -524,8 +529,8 @@ export function UploadModal({ onDismiss, onSuccess }: UploadModalProps) {
                         : []),
                     ].map(([label, value]) => (
                       <div key={label} className="bg-surface-card px-4 py-3">
-                        <p className="text-xs text-muted">{label}</p>
-                        <p className="mt-0.5 text-sm font-medium text-foreground">{value}</p>
+                        <p className="text-muted text-xs">{label}</p>
+                        <p className="text-foreground mt-0.5 text-sm font-medium">{value}</p>
                       </div>
                     ))}
                   </div>
@@ -534,8 +539,8 @@ export function UploadModal({ onDismiss, onSuccess }: UploadModalProps) {
                     <Alert variant="error">
                       <p className="font-medium">Insufficient funds for this batch</p>
                       <p className="mt-1 text-xs">
-                        Shortfall:{" "}
-                        {Number(validation.simulation.fundingShortfallXlm).toFixed(6)} XLM.
+                        Shortfall: {Number(validation.simulation.fundingShortfallXlm).toFixed(6)}{" "}
+                        XLM.
                         {!validation.simulation.hasEnoughFunds
                           ? " Top up the sponsored pool or institution balance."
                           : " Top up the EntryPoint deposit."}
@@ -545,18 +550,15 @@ export function UploadModal({ onDismiss, onSuccess }: UploadModalProps) {
 
                   {validation.simulation?.needsInit && (
                     <div className="border-surface-border rounded-lg border p-4">
-                      <p className="text-xs text-muted">
-                        First batch requires AA account deployment. Predeploying reduces gas
-                        cost.
+                      <p className="text-muted text-xs">
+                        First batch requires AA account deployment. Predeploying reduces gas cost.
                       </p>
                       <button
                         onClick={predeployAccount}
                         disabled={predeploying}
-                        className="mt-3 rounded-lg border border-warning/30 px-3 py-1.5 text-xs text-yellow-400 transition-colors hover:bg-warning/10 disabled:opacity-50"
+                        className="border-warning/30 hover:bg-warning/10 mt-3 rounded-lg border px-3 py-1.5 text-xs text-yellow-400 transition-colors disabled:opacity-50"
                       >
-                        {predeploying && (
-                          <Loader2 size={12} className="mr-1 inline animate-spin" />
-                        )}
+                        {predeploying && <Loader2 size={12} className="mr-1 inline animate-spin" />}
                         {predeploying ? "Deploying..." : "Predeploy Account"}
                       </button>
                       {predeployMsg && (
@@ -566,7 +568,7 @@ export function UploadModal({ onDismiss, onSuccess }: UploadModalProps) {
                   )}
 
                   {validation.simulationError && (
-                    <p className="text-xs text-muted">
+                    <p className="text-muted text-xs">
                       Simulation note: {validation.simulationError}
                     </p>
                   )}
@@ -574,14 +576,14 @@ export function UploadModal({ onDismiss, onSuccess }: UploadModalProps) {
                   <div className="flex justify-end gap-3 pt-2">
                     <button
                       onClick={() => setStep("UPLOAD")}
-                      className="border-surface-border rounded-lg border px-4 py-2 text-sm text-foreground transition-colors hover:bg-surface"
+                      className="border-surface-border text-foreground hover:bg-surface rounded-lg border px-4 py-2 text-sm transition-colors"
                     >
                       Re-upload
                     </button>
                     <button
                       onClick={() => setStep("CONFIRM")}
                       disabled={needsTopUp}
-                      className="bg-accent rounded-lg px-4 py-2 text-sm font-semibold text-void transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+                      className="bg-accent text-void rounded-lg px-4 py-2 text-sm font-semibold transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
                     >
                       Proceed
                     </button>
@@ -590,21 +592,21 @@ export function UploadModal({ onDismiss, onSuccess }: UploadModalProps) {
               ) : (
                 <div className="flex flex-col gap-4">
                   <Alert variant="error">
-                    <span className="font-medium">Validation failed</span> — fix the errors
-                    below and re-upload.
+                    <span className="font-medium">Validation failed</span> — fix the errors below
+                    and re-upload.
                   </Alert>
                   <div className="border-surface-border max-h-56 overflow-y-auto rounded-lg border">
                     <table className="w-full text-left text-xs">
-                      <thead className="border-surface-border sticky top-0 border-b bg-surface-card">
+                      <thead className="border-surface-border bg-surface-card sticky top-0 border-b">
                         <tr>
-                          <th className="px-3 py-2 font-medium text-muted">Row</th>
-                          <th className="px-3 py-2 font-medium text-muted">Error</th>
+                          <th className="text-muted px-3 py-2 font-medium">Row</th>
+                          <th className="text-muted px-3 py-2 font-medium">Error</th>
                         </tr>
                       </thead>
                       <tbody>
                         {validation?.errors?.map((e, i) => (
                           <tr key={i} className="border-surface-border/40 border-b">
-                            <td className="px-3 py-2 text-muted">{e.row || "—"}</td>
+                            <td className="text-muted px-3 py-2">{e.row || "—"}</td>
                             <td className="px-3 py-2 text-red-400">{e.error}</td>
                           </tr>
                         ))}
@@ -614,7 +616,7 @@ export function UploadModal({ onDismiss, onSuccess }: UploadModalProps) {
                   <div className="flex justify-end">
                     <button
                       onClick={() => setStep("UPLOAD")}
-                      className="border-surface-border rounded-lg border px-4 py-2 text-sm text-foreground transition-colors hover:bg-surface"
+                      className="border-surface-border text-foreground hover:bg-surface rounded-lg border px-4 py-2 text-sm transition-colors"
                     >
                       Return to Upload
                     </button>
@@ -636,15 +638,15 @@ export function UploadModal({ onDismiss, onSuccess }: UploadModalProps) {
               </Alert>
 
               <div className="border-surface-border rounded-lg border p-4">
-                <label className="mb-2 block text-xs font-medium uppercase tracking-wider text-muted">
+                <label className="text-muted mb-2 block text-xs font-medium uppercase tracking-wider">
                   Type your institution name to confirm
                 </label>
-                <p className="mb-3 font-mono text-xs text-muted">{institutionName}</p>
+                <p className="text-muted mb-3 font-mono text-xs">{institutionName}</p>
                 <input
                   type="text"
                   value={confirmName}
                   onChange={(e) => setConfirmName(e.target.value)}
-                  className="border-surface-border bg-void focus:border-accent w-full rounded-lg border px-3 py-2.5 text-sm text-foreground outline-none transition-colors"
+                  className="border-surface-border bg-void focus:border-accent text-foreground w-full rounded-lg border px-3 py-2.5 text-sm outline-none transition-colors"
                   placeholder={institutionName}
                   autoComplete="off"
                   spellCheck={false}
@@ -654,14 +656,14 @@ export function UploadModal({ onDismiss, onSuccess }: UploadModalProps) {
               <div className="flex items-center justify-between pt-2">
                 <button
                   onClick={() => setStep("VALIDATE")}
-                  className="border-surface-border rounded-lg border px-4 py-2 text-sm text-foreground transition-colors hover:bg-surface"
+                  className="border-surface-border text-foreground hover:bg-surface rounded-lg border px-4 py-2 text-sm transition-colors"
                 >
                   Back
                 </button>
                 <button
                   onClick={confirmUpload}
                   disabled={confirmName !== institutionName || busy}
-                  className="rounded-lg bg-red-600 px-5 py-2.5 text-sm font-semibold text-foreground transition-opacity hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-40"
+                  className="text-foreground rounded-lg bg-red-600 px-5 py-2.5 text-sm font-semibold transition-opacity hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   Confirm & Publish On-Chain
                 </button>
@@ -674,13 +676,13 @@ export function UploadModal({ onDismiss, onSuccess }: UploadModalProps) {
             <div className="flex flex-col items-center gap-6 py-10 text-center">
               <Spinner label="Processing" />
               <div>
-                <h3 className="font-medium text-foreground">Submitting to blockchain</h3>
-                <p className="mt-1 text-sm text-muted">
+                <h3 className="text-foreground font-medium">Submitting to blockchain</h3>
+                <p className="text-muted mt-1 text-sm">
                   Status: {pollData?.status ?? "SUBMITTING"}
                 </p>
-                <p className="mt-1 text-xs text-muted">Do not close this window.</p>
+                <p className="text-muted mt-1 text-xs">Do not close this window.</p>
                 {pollData?.txHash && (
-                  <p className="mt-2 font-mono text-xs text-muted">
+                  <p className="text-muted mt-2 font-mono text-xs">
                     Tx: {pollData.txHash.slice(0, 18)}…
                   </p>
                 )}
@@ -692,20 +694,20 @@ export function UploadModal({ onDismiss, onSuccess }: UploadModalProps) {
           {step === "COMPLETE" && (
             <div className="flex flex-col items-center gap-6 py-8 text-center">
               {pollData?.status === "FAILED" ? (
-                <div className="flex h-16 w-16 items-center justify-center rounded-full border border-error/30 bg-error/10">
+                <div className="border-error/30 bg-error/10 flex h-16 w-16 items-center justify-center rounded-full border">
                   <AlertCircle size={32} className="text-red-400" />
                 </div>
               ) : (
-                <div className="flex h-16 w-16 items-center justify-center rounded-full border border-success/30 bg-success/10">
+                <div className="border-success/30 bg-success/10 flex h-16 w-16 items-center justify-center rounded-full border">
                   <CheckCircle2 size={32} className="text-green-400" />
                 </div>
               )}
 
               <div>
-                <h3 className="text-xl font-semibold text-foreground">
+                <h3 className="text-foreground text-xl font-semibold">
                   {pollData?.status === "FAILED" ? "Batch Failed" : "Batch Confirmed"}
                 </h3>
-                <p className="mt-1 text-sm text-muted">
+                <p className="text-muted mt-1 text-sm">
                   {pollData?.status === "FAILED"
                     ? "The transaction did not complete. Review the details below."
                     : "Credentials are sealed on-chain."}
@@ -724,18 +726,19 @@ export function UploadModal({ onDismiss, onSuccess }: UploadModalProps) {
 
               {pollData?.status === "FAILED" && pollData.errorReport?.length ? (
                 <div className="border-surface-border w-full max-w-lg rounded-lg border p-4 text-left">
-                  <p className="mb-3 text-xs font-medium uppercase tracking-wider text-muted">
+                  <p className="text-muted mb-3 text-xs font-medium uppercase tracking-wider">
                     Error Details
                   </p>
                   <div className="space-y-2">
                     {pollData.errorReport.map((e, i) => (
-                      <div key={i} className="border-surface-border/40 border-b pb-2 text-xs last:border-0">
+                      <div
+                        key={i}
+                        className="border-surface-border/40 border-b pb-2 text-xs last:border-0"
+                      >
                         <p className="text-red-400">{e.error ?? "Unknown error"}</p>
-                        {e.txRef && <p className="mt-0.5 text-muted">Ref: {e.txRef}</p>}
+                        {e.txRef && <p className="text-muted mt-0.5">Ref: {e.txRef}</p>}
                         {e.userOpHash && (
-                          <p className="mt-0.5 text-muted">
-                            UserOp: {e.userOpHash.slice(0, 18)}…
-                          </p>
+                          <p className="text-muted mt-0.5">UserOp: {e.userOpHash.slice(0, 18)}…</p>
                         )}
                         {e.fundingShortfallXlm && e.fundingShortfallXlm !== "0" && (
                           <p className="mt-0.5 text-red-400">
@@ -743,23 +746,27 @@ export function UploadModal({ onDismiss, onSuccess }: UploadModalProps) {
                           </p>
                         )}
                         {typeof e.hasEnoughFunds === "boolean" && (
-                          <p className="mt-0.5 text-muted">
+                          <p className="text-muted mt-0.5">
                             Funds: {e.hasEnoughFunds ? "OK" : "Insufficient"}
                           </p>
                         )}
                         {e.callGasLimit && (
-                          <p className="mt-0.5 text-muted">CallGas: {e.callGasLimit}</p>
+                          <p className="text-muted mt-0.5">CallGas: {e.callGasLimit}</p>
                         )}
                         {e.verificationGasLimit && (
-                          <p className="mt-0.5 text-muted">VerifGas: {e.verificationGasLimit}</p>
+                          <p className="text-muted mt-0.5">VerifGas: {e.verificationGasLimit}</p>
                         )}
                         {e.preVerificationGas && (
-                          <p className="mt-0.5 text-muted">PreVerifGas: {e.preVerificationGas}</p>
+                          <p className="text-muted mt-0.5">PreVerifGas: {e.preVerificationGas}</p>
                         )}
                         {e.bundlerResponse && (
                           <details className="mt-1">
-                            <summary className="text-muted cursor-pointer hover:text-foreground">Bundler response</summary>
-                            <pre className="text-muted mt-1 max-h-24 overflow-auto whitespace-pre-wrap rounded border border-surface-border/30 bg-void/50 p-2 font-mono text-[10px]">{e.bundlerResponse}</pre>
+                            <summary className="text-muted hover:text-foreground cursor-pointer">
+                              Bundler response
+                            </summary>
+                            <pre className="text-muted border-surface-border/30 bg-void/50 mt-1 max-h-24 overflow-auto whitespace-pre-wrap rounded border p-2 font-mono text-[10px]">
+                              {e.bundlerResponse}
+                            </pre>
                           </details>
                         )}
                       </div>
@@ -770,7 +777,7 @@ export function UploadModal({ onDismiss, onSuccess }: UploadModalProps) {
 
               <button
                 onClick={handleDismiss}
-                className="bg-accent mt-2 rounded-lg px-8 py-2.5 text-sm font-semibold text-void transition-opacity hover:opacity-90"
+                className="bg-accent text-void mt-2 rounded-lg px-8 py-2.5 text-sm font-semibold transition-opacity hover:opacity-90"
               >
                 Close
               </button>

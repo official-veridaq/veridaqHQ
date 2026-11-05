@@ -37,7 +37,7 @@ export function AdminLayout({ children, title }: { children: React.ReactNode; ti
 
   if (loading || !user) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-6 bg-void text-sm tracking-widest text-muted">
+      <div className="bg-void text-muted flex min-h-screen flex-col items-center justify-center gap-6 text-sm tracking-widest">
         <OrbitalLoader label="VERIFYING" />
         <span className="animate-pulse">Verifying session...</span>
       </div>
@@ -45,7 +45,7 @@ export function AdminLayout({ children, title }: { children: React.ReactNode; ti
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-void">
+    <div className="bg-void flex min-h-screen flex-col">
       <PortalBg />
       <header className="border-surface-border bg-void/80 sticky top-0 z-40 border-b backdrop-blur-xl">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 md:px-6">
@@ -58,7 +58,7 @@ export function AdminLayout({ children, title }: { children: React.ReactNode; ti
             </button>
             <Link href="/" className="flex items-center gap-2">
               <LogoMark className="h-5 w-5" />
-              <span className="text-xs font-bold tracking-widest text-accent">
+              <span className="text-accent text-xs font-bold tracking-widest">
                 VERIDAQ <span className="text-muted">admin</span>
               </span>
             </Link>
@@ -82,17 +82,17 @@ export function AdminLayout({ children, title }: { children: React.ReactNode; ti
           <div className="flex items-center gap-3">
             <ThemeToggle />
             <div className="hidden items-center gap-2 sm:flex">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-warning/10">
-                <Shield className="h-3.5 w-3.5 text-warning" />
+              <div className="bg-warning/10 flex h-7 w-7 items-center justify-center rounded-lg">
+                <Shield className="text-warning h-3.5 w-3.5" />
               </div>
               <div className="text-right">
-                <div className="text-xs font-medium text-foreground">{user.name}</div>
-                <div className="text-[10px] text-muted">{user.role}</div>
+                <div className="text-foreground text-xs font-medium">{user.name}</div>
+                <div className="text-muted text-[10px]">{user.role}</div>
               </div>
             </div>
             <button
               onClick={handleLogout}
-              className="text-muted hover:text-error flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors hover:bg-error/5"
+              className="text-muted hover:text-error hover:bg-error/5 flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors"
             >
               <LogOut className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">Sign out</span>
@@ -101,7 +101,7 @@ export function AdminLayout({ children, title }: { children: React.ReactNode; ti
         </div>
 
         {isMenuOpen && (
-          <div className="bg-surface-card border-surface-border animate-slide-down absolute left-0 right-0 top-14 z-30 border-b shadow-elevated lg:hidden">
+          <div className="bg-surface-card border-surface-border animate-slide-down shadow-elevated absolute left-0 right-0 top-14 z-30 border-b lg:hidden">
             <div className="flex flex-col gap-1 p-3">
               {nav.map(({ href, label }) => (
                 <Link
@@ -123,7 +123,7 @@ export function AdminLayout({ children, title }: { children: React.ReactNode; ti
                   setIsMenuOpen(false)
                   handleLogout()
                 }}
-                className="text-muted hover:text-error flex items-center gap-2 rounded-lg px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-error/5"
+                className="text-muted hover:text-error hover:bg-error/5 flex items-center gap-2 rounded-lg px-4 py-2.5 text-left text-sm font-medium transition-colors"
               >
                 <LogOut className="h-3.5 w-3.5" />
                 Sign out
@@ -133,9 +133,11 @@ export function AdminLayout({ children, title }: { children: React.ReactNode; ti
         )}
       </header>
 
-      <div className="border-surface-border border-b bg-surface/30">
-        <div className="mx-auto flex max-w-6xl items-center gap-2 px-4 py-2.5 text-xs text-muted md:px-6">
-          <Link href="/" className="hover:text-foreground transition-colors">Home</Link>
+      <div className="border-surface-border bg-surface/30 border-b">
+        <div className="text-muted mx-auto flex max-w-6xl items-center gap-2 px-4 py-2.5 text-xs md:px-6">
+          <Link href="/" className="hover:text-foreground transition-colors">
+            Home
+          </Link>
           <ChevronRight className="h-3 w-3" />
           <span className="text-foreground">Admin</span>
           <ChevronRight className="h-3 w-3" />
@@ -145,7 +147,9 @@ export function AdminLayout({ children, title }: { children: React.ReactNode; ti
 
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 md:px-6">
         <ScrollReveal direction="up" delay={0} once={true} amount={0.05}>
-          <h1 className="mb-6 font-display text-xl font-semibold tracking-wide text-foreground">{title}</h1>
+          <h1 className="font-display text-foreground mb-6 text-xl font-semibold tracking-wide">
+            {title}
+          </h1>
           {children}
         </ScrollReveal>
       </main>

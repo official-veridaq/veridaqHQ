@@ -35,14 +35,27 @@ const envSchema = z.object({
   CREDENTIAL_REGISTRY_ID: z.string().optional(),
   REVOCATION_REGISTRY_ID: z.string().optional(),
   ZK_VERIFIER_ID: z.string().optional(),
-  VK_HASH: z.string().regex(/^[0-9a-fA-F]{64}$/, "VK_HASH must be 64 hex chars").default("af5344e4fd29508aecb2e8e04569dba315866142a350394408aa026e760c694a"),
+  VK_HASH: z
+    .string()
+    .regex(/^[0-9a-fA-F]{64}$/, "VK_HASH must be 64 hex chars")
+    .default("af5344e4fd29508aecb2e8e04569dba315866142a350394408aa026e760c694a"),
 
   PLATFORM_ADMIN_SECRET_KEY: z.string().min(56).optional(),
   PLATFORM_ADMIN_PUBLIC_KEY: z.string().optional(),
 
-  CIRCUIT_ZKEY_PATH: z.string().min(1).transform(p => resolve(ROOT, p)),
-  CIRCUIT_WASM_PATH: z.string().min(1).transform(p => resolve(ROOT, p)),
-  VERIFICATION_KEY_PATH: z.string().min(1).default("packages/circuits/build/verification_key.json").transform(p => resolve(ROOT, p)),
+  CIRCUIT_ZKEY_PATH: z
+    .string()
+    .min(1)
+    .transform((p) => resolve(ROOT, p)),
+  CIRCUIT_WASM_PATH: z
+    .string()
+    .min(1)
+    .transform((p) => resolve(ROOT, p)),
+  VERIFICATION_KEY_PATH: z
+    .string()
+    .min(1)
+    .default("packages/circuits/build/verification_key.json")
+    .transform((p) => resolve(ROOT, p)),
 
   // Must be exactly 64 hex characters (32 bytes)
   ENCRYPTION_KEY: z.string().regex(/^[0-9a-fA-F]{64}$/, "ENCRYPTION_KEY must be 64 hex chars"),

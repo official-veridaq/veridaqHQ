@@ -66,7 +66,10 @@ export const crossmintRoutes: FastifyPluginAsync = async (app) => {
       return rep.code(400).send({ error: "Invalid webhook payload" })
     }
 
-    app.log.info({ eventType: event.type, status: event.status, orderId: event.orderId }, "Crossmint webhook received")
+    app.log.info(
+      { eventType: event.type, status: event.status, orderId: event.orderId },
+      "Crossmint webhook received"
+    )
 
     if (event.type === "order:completed" && event.status === "success") {
       const amountFiat = event.payment?.total ?? "0"
@@ -78,15 +81,21 @@ export const crossmintRoutes: FastifyPluginAsync = async (app) => {
         "crossmint",
         event.orderId,
         amountFiat,
-        fiatCurrency,
+        fiatCurrency
       )
 
       if ("error" in result) {
-        app.log.error({ error: result.error, orderId: event.orderId }, "Crossmint webhook: payment completion failed")
+        app.log.error(
+          { error: result.error, orderId: event.orderId },
+          "Crossmint webhook: payment completion failed"
+        )
         return rep.code(200).send({ received: true, status: "error", detail: result.error })
       }
 
-      app.log.info({ orderId: event.orderId, amountFiat, recipientAddress }, "Crossmint payment completed")
+      app.log.info(
+        { orderId: event.orderId, amountFiat, recipientAddress },
+        "Crossmint payment completed"
+      )
     }
 
     return rep.code(200).send({ received: true })

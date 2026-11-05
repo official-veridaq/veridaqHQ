@@ -6,9 +6,8 @@ const ext = typeof chrome !== "undefined" ? chrome : browser
 
 async function getRefreshTokenCookie() {
   return new Promise((resolve) => {
-    ext.cookies.get(
-      { url: VERIDAQ_CONFIG.BACKEND_URL, name: "refreshToken" },
-      (cookie) => resolve(cookie ? cookie.value : null)
+    ext.cookies.get({ url: VERIDAQ_CONFIG.BACKEND_URL, name: "refreshToken" }, (cookie) =>
+      resolve(cookie ? cookie.value : null)
     )
   })
 }
@@ -109,10 +108,14 @@ async function apiFetch(path, options) {
 function getPortalUrl(role) {
   const base = VERIDAQ_CONFIG.WEB_URL
   switch (role) {
-    case "INSTITUTION": return base + "/institution/dashboard"
-    case "EMPLOYER": return base + "/employer/dashboard"
-    case "ADMIN": return base + "/admin/dashboard"
-    default: return base
+    case "INSTITUTION":
+      return base + "/institution/dashboard"
+    case "EMPLOYER":
+      return base + "/employer/dashboard"
+    case "ADMIN":
+      return base + "/admin/dashboard"
+    default:
+      return base
   }
 }
 

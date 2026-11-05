@@ -30,10 +30,10 @@ function main() {
   const vkJson = JSON.parse(readFileSync(vkPath, "utf8"))
 
   const alpha = g1Hex(vkJson.vk_alpha_1[0], vkJson.vk_alpha_1[1])
-  const beta  = g2Hex(vkJson.vk_beta_2)
+  const beta = g2Hex(vkJson.vk_beta_2)
   const gamma = g2Hex(vkJson.vk_gamma_2)
   const delta = g2Hex(vkJson.vk_delta_2)
-  const ic    = vkJson.IC.map((p: string[]) => g1Hex(p[0], p[1]))
+  const ic = vkJson.IC.map((p: string[]) => g1Hex(p[0], p[1]))
 
   // Compute VK hash: keccak256 of the file contents
   const vkJsonStr = readFileSync(vkPath, "utf8")

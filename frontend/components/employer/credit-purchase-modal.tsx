@@ -21,7 +21,7 @@ type CreditPurchaseModalProps = {
 
 export function CreditPurchaseModal({ open, onClose, onSuccess }: CreditPurchaseModalProps) {
   const [step, setStep] = useState<"choose" | "crypto" | "fiat" | "success" | "error">("choose")
-  const [selectedPack, setSelectedPack] = useState<typeof CREDIT_PACKS[number] | null>(null)
+  const [selectedPack, setSelectedPack] = useState<(typeof CREDIT_PACKS)[number] | null>(null)
   const [paymentRef, setPaymentRef] = useState<string | null>(null)
   const [txHash, setTxHash] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
@@ -97,11 +97,13 @@ export function CreditPurchaseModal({ open, onClose, onSuccess }: CreditPurchase
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
       <div className="bg-surface-card border-surface-border mx-4 w-full max-w-md rounded-xl border p-6 shadow-2xl">
         <div className="mb-6 flex items-center justify-between">
-          <h2 className="flex items-center gap-2 text-lg font-semibold text-foreground">
-            <Sparkles className="h-5 w-5 text-accent" />
+          <h2 className="text-foreground flex items-center gap-2 text-lg font-semibold">
+            <Sparkles className="text-accent h-5 w-5" />
             Buy Verification Credits
           </h2>
-          <button onClick={onClose} className="text-muted hover:text-foreground transition-colors">&times;</button>
+          <button onClick={onClose} className="text-muted hover:text-foreground transition-colors">
+            &times;
+          </button>
         </div>
 
         {step === "choose" && (
@@ -114,18 +116,23 @@ export function CreditPurchaseModal({ open, onClose, onSuccess }: CreditPurchase
               {CREDIT_PACKS.map((pack) => (
                 <button
                   key={pack.credits}
-                  onClick={() => { setSelectedPack(pack); setStep("choose") }}
+                  onClick={() => {
+                    setSelectedPack(pack)
+                    setStep("choose")
+                  }}
                   className={`border-surface-border hover:border-accent/50 flex w-full items-center justify-between rounded-lg border p-4 text-left transition-colors ${
                     selectedPack?.credits === pack.credits ? "border-accent bg-accent/5" : ""
                   }`}
                 >
                   <div>
-                    <p className="font-medium text-foreground">{pack.label}</p>
+                    <p className="text-foreground font-medium">{pack.label}</p>
                     <p className="text-muted text-xs">${pack.usd} USD</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm text-muted">{pack.xlm} XLM</p>
-                    <p className="text-accent text-xs">${(pack.usd / pack.credits).toFixed(2)}/credit</p>
+                    <p className="text-muted text-sm">{pack.xlm} XLM</p>
+                    <p className="text-accent text-xs">
+                      ${(pack.usd / pack.credits).toFixed(2)}/credit
+                    </p>
                   </div>
                 </button>
               ))}
@@ -134,12 +141,15 @@ export function CreditPurchaseModal({ open, onClose, onSuccess }: CreditPurchase
             {selectedPack && (
               <div className="space-y-3 pt-2">
                 {isConnected && publicKey && (
-                  <div className="bg-void border-surface-border flex items-center gap-2 rounded-lg border px-3 py-2 text-xs text-muted">
+                  <div className="bg-void border-surface-border text-muted flex items-center gap-2 rounded-lg border px-3 py-2 text-xs">
                     <Wallet className="h-3 w-3 shrink-0" />
                     <span className="truncate font-mono">{publicKey}</span>
                     <button
-                      onClick={() => { navigator.clipboard.writeText(publicKey); toast.success("Address copied") }}
-                      className="ml-auto shrink-0 hover:text-foreground transition-colors"
+                      onClick={() => {
+                        navigator.clipboard.writeText(publicKey)
+                        toast.success("Address copied")
+                      }}
+                      className="hover:text-foreground ml-auto shrink-0 transition-colors"
                     >
                       <Copy className="h-3 w-3" />
                     </button>
@@ -152,11 +162,15 @@ export function CreditPurchaseModal({ open, onClose, onSuccess }: CreditPurchase
                   className="bg-accent text-void hover:bg-accent/90 flex w-full items-center justify-center gap-2 rounded px-4 py-3 font-medium transition-colors disabled:opacity-50"
                 >
                   <Wallet className="h-4 w-4" />
-                  {isConnected ? `Pay with Crypto (${selectedPack.xlm} XLM)` : "Connect Wallet to Pay"}
+                  {isConnected
+                    ? `Pay with Crypto (${selectedPack.xlm} XLM)`
+                    : "Connect Wallet to Pay"}
                 </button>
 
                 <div className="relative">
-                  <div className="border-surface-border absolute inset-0 flex items-center"><div className="w-full border-t" /></div>
+                  <div className="border-surface-border absolute inset-0 flex items-center">
+                    <div className="w-full border-t" />
+                  </div>
                   <div className="relative flex justify-center text-xs">
                     <span className="bg-surface-card text-muted px-2">or</span>
                   </div>
@@ -177,14 +191,14 @@ export function CreditPurchaseModal({ open, onClose, onSuccess }: CreditPurchase
         {step === "crypto" && (
           <div className="space-y-4">
             {publicKey && (
-              <div className="bg-void border-surface-border flex items-center gap-2 rounded-lg border px-3 py-2 text-xs text-muted">
+              <div className="bg-void border-surface-border text-muted flex items-center gap-2 rounded-lg border px-3 py-2 text-xs">
                 <Wallet className="h-3 w-3 shrink-0" />
                 <span className="truncate font-mono">{publicKey}</span>
               </div>
             )}
             {txPending && (
               <div className="flex flex-col items-center gap-3 py-6">
-                <Loader2 className="h-8 w-8 animate-spin text-accent" />
+                <Loader2 className="text-accent h-8 w-8 animate-spin" />
                 <p className="text-muted text-sm">Processing payment...</p>
                 <p className="text-muted text-xs">Sending {selectedPack?.xlm} XLM equivalent</p>
               </div>
@@ -195,7 +209,9 @@ export function CreditPurchaseModal({ open, onClose, onSuccess }: CreditPurchase
                   <CheckCircle2 className="h-10 w-10 text-green-500" />
                   <p className="text-foreground font-medium">Payment Recorded</p>
                   {txHash && (
-                    <p className="text-muted max-w-full truncate px-4 text-xs font-mono">{txHash}</p>
+                    <p className="text-muted max-w-full truncate px-4 font-mono text-xs">
+                      {txHash}
+                    </p>
                   )}
                 </div>
                 <button
@@ -214,8 +230,8 @@ export function CreditPurchaseModal({ open, onClose, onSuccess }: CreditPurchase
         {step === "success" && (
           <div className="flex flex-col items-center gap-4 py-6">
             <CheckCircle2 className="h-12 w-12 text-green-500" />
-            <p className="text-lg font-semibold text-foreground">Credits Added!</p>
-            <p className="text-muted text-sm text-center">
+            <p className="text-foreground text-lg font-semibold">Credits Added!</p>
+            <p className="text-muted text-center text-sm">
               {selectedPack?.credits} verification credits have been added to your account.
             </p>
             <button
@@ -232,10 +248,13 @@ export function CreditPurchaseModal({ open, onClose, onSuccess }: CreditPurchase
             <div className="text-error flex h-12 w-12 items-center justify-center rounded-full bg-red-500/10">
               <span className="text-2xl">!</span>
             </div>
-            <p className="text-lg font-semibold text-foreground">Transaction Failed</p>
-            <p className="text-muted text-sm text-center">{error ?? "An error occurred"}</p>
+            <p className="text-foreground text-lg font-semibold">Transaction Failed</p>
+            <p className="text-muted text-center text-sm">{error ?? "An error occurred"}</p>
             <button
-              onClick={() => { setStep("choose"); setError(null) }}
+              onClick={() => {
+                setStep("choose")
+                setError(null)
+              }}
               className="bg-accent text-void hover:bg-accent/90 rounded px-6 py-2 text-sm font-medium transition-colors"
             >
               Try Again

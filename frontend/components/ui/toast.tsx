@@ -15,15 +15,15 @@ import { cn } from "@/lib/utils"
 type ToastVariant = "success" | "error" | "info"
 
 type Toast = {
-  id:      string
+  id: string
   message: string
   variant: ToastVariant
 }
 
 type ToastStore = {
-  toasts:  Toast[]
-  add:     (message: string, variant?: ToastVariant) => void
-  remove:  (id: string) => void
+  toasts: Toast[]
+  add: (message: string, variant?: ToastVariant) => void
+  remove: (id: string) => void
 }
 
 export const useToastStore = create<ToastStore>((set) => ({
@@ -42,29 +42,29 @@ export const useToastStore = create<ToastStore>((set) => ({
 /** Convenience helpers for common use. */
 export const toast = {
   success: (msg: string) => useToastStore.getState().add(msg, "success"),
-  error:   (msg: string) => useToastStore.getState().add(msg, "error"),
-  info:    (msg: string) => useToastStore.getState().add(msg, "info"),
+  error: (msg: string) => useToastStore.getState().add(msg, "error"),
+  info: (msg: string) => useToastStore.getState().add(msg, "info"),
 }
 
 // ─── UI ───────────────────────────────────────────────────────────────────────
 
 const icons: Record<ToastVariant, React.ReactNode> = {
-  success: <CheckCircle2 className="w-4 h-4 text-accent shrink-0" />,
-  error:   <AlertCircle  className="w-4 h-4 text-error shrink-0" />,
-  info:    <Info         className="w-4 h-4 text-info shrink-0" />,
+  success: <CheckCircle2 className="text-accent h-4 w-4 shrink-0" />,
+  error: <AlertCircle className="text-error h-4 w-4 shrink-0" />,
+  info: <Info className="text-info h-4 w-4 shrink-0" />,
 }
 
 const styles: Record<ToastVariant, string> = {
   success: "bg-surface-card border-accent/20 text-foreground",
-  error:   "bg-surface-card border-error/20 text-foreground",
-  info:    "bg-surface-card border-info/20 text-foreground",
+  error: "bg-surface-card border-error/20 text-foreground",
+  info: "bg-surface-card border-info/20 text-foreground",
 }
 
 function ToastItem({ toast, onRemove }: { toast: Toast; onRemove(): void }) {
   return (
     <div
       className={cn(
-        "flex items-start gap-3 w-80 rounded-xl border px-4 py-3 shadow-xl animate-fade-in",
+        "animate-fade-in flex w-80 items-start gap-3 rounded-xl border px-4 py-3 shadow-xl",
         styles[toast.variant]
       )}
     >
@@ -72,9 +72,9 @@ function ToastItem({ toast, onRemove }: { toast: Toast; onRemove(): void }) {
       <p className="flex-1 text-sm leading-snug">{toast.message}</p>
       <button
         onClick={onRemove}
-        className="text-muted hover:text-foreground transition-colors mt-0.5 shrink-0"
+        className="text-muted hover:text-foreground mt-0.5 shrink-0 transition-colors"
       >
-        <X className="w-3.5 h-3.5" />
+        <X className="h-3.5 w-3.5" />
       </button>
     </div>
   )
@@ -85,7 +85,7 @@ export function ToastContainer() {
   const { toasts, remove } = useToastStore()
 
   return (
-    <div className="fixed top-5 right-5 z-[100] flex flex-col gap-2 pointer-events-none">
+    <div className="pointer-events-none fixed right-5 top-5 z-[100] flex flex-col gap-2">
       {toasts.map((t) => (
         <div key={t.id} className="pointer-events-auto">
           <ToastItem toast={t} onRemove={() => remove(t.id)} />

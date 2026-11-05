@@ -30,9 +30,12 @@ export default function EmployerDashboard() {
       .finally(() => setLoading(false))
   }
 
-  useEffect(() => { load() }, [user])
+  useEffect(() => {
+    load()
+  }, [user])
 
-  const totalAvailable = (profile?.freeVerificationsRemaining ?? 0) + (profile?.verificationCredits ?? 0)
+  const totalAvailable =
+    (profile?.freeVerificationsRemaining ?? 0) + (profile?.verificationCredits ?? 0)
 
   return (
     <EmployerLayout title="Dashboard">
@@ -46,14 +49,17 @@ export default function EmployerDashboard() {
             onSuccess={load}
           />
           <div className="animate-fade-in space-y-8">
-            <h1 className="text-2xl font-semibold text-foreground">
+            <h1 className="text-foreground text-2xl font-semibold">
               Welcome back, {profile?.name || "Employer"}!
             </h1>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
               <StatCard label="Free Trials Left" value={profile?.freeVerificationsRemaining ?? 0} />
               <StatCard label="Paid Credits" value={profile?.verificationCredits ?? 0} accent />
               <StatCard label="Total Available" value={totalAvailable} />
-              <StatCard label="Account Status" value={profile?.kycApproved ? "Active" : "Pending"} />
+              <StatCard
+                label="Account Status"
+                value={profile?.kycApproved ? "Active" : "Pending"}
+              />
             </div>
             <div className="flex gap-3">
               <button
@@ -65,7 +71,9 @@ export default function EmployerDashboard() {
             </div>
 
             <div className="bg-surface-border/20 border-surface-border rounded-lg border p-5">
-              <h2 className="mb-2 flex items-center gap-2 font-medium text-foreground">Quick Guide</h2>
+              <h2 className="text-foreground mb-2 flex items-center gap-2 font-medium">
+                Quick Guide
+              </h2>
               <p className="text-muted mb-3 text-sm leading-relaxed">
                 Veridaq uses Zero-Knowledge Proofs to verify student credentials mathematically
                 without revealing their plain-text records.
@@ -79,14 +87,16 @@ export default function EmployerDashboard() {
             </div>
 
             <div className="card">
-              <h2 className="mb-4 font-medium text-foreground">New Verification</h2>
+              <h2 className="text-foreground mb-4 font-medium">New Verification</h2>
               <VerifyButton onComplete={load} />
             </div>
 
             <div>
               <div className="mb-4 flex items-center justify-between">
-                <h2 className="font-medium text-foreground">Recent Verifications</h2>
-                <Link href="/employer/history" className="text-accent text-sm hover:underline">View all</Link>
+                <h2 className="text-foreground font-medium">Recent Verifications</h2>
+                <Link href="/employer/history" className="text-accent text-sm hover:underline">
+                  View all
+                </Link>
               </div>
               <HistoryTable items={history?.items ?? []} />
             </div>

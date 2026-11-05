@@ -48,7 +48,7 @@
     --color-accent: 20 55 130;
     --color-accent-dim: 10 35 90;
     --color-accent-muted: rgba(20, 55, 130, 0.06);
-    --color-accent-glow: rgba(20, 55, 130, 0.10);
+    --color-accent-glow: rgba(20, 55, 130, 0.1);
     --color-muted: 113 113 122;
     --color-muted-subtle: 161 161 170;
     --color-foreground: 24 24 27;
@@ -62,7 +62,7 @@
     --color-success-bg: rgba(22, 163, 74, 0.06);
     --color-grid-line: rgba(20, 55, 130, 0.045);
     --shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.08);
-    --shadow-elevated-lg: 0 16px 64px rgba(0, 0, 0, 0.10);
+    --shadow-elevated-lg: 0 16px 64px rgba(0, 0, 0, 0.1);
     color-scheme: light;
   }
 
@@ -72,10 +72,14 @@
     font-size: 18px;
   }
   @screen md {
-    html { font-size: 19px; }
+    html {
+      font-size: 19px;
+    }
   }
   @screen lg {
-    html { font-size: 20px; }
+    html {
+      font-size: 20px;
+    }
   }
 
   body {
@@ -335,7 +339,8 @@
   [data-reveal] {
     opacity: 0;
     transform: translateY(20px);
-    transition: opacity 600ms cubic-bezier(0.16, 1, 0.3, 1),
+    transition:
+      opacity 600ms cubic-bezier(0.16, 1, 0.3, 1),
       transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
@@ -347,7 +352,9 @@
   .lazy-fade {
     opacity: 0;
     transform: translateY(28px) scale(0.98);
-    transition: opacity 900ms ease, transform 1000ms cubic-bezier(0.16, 1, 0.3, 1);
+    transition:
+      opacity 900ms ease,
+      transform 1000ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .lazy-fade[data-reveal-state="in"] {

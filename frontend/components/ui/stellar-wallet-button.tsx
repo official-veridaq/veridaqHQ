@@ -23,7 +23,7 @@ export function StellarWalletButton({ variant = "header" }: { variant?: "header"
         </span>
         <button
           onClick={copyAddress}
-          className="text-muted rounded p-1 transition-colors hover:text-foreground"
+          className="text-muted hover:text-foreground rounded p-1 transition-colors"
           title="Copy address"
         >
           <Copy size={12} />
@@ -49,11 +49,7 @@ export function StellarWalletButton({ variant = "header" }: { variant?: "header"
             : "border-surface-border text-muted hover:text-foreground border px-3 py-1.5 text-xs"
         }`}
       >
-        {connecting ? (
-          <Loader2 size={14} className="animate-spin" />
-        ) : (
-          <Wallet size={14} />
-        )}
+        {connecting ? <Loader2 size={14} className="animate-spin" /> : <Wallet size={14} />}
         {connecting ? "Connecting..." : "Connect Freighter"}
       </button>
       {error && <p className="mt-1 text-xs text-red-400">{error}</p>}

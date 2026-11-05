@@ -64,7 +64,9 @@ export const institutionRoutes: FastifyPluginAsync = async (app) => {
     const raw = await data.toBuffer()
     const workbook = new ExcelJS.Workbook()
     // Buffer type mismatch between @fastify/multipart and exceljs 4.x
-    await (workbook.xlsx.load as (...args: unknown[]) => Promise<ExcelJS.Workbook>)(new Uint8Array(raw.buffer, raw.byteOffset, raw.byteLength))
+    await (workbook.xlsx.load as (...args: unknown[]) => Promise<ExcelJS.Workbook>)(
+      new Uint8Array(raw.buffer, raw.byteOffset, raw.byteLength)
+    )
     const sheet = workbook.worksheets[0]
     if (!sheet) return rep.code(400).send({ error: "Workbook is empty" })
 
@@ -81,8 +83,10 @@ export const institutionRoutes: FastifyPluginAsync = async (app) => {
 
       if (!matric) errors.push({ row: rowIndex, error: "MatricNumber is required" })
       if (!name) errors.push({ row: rowIndex, error: "StudentName is required" })
-      if (!cgpa || cgpa < 0 || cgpa > 5) errors.push({ row: rowIndex, error: "CGPA must be between 0 and 5" })
-      if (!gradYear || gradYear < 1950 || gradYear > 2030) errors.push({ row: rowIndex, error: "GraduationYear must be between 1950 and 2030" })
+      if (!cgpa || cgpa < 0 || cgpa > 5)
+        errors.push({ row: rowIndex, error: "CGPA must be between 0 and 5" })
+      if (!gradYear || gradYear < 1950 || gradYear > 2030)
+        errors.push({ row: rowIndex, error: "GraduationYear must be between 1950 and 2030" })
     })
 
     return {

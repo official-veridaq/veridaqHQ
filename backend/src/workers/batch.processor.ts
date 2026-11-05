@@ -231,7 +231,7 @@ async function processJob(job: Job<BatchJobData>) {
       commitments,
       nullifiers,
       batch.graduationYear,
-      batch.degreeTypeCode,
+      batch.degreeTypeCode
     )
     const txHash = directResult.txHash
 

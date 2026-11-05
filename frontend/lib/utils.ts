@@ -13,19 +13,19 @@ export function cn(...inputs: ClassValue[]) {
 /** Format a date string to a readable local date. */
 export function formatDate(value: string | Date): string {
   return new Date(value).toLocaleDateString("en-NG", {
-    year:  "numeric",
+    year: "numeric",
     month: "short",
-    day:   "numeric",
+    day: "numeric",
   })
 }
 
 /** Format a date string to include time. */
 export function formatDateTime(value: string | Date): string {
   return new Date(value).toLocaleString("en-NG", {
-    year:   "numeric",
-    month:  "short",
-    day:    "numeric",
-    hour:   "2-digit",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
     minute: "2-digit",
   })
 }

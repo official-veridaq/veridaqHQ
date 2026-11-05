@@ -8,11 +8,5 @@ type TopupModalProps = {
 }
 
 export function TopupModal({ open, onClose, onSuccess }: TopupModalProps) {
-  return (
-    <CreditPurchaseModal
-      open={open}
-      onClose={onClose}
-      onSuccess={onSuccess}
-    />
-  )
+  return <CreditPurchaseModal open={open} onClose={onClose} onSuccess={onSuccess} />
 }

@@ -129,7 +129,10 @@ export class ReportService {
       // ── Row helper: renders label + value with alternating bg ─────
       function row(label: string, value: string, mono = false) {
         const rh = 14
-        if (doc.y + rh > PAGE_BOTTOM) { doc.addPage(); rowToggle = false }
+        if (doc.y + rh > PAGE_BOTTOM) {
+          doc.addPage()
+          rowToggle = false
+        }
         rowToggle = !rowToggle
         const ry = doc.y
         doc.rect(LX, ry, CW, rh).fill(rowToggle ? ROW_LIGHT : WHITE)
@@ -144,7 +147,10 @@ export class ReportService {
 
       // ── Section heading ───────────────────────────────────────────
       function section(title: string) {
-        if (doc.y + 30 > PAGE_BOTTOM) { doc.addPage(); rowToggle = false }
+        if (doc.y + 30 > PAGE_BOTTOM) {
+          doc.addPage()
+          rowToggle = false
+        }
         doc.y += 8
         doc.fontSize(9).fillColor(NAVY).font("Orbitron")
         doc.text(title, LX, doc.y)
@@ -180,7 +186,13 @@ export class ReportService {
       doc.fontSize(12).fillColor(bc).font("Orbitron")
       doc.text(v ? "VERIFIED" : "NOT VERIFIED", LX + 12, doc.y + 6)
       doc.fontSize(6.5).fillColor(MUTED).font("Cambria")
-      doc.text(v ? "Cryptographic proof verified on-chain" : "Proof verification failed or credential revoked", LX + 12, doc.y + 21)
+      doc.text(
+        v
+          ? "Cryptographic proof verified on-chain"
+          : "Proof verification failed or credential revoked",
+        LX + 12,
+        doc.y + 21
+      )
       doc.y += 36
 
       // ════════════════ VERIFICATION DETAILS ═════════════════════════
@@ -208,14 +220,20 @@ export class ReportService {
         doc.y += 1
         const url = `https://stellar.expert/explorer/testnet/tx/${data.txHash}`
         doc.fontSize(6.5).fillColor(LINK).font("Courier")
-        doc.text(url, LX + 8, doc.y, { width: CW - 16, link: url, underline: true, lineBreak: false })
+        doc.text(url, LX + 8, doc.y, {
+          width: CW - 16,
+          link: url,
+          underline: true,
+          lineBreak: false,
+        })
         doc.y += 13
       }
       doc.y += 4
 
       // ════════════════ ZERO-KNOWLEDGE PROOF ═════════════════════════
       section("Zero-Knowledge Proof")
-      const zkpNote = "The following values are stored on-chain and were verified using a Groth16 zero-knowledge proof."
+      const zkpNote =
+        "The following values are stored on-chain and were verified using a Groth16 zero-knowledge proof."
       doc.fontSize(6.5).fillColor(MUTED).font("Cambria")
       doc.text(zkpNote, LX + 8, doc.y, { width: CW - 16, lineBreak: false })
       doc.y += 11
@@ -237,7 +255,11 @@ export class ReportService {
       doc.fontSize(8).fillColor(NAVY).font("Orbitron")
       doc.text("VERIFIED BY VERIDAQ", LX + 44, sa + 6)
       doc.fontSize(6.5).fillColor(MUTED).font("Cambria")
-      doc.text("This verification is independently verifiable on the Stellar blockchain.", LX + 44, sa + 20)
+      doc.text(
+        "This verification is independently verifiable on the Stellar blockchain.",
+        LX + 44,
+        sa + 20
+      )
       doc.text("Verify the transaction hash at stellar.expert/explorer/testnet.", LX + 44, sa + 29)
 
       doc.y = sa + 46
@@ -248,9 +270,17 @@ export class ReportService {
       doc.rect(0, fy, doc.page.width, fh).fill(NAVY)
       doc.rect(0, fy, doc.page.width, 0.5).fill(MUTED)
       doc.fontSize(6).fillColor(MUTED).font("Cambria")
-      doc.text(`Generated ${dateFormatter.format(new Date())}  ·  Report ${data.requestId}`, M, fy + 8, { width: CW, align: "center" })
+      doc.text(
+        `Generated ${dateFormatter.format(new Date())}  ·  Report ${data.requestId}`,
+        M,
+        fy + 8,
+        { width: CW, align: "center" }
+      )
       doc.fontSize(5.5).fillColor(MUTED).font("Cambria")
-      doc.text("VERIDAQ — Censor-Resistant Academic Truth", M, fy + 19, { width: CW, align: "center" })
+      doc.text("VERIDAQ — Censor-Resistant Academic Truth", M, fy + 19, {
+        width: CW,
+        align: "center",
+      })
 
       doc.end()
     })

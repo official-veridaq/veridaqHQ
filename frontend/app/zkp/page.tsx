@@ -7,30 +7,30 @@ import { FloatingShapes } from "@/components/parallax/floating-shapes"
 
 export default function ZKPDefinitionsPage() {
   return (
-    <div className="min-h-screen bg-void pb-16 text-muted">
+    <div className="bg-void text-muted min-h-screen pb-16">
       <AppHeader />
       <ParallaxBg opacity={0.25} />
       <FloatingShapes count={10} />
-      <div className="container mx-auto max-w-4xl px-4 md:px-6 pt-24">
-        <div className="mb-8 flex items-center gap-2 font-mono text-sm text-muted-subtle">
-          <Link href="/" className="transition-colors hover:text-foreground">
+      <div className="container mx-auto max-w-4xl px-4 pt-24 md:px-6">
+        <div className="text-muted-subtle mb-8 flex items-center gap-2 font-mono text-sm">
+          <Link href="/" className="hover:text-foreground transition-colors">
             Home
           </Link>
           <ChevronRight className="h-4 w-4" />
           <span className="text-accent uppercase">ZKP Circom Definitions</span>
         </div>
 
-        <h1 className="mb-6 text-3xl font-black uppercase tracking-tight text-foreground md:text-5xl">
+        <h1 className="text-foreground mb-6 text-3xl font-black uppercase tracking-tight md:text-5xl">
           ZKP Circom Definitions
         </h1>
 
-        <p className="border-surface-border mb-12 border-b pb-6 font-mono text-sm text-muted-subtle">
+        <p className="border-surface-border text-muted-subtle mb-12 border-b pb-6 font-mono text-sm">
           ENGINE_V2: GROTH16 | HASH_ALG: POSEIDON (CIRCOMLIB)
         </p>
 
         <div className="prose prose-invert prose-headings:text-foreground max-w-none space-y-10 text-sm leading-relaxed md:text-base">
           <section>
-            <h2 className="mb-4 text-xl font-bold uppercase tracking-widest text-foreground">
+            <h2 className="text-foreground mb-4 text-xl font-bold uppercase tracking-widest">
               Architecture of the Veridaq Circuit
             </h2>
             <p>
@@ -48,7 +48,7 @@ export default function ZKPDefinitionsPage() {
           </section>
 
           <section>
-            <h2 className="mb-4 text-xl font-bold uppercase tracking-widest text-foreground">
+            <h2 className="text-foreground mb-4 text-xl font-bold uppercase tracking-widest">
               The Hash Commitment (Poseidon)
             </h2>
             <p>
@@ -56,7 +56,7 @@ export default function ZKPDefinitionsPage() {
               Poseidon hash. It is generated via cryptographic permutations ensuring absolute
               collision resistance.
             </p>
-            <pre className="border-surface-border overflow-x-auto rounded-lg border bg-surface-card p-4 font-mono text-xs text-accent">
+            <pre className="border-surface-border bg-surface-card text-accent overflow-x-auto rounded-lg border p-4 font-mono text-xs">
               {`Commitment = Poseidon(
   nameHash, 
   matricHash, 
@@ -75,15 +75,15 @@ export default function ZKPDefinitionsPage() {
           </section>
 
           <section>
-            <h2 className="mb-4 text-xl font-bold uppercase tracking-widest text-foreground">
+            <h2 className="text-foreground mb-4 text-xl font-bold uppercase tracking-widest">
               Private vs Public Signals
             </h2>
             <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
-              <div className="border-surface-border rounded border bg-surface-card p-6 text-sm">
-                <h3 className="mb-2 font-bold uppercase tracking-wide text-foreground">
+              <div className="border-surface-border bg-surface-card rounded border p-6 text-sm">
+                <h3 className="text-foreground mb-2 font-bold uppercase tracking-wide">
                   Private Inputs
                 </h3>
-                <ul className="list-disc space-y-1 pl-4 text-muted">
+                <ul className="text-muted list-disc space-y-1 pl-4">
                   <li>
                     <code>nameHash</code>
                   </li>
@@ -110,9 +110,11 @@ export default function ZKPDefinitionsPage() {
                   </li>
                 </ul>
               </div>
-              <div className="border-surface-border rounded border bg-surface-card p-6 text-sm">
-                <h3 className="mb-2 font-bold uppercase tracking-wide text-foreground">Public Inputs</h3>
-                <ul className="list-disc space-y-1 pl-4 text-muted">
+              <div className="border-surface-border bg-surface-card rounded border p-6 text-sm">
+                <h3 className="text-foreground mb-2 font-bold uppercase tracking-wide">
+                  Public Inputs
+                </h3>
+                <ul className="text-muted list-disc space-y-1 pl-4">
                   <li>
                     <code>commitment</code> (The on-chain string pointer)
                   </li>
@@ -131,7 +133,7 @@ export default function ZKPDefinitionsPage() {
           </section>
 
           <section>
-            <h2 className="mb-4 text-xl font-bold uppercase tracking-widest text-foreground">
+            <h2 className="text-foreground mb-4 text-xl font-bold uppercase tracking-widest">
               The Claim Constraint System
             </h2>
             <p>

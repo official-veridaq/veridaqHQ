@@ -9,7 +9,11 @@
   "editor.rulers": [100],
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
-  "eslint.workingDirectories": [{ "mode": "auto" }],
+  "eslint.workingDirectories": [
+    {
+      "mode": "auto"
+    }
+  ],
   "files.exclude": {
     "**/node_modules": true,
     "circuits/build": true
@@ -30,8 +34,8 @@
   },
   "css.customData": [".vscode/tailwind-custom-data.json"],
   "tailwindCSS.experimental.classRegex": [
-    ["clsx\(([^)]*)\)", "(?:'|"|`)([^']*)(?:'|"|`)"],
-    ["cn\(([^)]*)\)", "(?:'|"|`)([^']*)(?:'|"|`)"]
+    ["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
+    ["cn\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
   ],
   "github.copilot.chat.codeGeneration.useInstructionFiles": true,
   "github.copilot.chat.reviewSelection.enabled": true,

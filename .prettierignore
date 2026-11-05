@@ -1,0 +1,23 @@
+# Generated and vendored output must never be reformatted.
+node_modules/
+.pnpm-store/
+dist/
+build/
+.next/
+out/
+coverage/
+*.tsbuildinfo
+
+# Lockfiles are owned by the package manager. Reformatting them creates
+# spurious diffs that pnpm rewrites on the next install.
+pnpm-lock.yaml
+
+# Rust build output and wasm artifacts.
+contracts/target/
+contracts/**/test_snapshots/
+
+# Generated circuit artifacts.
+circuits/build/
+
+# Docker volumes and local data.
+.docker-data/

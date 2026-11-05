@@ -124,8 +124,7 @@ export class AuthService {
 
     const { encryptedData, encryptedIv, encryptedTag } = encrypt(institutionKeyHex)
 
-    const adminWallet = config.PLATFORM_ADMIN_PUBLIC_KEY
-      ?? ""
+    const adminWallet = config.PLATFORM_ADMIN_PUBLIC_KEY ?? ""
 
     const inst = await this.prisma.institution.create({
       data: {
@@ -150,7 +149,9 @@ export class AuthService {
         orgName: inst.name,
         email: inst.email,
       })
-      .catch((e) => log.error({ err: e }, "Failed to send admin alert for institution registration"))
+      .catch((e) =>
+        log.error({ err: e }, "Failed to send admin alert for institution registration")
+      )
 
     return { id: inst.id, email: inst.email, kycApproved: inst.kycApproved }
   }
@@ -307,7 +308,12 @@ export class AuthService {
   ) {
     const tokenHash = crypto.createHash("sha256").update(token).digest("hex")
 
-    type ResettableUser = { id: string; email: string; resetToken: string | null; resetTokenExpires: Date | null }
+    type ResettableUser = {
+      id: string
+      email: string
+      resetToken: string | null
+      resetTokenExpires: Date | null
+    }
     let user: ResettableUser | null = null
     const findQuery = {
       where: {

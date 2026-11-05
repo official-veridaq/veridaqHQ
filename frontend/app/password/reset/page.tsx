@@ -39,8 +39,9 @@ export default function ResetPasswordPage() {
     } catch (err: unknown) {
       const msg =
         typeof err === "object" && err !== null
-          ? ((err as Record<string, unknown>)["response"] as Record<string, unknown> | undefined)
-              ?.["data"] as Record<string, unknown> | undefined
+          ? ((
+              (err as Record<string, unknown>)["response"] as Record<string, unknown> | undefined
+            )?.["data"] as Record<string, unknown> | undefined)
           : null
       setError(
         (typeof msg?.["error"] === "string" ? msg["error"] : null) ||
@@ -55,7 +56,7 @@ export default function ResetPasswordPage() {
     return (
       <div className="bg-void flex min-h-screen flex-col items-center justify-center p-4">
         <div className="bg-surface-card border-surface-border animate-fade-in w-full max-w-md rounded-xl border p-8 text-center shadow-lg">
-          <h2 className="mb-4 text-2xl font-bold text-foreground">Password Reset Successful</h2>
+          <h2 className="text-foreground mb-4 text-2xl font-bold">Password Reset Successful</h2>
           <p className="text-muted mb-6 text-sm">
             Your password has been changed successfully. You can now log in to your account.
           </p>
@@ -73,7 +74,7 @@ export default function ResetPasswordPage() {
   return (
     <div className="bg-void flex min-h-screen flex-col items-center justify-center p-4">
       <div className="bg-surface-card border-surface-border animate-fade-in w-full max-w-md rounded-xl border p-8 shadow-lg">
-        <h2 className="mb-2 text-2xl font-bold text-foreground">Choose New Password</h2>
+        <h2 className="text-foreground mb-2 text-2xl font-bold">Choose New Password</h2>
         <p className="text-muted mb-6 text-sm">Enter a strong password for your account.</p>
 
         {error && (
@@ -82,11 +83,11 @@ export default function ResetPasswordPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="mb-1 block text-sm font-medium text-foreground">New Password</label>
+            <label className="text-foreground mb-1 block text-sm font-medium">New Password</label>
             <input
               type="password"
               required
-              className="border-surface-border focus:border-accent w-full rounded border bg-[#0a0a0f] p-2 text-foreground outline-none"
+              className="border-surface-border focus:border-accent text-foreground w-full rounded border bg-[#0a0a0f] p-2 outline-none"
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -94,11 +95,13 @@ export default function ResetPasswordPage() {
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-foreground">Confirm Password</label>
+            <label className="text-foreground mb-1 block text-sm font-medium">
+              Confirm Password
+            </label>
             <input
               type="password"
               required
-              className="border-surface-border focus:border-accent w-full rounded border bg-[#0a0a0f] p-2 text-foreground outline-none"
+              className="border-surface-border focus:border-accent text-foreground w-full rounded border bg-[#0a0a0f] p-2 outline-none"
               placeholder="••••••••"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
@@ -115,7 +118,7 @@ export default function ResetPasswordPage() {
         </form>
 
         <div className="mt-6 text-center">
-          <Link href="/" className="text-muted text-xs transition hover:text-foreground">
+          <Link href="/" className="text-muted hover:text-foreground text-xs transition">
             &larr; Back to login selection
           </Link>
         </div>

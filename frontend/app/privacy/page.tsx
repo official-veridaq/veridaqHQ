@@ -7,30 +7,30 @@ import { FloatingShapes } from "@/components/parallax/floating-shapes"
 
 export default function PrivacyPolicyPage() {
   return (
-    <div className="min-h-screen bg-void pb-16 text-muted">
+    <div className="bg-void text-muted min-h-screen pb-16">
       <AppHeader />
       <ParallaxBg opacity={0.25} />
       <FloatingShapes count={10} />
-      <div className="container mx-auto max-w-4xl px-4 md:px-6 pt-24">
-        <div className="mb-8 flex items-center gap-2 font-mono text-sm text-muted-subtle">
-          <Link href="/" className="transition-colors hover:text-foreground">
+      <div className="container mx-auto max-w-4xl px-4 pt-24 md:px-6">
+        <div className="text-muted-subtle mb-8 flex items-center gap-2 font-mono text-sm">
+          <Link href="/" className="hover:text-foreground transition-colors">
             Home
           </Link>
           <ChevronRight className="h-4 w-4" />
           <span className="text-accent uppercase">Privacy Policy</span>
         </div>
 
-        <h1 className="mb-6 text-3xl font-black uppercase tracking-tight text-foreground md:text-4xl">
+        <h1 className="text-foreground mb-6 text-3xl font-black uppercase tracking-tight md:text-4xl">
           Privacy Policy
         </h1>
 
-        <p className="border-surface-border mb-12 border-b pb-6 font-mono text-sm text-muted-subtle">
+        <p className="border-surface-border text-muted-subtle mb-12 border-b pb-6 font-mono text-sm">
           EFFECTIVE_DATE: 2026-03-23 | VERSION_REF: VERIDAQ_PRIV_V1.0
         </p>
 
         <div className="prose prose-invert prose-headings:text-foreground max-w-none space-y-10 text-sm leading-relaxed md:text-base">
           <section>
-            <h2 className="mb-4 text-lg font-bold uppercase tracking-widest text-foreground">
+            <h2 className="text-foreground mb-4 text-lg font-bold uppercase tracking-widest">
               Core Promise: Absolute Zero-Knowledge
             </h2>
             <p>
@@ -45,31 +45,30 @@ export default function PrivacyPolicyPage() {
           </section>
 
           <section>
-            <h2 className="mb-4 text-lg font-bold uppercase tracking-widest text-foreground">
+            <h2 className="text-foreground mb-4 text-lg font-bold uppercase tracking-widest">
               What We Collect
             </h2>
             <ul className="mt-4 list-disc space-y-2 pl-5">
               <li>
                 <strong className="text-foreground">Institution Data:</strong> Organizational name,
-                administrator email, hashed operational passwords, and your public wallet
-                address.
+                administrator email, hashed operational passwords, and your public wallet address.
               </li>
               <li>
                 <strong className="text-foreground">Employer Data:</strong> Organization name,
                 verification history bounds (hash assertions matching query counts).
               </li>
               <li>
-                <strong className="text-foreground">Student Data (Never On-Chain):</strong> The backend
-                relays temporary payload matrices (CGPA, Course, Matrix No.) in strictly isolated
-                memory for mere milliseconds to compute Groth16 SnarkJS FullProve buffers. We
-                systematically drop and erase these inputs from application state immediately after
-                the proof stream returns.
+                <strong className="text-foreground">Student Data (Never On-Chain):</strong> The
+                backend relays temporary payload matrices (CGPA, Course, Matrix No.) in strictly
+                isolated memory for mere milliseconds to compute Groth16 SnarkJS FullProve buffers.
+                We systematically drop and erase these inputs from application state immediately
+                after the proof stream returns.
               </li>
             </ul>
           </section>
 
           <section>
-            <h2 className="mb-4 text-lg font-bold uppercase tracking-widest text-foreground">
+            <h2 className="text-foreground mb-4 text-lg font-bold uppercase tracking-widest">
               How Data is Commited to Chain
             </h2>
             <p>
@@ -83,7 +82,7 @@ export default function PrivacyPolicyPage() {
           </section>
 
           <section>
-            <h2 className="mb-4 text-lg font-bold uppercase tracking-widest text-foreground">
+            <h2 className="text-foreground mb-4 text-lg font-bold uppercase tracking-widest">
               Cookies & Analytics
             </h2>
             <p>
@@ -94,14 +93,13 @@ export default function PrivacyPolicyPage() {
           </section>
 
           <section>
-            <h2 className="mb-4 text-lg font-bold uppercase tracking-widest text-foreground">
+            <h2 className="text-foreground mb-4 text-lg font-bold uppercase tracking-widest">
               Retention & Deletion
             </h2>
             <p>
               Registered entities can issue a tear-down request across the support endpoint.
-              However, cryptographic hashes submitted onto the immutable Stellar
-              ledger are permanent, even though they represent unintelligible mathematical dust to
-              observers.
+              However, cryptographic hashes submitted onto the immutable Stellar ledger are
+              permanent, even though they represent unintelligible mathematical dust to observers.
             </p>
           </section>
         </div>
