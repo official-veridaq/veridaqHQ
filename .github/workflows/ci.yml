@@ -90,7 +90,10 @@ jobs:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
         with:
-          targets: wasm32-unknown-unknown
+          # Soroban SDK 26 requires wasm32v1-none. The legacy wasm32-unknown-unknown
+          # target is rejected by Rust 1.82+ because it enables reference-types
+          # and multi-value, which the Soroban Environment does not support.
+          targets: wasm32v1-none
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: contracts
@@ -99,4 +102,4 @@ jobs:
       - run: cargo fmt --check
       - run: cargo clippy --all-targets -- -D warnings
       - run: cargo test --all-targets
-      - run: cargo build --target wasm32-unknown-unknown --release
+      - run: cargo build --target wasm32v1-none --release
