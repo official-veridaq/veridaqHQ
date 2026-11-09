@@ -174,7 +174,7 @@ No RPC endpoint, no wallet, no XLM needed.
 
 ```bash
 # 1. Clone
-git clone git@github.com:trinnode/veridaqHQ.git
+git clone git@github.com:official-veridaq/veridaqHQ.git
 cd veridaq
 
 # 2. Install dependencies
@@ -207,7 +207,7 @@ pnpm dev:frontend    # → http://localhost:3000
 #### Step 1 — Clone & Install
 
 ```bash
-git clone git@github.com:trinnode/veridaqHQ.git
+git clone git@github.com:official-veridaq/veridaqHQ.git
 cd veridaq
 pnpm install
 ```
