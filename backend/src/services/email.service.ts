@@ -10,7 +10,10 @@
  */
 
 import nodemailer, { type Transporter } from "nodemailer"
+import pino from "pino"
 import { config } from "../config/index.js"
+
+const log = pino({ name: "email-service" })
 
 type CredentialIssuedOptions = {
   to: string
@@ -142,7 +145,7 @@ VERIDAQ Platform
     // In dev, log the Ethereal preview URL so you can inspect the email
     if (config.NODE_ENV !== "production") {
       const previewUrl = nodemailer.getTestMessageUrl(info)
-      console.log(`[EmailService] Credential issued preview: ${previewUrl}`)
+      log.info({ previewUrl }, "Credential issued preview")
     }
   }
 
@@ -185,7 +188,7 @@ VERIDAQ Platform
 
     if (config.NODE_ENV !== "production") {
       const previewUrl = nodemailer.getTestMessageUrl(info)
-      console.log(`[EmailService] Verification result preview: ${previewUrl}`)
+      log.info({ previewUrl }, "Verification result preview")
     }
   }
 
@@ -277,7 +280,7 @@ VERIDAQ Platform
 
     if (config.NODE_ENV !== "production") {
       const previewUrl = nodemailer.getTestMessageUrl(info)
-      console.log(`[EmailService] Password Reset preview: ${previewUrl}`)
+      log.info({ previewUrl }, "Password Reset preview")
     }
   }
 
@@ -336,7 +339,7 @@ VERIDAQ Platform
 
     if (config.NODE_ENV !== "production") {
       const previewUrl = nodemailer.getTestMessageUrl(info)
-      console.log(`[EmailService] Deactivation Alert preview: ${previewUrl}`)
+      log.info({ previewUrl }, "Deactivation Alert preview")
     }
   }
 
@@ -368,7 +371,7 @@ VERIDAQ Platform
 
     if (config.NODE_ENV !== "production") {
       const previewUrl = nodemailer.getTestMessageUrl(info)
-      console.log(`[EmailService] Employer Deactivation Alert preview: ${previewUrl}`)
+      log.info({ previewUrl }, "Employer Deactivation Alert preview")
     }
   }
 }
