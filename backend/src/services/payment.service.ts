@@ -43,7 +43,7 @@ export class PaymentService {
       data: {
         referenceId,
         type: data.type,
-        method: data.method as any,
+        method: data.method ?? null,
         amountWei: data.amountWei,
         amountFiat: data.amountFiat ?? null,
         fiatCurrency: data.fiatCurrency ?? null,
