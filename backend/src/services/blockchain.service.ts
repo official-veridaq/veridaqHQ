@@ -89,6 +89,11 @@ export class BlockchainService {
 
   // ── Generic helpers ───────────────────────────────────────────────────────
 
+  private guard<T>(mockValue: T): T | undefined {
+    if (USE_MOCK) return mockValue
+    return undefined
+  }
+
   private async getAccount() {
     try {
       const res = await fetch(`https://horizon-testnet.stellar.org/accounts/${this.source!}`, {
@@ -214,13 +219,6 @@ export class BlockchainService {
     }
 
     throw new Error(`Soroban transaction timeout for ${method}: ${txHash}`)
-  }
-
-  // ── Institution Registry ──────────────────────────────────────────────────
-
-  private guard<T>(mockValue: T): T | undefined {
-    if (USE_MOCK) return mockValue
-    return undefined
   }
 
   // ── Institution Registry ──────────────────────────────────────────────────
